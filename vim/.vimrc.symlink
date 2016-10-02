@@ -46,7 +46,11 @@
 
 		" Imposta la lingua dei "messaggi" in inglese.
 		" Altrimenti usa quella di sistema
-		language messages en_US
+		if has("win32")
+			language messages en_US
+		else
+			language messages en_US.UTF-8
+		endif
 
 		" Imposta gestione unicode
 		" http://vim.wikia.com/wiki/Working_with_Unicode
