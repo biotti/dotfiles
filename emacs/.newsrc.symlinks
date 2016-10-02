@@ -1,0 +1,2 @@
+linux: .newsrc
+windows: appdata\roaming\.newsrc

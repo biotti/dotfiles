@@ -1,0 +1,82 @@
+# -*- mode: gitignore; -*-
+# ------------------------------------------------------------------------
+# WINDOWS gitignore settings
+# ------------------------------------------------------------------------
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+# Folder config file
+Desktop.ini
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+# Windows shortcuts
+*.lnk
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# EMACS gitignore settings
+# ------------------------------------------------------------------------
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+#
+# auto-save-list
+tramp
+.\#*
+# Org-mode
+.org-id-locations
+*_archive
+# flymake-mode
+*_flymake.*
+# eshell files
+/eshell/history
+/eshell/lastdir
+# # elpa packages
+# /elpa/
+# reftex files
+*.rel
+# AUCTeX auto folder
+/auto/
+# cask packages
+.cask/
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# VIM gitignore settings
+# ------------------------------------------------------------------------
+#[._]*.s[a-w][a-z]
+[._]*.swp
+#[._]s[a-w][a-z]
+[._]swp
+*.un~
+Session.vim
+.netrwhist
+*~
+# # Neobundle
+# .vim/bundle/
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# Project gitignore settings
+# ------------------------------------------------------------------------
+emacs/.emacs.d/elpa/
+emacs/.emacs.d/auto-save-list/
+emacs/.emacs.d/.recentf
+emacs/.emacs.d/.smex-items
+emacs/.emacs.d/ido.last
+emacs/.emacs.d/projectile-bookmarks.eld
+# Devo usare /...../* (notare l'asterisco terminale) altrimenti non posso 
+# scludere dal .gitignore le sottodirectory
+ vim/.vim/bundle/*
+!vim/.vim/bundle/.gitignore
+!vim/.vim/bundle/neobundle.vim/*
+# # !vim/.vim/bundle/.neobundle/
+vim/.vim/plugged/*
+!vim/.vim/autoload/plug.vim

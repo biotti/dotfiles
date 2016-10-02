@@ -1,0 +1,16 @@
+[core]
+    autocrlf = true
+    whitespace = cr-at-eol
+    # editor = gvim
+[diff]
+    tool = p4merge
+[merge]
+    tool = p4merge
+[mergetool "p4merge"]
+    trustExitCode = true
+[mergetool]
+    keepBackup = false
+[difftool]
+    prompt = false
+
+# vim: set ft=gitconfig :

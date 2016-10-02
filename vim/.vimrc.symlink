@@ -1,0 +1,1059 @@
+" ATTENZIONE, Qesto file deve essere SEMPRE salvato in formato UNIX
+"             e MAI in formato DOS per problemi di fine riga!
+" -----------------------------------------------------------------
+
+" -------------------------------------------------------------------------
+"  Istruzioni per il setup di Vim-Plug
+" -------------------------------------------------------------------------
+" Per l'installazione di vim-plug occorre eseguire:
+" UNIX:
+" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" NEOVIM:
+" curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" WINDOWS:
+" (PowerShell) N.B.: usare '~\.vim\' al posto di '~\vimfiles\'
+" md ~\vimfiles\autoload
+" $uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+" (New-Object Net.WebClient).DownloadFile($uri, $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("~\vimfiles\autoload\plug.vim"))
+" -------------------------------------------------------------------------
+
+" Ambiente {{{
+
+	" Base {{{
+
+		" Usa le impostazioni Vim al posto di quelle di Vi (molto meglio!)
+		" Questa opzione deve essere posizionata all'inizio dello script
+		" perche' puo' avere degli effetti collaterali sulle altre opzioni
+		set nocompatible
+
+		" Imposta l'encoding dello script a unicode (UTF-8) consentendo l'uso
+		" di caratteri non compliant con ANSI (default su Windows?)
+		" scriptencoding utf-8
+		" Se si sta lavorando in ambiente grafico (indipendentemente
+		" dal numero di colori supportati dal terminale), mostra
+		" l'elenco espanso dei filetypes
+		if has("gui_running")
+			let do_syntax_sel_menu=1
+		endif
+
+	" }}}
+
+	" Internazionalizzazione {{{
+
+		" Imposta la lingua inglese per il menu.
+		" Altrimenti usa la lingua di sistema
+		set langmenu=none
+
+		" Imposta la lingua dei "messaggi" in inglese.
+		" Altrimenti usa quella di sistema
+		language messages en_US
+
+		" Imposta gestione unicode
+		" http://vim.wikia.com/wiki/Working_with_Unicode
+		if has("multi_byte")
+			if &termencoding == ""
+				let &termencoding = &encoding
+			endif
+			scriptencoding utf-8
+			set encoding=utf-8
+			" setglobal fileencoding=utf-8
+			set fileencodings=ucs-bom,utf-8,cp850,latin1
+		endif
+
+	" }}}
+
+	" Variabili e impostazioni che saranno utilizzate dai Plugin
+	" caricati con NeoBundle {{{
+
+		let g:airline_symbols = {}
+		if has("gui_running")
+			" let g:airline_powerline_fonts = 1
+			" set laststatus=2
+		else
+			"let g:airline_symbols.space = ' '
+		endif
+
+	"  }}}
+
+	" NeoBundle / Vim-Plug {{{
+
+		" https://github.com/Shougo/neobundle.vim
+		if has('vim_starting')
+			set nocompatible              " Richiesto
+			filetype off                  " Richiesto
+			" --------- NEOBUNDLE BEGIN ---------
+			" " Required:
+			" set runtimepath+=~/.vim/bundle/neobundle.vim/
+			" --------- NEOBUNDLE BEGIN ---------
+		endif
+
+		" --------- NEOBUNDLE BEGIN ---------
+		" " Use git protocol.
+		" " let g:neobundle#types#git#default_protocol = 'git'
+		" " Required:
+		" call neobundle#begin(expand('~/.vim/bundle/'))
+		" " Let NeoBundle manage NeoBundle
+		" " Required:
+		" NeoBundleFetch 'Shougo/neobundle.vim'
+
+		" " Unite: ricerca e mostra info da fonti eterogenee quali
+		" "        files, buffers, recently used files or registers
+		" "        Usare questo e non quello dai plugin standard di vim
+		" if version >= 703
+		" 	NeoBundle 'Shougo/unite.vim'
+		" endif
+
+		" " Vimproc
+		" if version >= 703
+		" 	NeoBundle 'Shougo/vimproc.vim', {
+		" 	\ 'build' : {
+		" 	\     'windows' : 'tools\\update-dll-mingw',
+		" 	\     'cygwin' : 'make -f make_cygwin.mak',
+		" 	\     'mac' : 'make -f make_mac.mak',
+		" 	\     'linux' : 'make',
+		" 	\     'unix' : 'gmake',
+		" 	\    },
+		" 	\ 'type' : 'nosync',
+		" 	\ }
+		" endif
+
+		" --------- NEOBUNDLE BEGIN ---------
+
+		" --------- VIM-PLUG BEGIN ---------
+		if has("win32")
+			" Workaround per posizionare il plugin in ~/vim/autoload
+			" invece che in ~/vimfiles in ambiente Microsoft Windows
+			set runtimepath+=~/.vim/autoload/
+			source ~/.vim/autoload/plug.vim
+		endif
+		call plug#begin('~/.vim/plugged')
+		" --------- VIM-PLUG BEGIN ---------
+
+		" Make sure you use single quotes
+
+		" My Plugins here: {{{
+
+		" Unite: ricerca e mostra info da fonti eterogenee quali
+		"        files, buffers, recently used files or registers
+		"        Usare questo e non quello dai plugin standard di vim
+		if version >= 703
+			" NeoBundle 'Shougo/unite.vim'
+			Plug 'Shougo/unite.vim'
+		endif
+
+
+
+			" Vinarise: the ultimate hex editor
+			if version >= 703
+				" NeoBundle 'Shougo/vinarise.vim'
+				Plug 'Shougo/vinarise.vim'
+			endif
+
+			" vim-fugitive: GIT plugin per Vim
+			"               usare questo dal repository di tpope e non quello
+			"               dai plugin standard di vim
+			" NeoBundle 'tpope/vim-fugitive'
+			Plug 'tpope/vim-fugitive'
+
+			" vim-lawrencium: Mercurial plugin per Vim, inspired by Tim
+			" Pope's Fugitive
+			" NeoBundle 'ludovicchabant/vim-lawrencium'
+			Plug 'ludovicchabant/vim-lawrencium'
+
+			" vim-airline: Commandline grafica piu' recente della vecchia
+			"              powerline
+			"              Implementazione piu' accattivante della statusline
+			"              standard
+			" NeoBundle 'bling/vim-airline'
+			Plug 'bling/vim-airline'
+
+			" vim-bufferline: Super simple vim plugin to show the list of
+			"                 buffers in the command bar
+			" NeoBundle 'bling/vim-bufferline'
+			Plug 'bling/vim-bufferline'
+
+			" Gestione degli undo tree di vim secondo Steve Losh (richiede
+			" python)
+			" Plugin 'sjl/gundo.vim'
+
+			" Gestione degli undo tree di vim (tutta vimscript)
+			" NeoBundle 'mbbill/undotree'
+			Plug 'mbbill/undotree'
+
+			" NERDTree
+			" NeoBundle 'scrooloose/nerdtree'
+			Plug 'scrooloose/nerdtree'
+			" NERDTree with tabs (richiede NERDTree)
+			" Plugin 'jistr/vim-nerdtree-tabs'
+
+			" vim-signify: It uses signs to indicate added, modified and
+			"              removed lines based on data of an underlying
+			"              version control system
+			"              ATTENZIONE - Rallenta molto perche' ogni volta che
+			"              si salva/apre un file esegue il programma di
+			"              version control in una finestra dos separata
+			" Plugin 'mhinz/vim-signify'
+
+			" Syntastic: Syntastic is a syntax checking plugin for Vim that
+			"            runs files through external syntax checkers and
+			"            displays any resulting errors to the user
+			" NeoBundle 'scrooloose/syntastic'
+			Plug 'scrooloose/syntastic'
+
+			" Virtualenv per python (necessita l'installazione di
+			" virtual-env in python anche se dalla 3.5 e' presente
+			" una funzionalita' interna)
+			" Per il momento non attivo questo modulo
+			" NeoBundle 'jmcantrell/vim-virtualenv'
+
+			" Vim Indent Guides
+			" NeoBundle 'nathanaelkane/vim-indent-guides'
+			Plug 'nathanaelkane/vim-indent-guides'
+
+			" Gestione dei files di grandi dimensioni
+			" NeoBundle 'LargeFile'
+			Plug 'largeFile'
+
+			" Gestione dei numeri riga (effettivi in insert mode e
+			" relativi in command mode)
+			" Necessita della presenza dell'opzione "set number"
+			" in .vimrc
+			" Necessita anche di una versione minima di Vim uguale
+			" a 7.3
+			if version >= 703
+				" NeoBundle 'myusuf3/numbers.vim'
+				Plug 'myusuf3/numbers.vim'
+			endif
+
+			" NeoBundle 'dbext.vim'
+			Plug 'dbext.vim'
+
+			" Syntax file per Microsoft SQL Server (2005/2008)
+			" NeoBundle 'sqlserver.vim'
+			Plug 'sqlserver.vim'
+
+			" Colorscheme Solarized
+			" NeoBundle 'altercation/vim-colors-solarized'
+			Plug 'altercation/vim-colors-solarized'
+
+			" Colorscheme Sorcerer
+			" NeoBundle 'Sorcerer'
+			Plug 'Sorcerer'
+
+			" Colorscheme Molokai
+			" NeoBundle 'tomasr/molokai'
+			Plug 'tomasr/molokai'
+
+			" Colorscheme Badwolf
+			" NeoBundle 'sjl/badwolf'
+			Plug 'sjl/badwolf'
+
+			" Colorscheme Gruvbox
+			" NeoBundle 'morhetz/gruvbox'
+			Plug 'morhetz/gruvbox'
+
+			" Colorscheme Jellybeans
+			" NeoBundle 'nanotech/jellybeans.vim'
+			Plug 'nanotech/jellybeans.vim'
+
+			" Colorscheme Mustang (leggera variazione dall'originale non
+			" disponibile in Github)
+			" NeoBundle 'croaker/mustang-vim'
+			Plug 'nanotech/jellybeans.vim'
+
+		" }}}
+
+		" --------- NEOBUNDLE BEGIN ---------
+		" call neobundle#end()
+		" " vedi autocmd per filetype plugin
+		" " Required:
+		" filetype plugin indent on
+		" " If there are uninstalled bundles found on startup,
+		" " this will conveniently prompt you to install them.
+		" NeoBundleCheck
+		" --------- NEOBUNDLE BEGIN ---------
+
+		filetype plugin indent on
+
+		" --------- VIM-PLUG BEGIN ---------
+		call plug#end()
+		" --------- VIM-PLUG BEGIN ---------
+
+	" }}}
+
+	" Generale - DOPO VUNDLE!!! {{{
+		filetype plugin indent on
+
+		" set modeline
+
+		" Imposta il comportamento di Backspace alla modalita' che ci si
+		" attende da tutte le applicazioni (cancella a sinistra!)
+		" Puo' essere abbreviato con set backspace=2
+		set backspace=indent,eol,start
+
+		" Se impostata (list) mostra i caratteri nascosti/speciali
+		" secondo quanto specificato in 'listchars'; se non impostata
+		" (nolist), come di default, non li mostra
+		" set list
+
+		" Highlight problematic whitespace
+		" set listchars=tab:>.,trail:.,extends:#,nbsp:.
+		" set listchars=eol:¶,tab:»,trail:·,extends:>,precedes:<,nbsp:¤
+		" il carattere per eol      (¶) si ottiene con CTRL-vu00b6
+		" il carattere per tab      (») si ottiene con CTRL-vu00bb
+		"                               seguito da \<spazio> oppure
+		" il carattere per trail    (·) si ottiene con CTRL-vu00b7
+		" il carattere per extends  (>) e' il carattere di maggiore
+		" il carattere per precedes (<) e' il carattere di minore
+		" il carattere per nbsp     (¤) si ottiene con CTRL-vu00a4
+		set listchars=eol:¶,tab:»\ ,trail:·,extends:>,precedes:<,nbsp:¤
+
+		" Line numbers on
+		set number
+
+		" Trying out the line numbering thing... never liked it, but that
+		" doesn't mean I shouldn't give it another go :)
+		if version >= 704
+			set relativenumber
+		endif
+
+		" Mantiene 50 righe di command line history
+		set history=50
+
+		" Imposta la ricerca incrementale
+		set incsearch
+
+		" case insensitive search
+		set ignorecase
+
+		" case sensitive when uppercase characters present
+		set smartcase
+
+		" Le ricerche proseguono ripartendo da BOF quando EOF
+		set wrapscan
+
+		" Disabilita il beep sostituendolo con qualcosa di visuale
+		" set visualbell
+
+		" Make sure that unsaved buffers that are to be put in the
+		" background are allowed to go in there (ie. the "must save first"
+		" error doesn't come up)
+		" set hidden
+
+		" Make the 'cw' and like commands put a $ at the end instead of
+		" just deleting the text and replacing it
+		set cpoptions=ces$
+
+		" Set the status line the way i like it
+		" set stl=%f\ %m\ %r\ Line:%l/%L[%p%%]\ Col:%v\ Buf:#%n\ [%b][0x%B]
+		" set statusline=%<%F\ [%H%M%R%W]%q%y\ %{&ff}\ %=\ buf:%n\ lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
+		" set statusline=%<%F\ [%H%M%R%W]%q[ft=%Y][fmt=%{&ff}]\ %=\ buf:%n\ lin:%l\,%L[%P]\ col:%c%V\ pos:%o\ ascii:%b
+		" set statusline=%<%F\ %h%m%r%w%q\ %y(%{&ff})\ %=\ buf:%n\ lin:%l\,%L[%P]\ col:%c%V\ pos:%o\ ascii:%b
+		" set statusline=%<%F\ %h%m%r%w%q\ %y\(%{&ff}\)\ %=\ \#%n\ ln:%l\,%L[%P],\ co:%c%V,\ %b
+		if version >= 704
+			" Rispetto alle versioni precedenti aggiunta la %q
+			set statusline=%<%F\ %h%m%r%w%q\ %y\(%{&ff}\)\ %=\ \#%n\ ln:%l\/%L[%P]\ co:%c%V\ %b
+		else
+			" Rispetto alle vresioni successive alla 740 non c'e' la %q
+			set statusline=%<%F\ %h%m%r%w\ %y\(%{&ff}\)\ %=\ \#%n\ ln:%l\/%L[%P]\ co:%c%V\ %b
+		endif
+
+		" Don't update the display while executing macros
+		set lazyredraw
+
+		" Don't show the current command in the lower right corner.
+		" In OSX, if this is set and lazyredraw is set then it's slow
+		" as molasses, so we unset this
+		" set noshowcmd
+
+		" Show the current mode - Superato da Airline
+		" Nel caso il plugin airline non sia stato caricato allora
+		" impostarlo
+		" set showmode
+		set noshowmode
+
+		" Setting this below makes it sow that error messages don't
+		" disappear after one second on startup.
+		"set debug=msg
+
+		" This is the timeout used while waiting for user input on a
+		" multi-keyed macro or while just sitting and waiting for another
+		" key to be pressed measured in milliseconds.
+		"
+		" i.e. for the ",d" command, there is a "timeoutlen" wait period
+		" between the "," key and the "d" key.  If the "d" key isn't
+		" pressed before the timeout expires, one of two things happens:
+		" The "," command is executed if there is one (which there isn't)
+		" or the command aborts.
+		" set timeoutlen=500
+
+		" auto fold code
+		set foldenable
+
+		" These commands open folds
+		set foldopen=block,insert,jump,mark,percent,quickfix,search,tag,undo
+
+		" backspace and cursor keys wrap to
+		set whichwrap=b,s,h,l,<,>,[,]
+
+		" lines to scroll when cursor leaves screen
+		set scrolljump=0
+
+		" When the page starts to scroll, keep the cursor 0 lines from the
+		" top and 0 lines from the bottom: minimum lines to keep above and
+		" below the cursor
+		set scrolloff=0
+
+		set sidescrolloff=0
+
+		" Allow the cursor to go in to "invalid" places
+		" set virtualedit=all
+
+		" Disable encryption (:X)
+		" set key=
+
+		" Make the command-line completion better
+		set wildmenu
+
+		" command <Tab> completion, list matches, then longest common part,
+		" then all.
+		" set wildmode=list:longest,full
+
+		" Same as default except that I remove the 'u' option
+		" set complete=.,w,b,t
+
+		" When completing by tag, show the whole tag, not just the function
+		" name
+		set showfulltag
+
+		" Set the textwidth to be 80 chars
+		" set textwidth=80
+
+		" get rid of the silly characters in separators
+		" set fillchars=""
+
+		" Add ignorance of whitespace to diff
+		set diffopt+=iwhite
+
+		" Add the unnamed register to the clipboard
+		set clipboard+=unnamed
+
+		" Automatically read a file that has changed on disk
+		" set autoread
+
+		set grepprg=grep\ -nH\ $*
+
+		" dictionary for english words
+		" I don't actually use this much at all and it makes my life
+		" difficult in general
+		"set dictionary=$VIM/words.txt
+
+		" I don't like it when the matching parens are automatically
+		" highlighted
+		let loaded_matchparen=1
+
+		" Mostro sempre le tabs:
+		" 0 = Mai
+		" 1 = Soltanto se c'e' piu' di una tab
+		" 2 = Sempre
+		set showtabline=2
+
+		" Disattivo lo spostamento al primo carattere non blank della riga
+		set nostartofline
+
+		set nospell	" spell checking off (default!)
+
+	" }}}
+
+	" Sezione eseguita se compilato con autocmd {{{
+		if has("autocmd")
+			" Abilita l'individuazione del tipo di file
+			" Usa l'impostazione di default per il tipo di file, in questo
+			" modo le "mail" avranno il 'tw' impostato a 72, il 'cindent'
+			" sara' attivato per i file C, ecc.
+			" Oltre a questo carica automaticamente i files di indent per
+			" impostare l'indentazione in base al tipo di file
+			filetype plugin indent on
+
+			" Omni Completion (autocomplete di VIM)
+			"set omnifunc=syntaxcomplete#Complete
+
+			" Mette tutto questo in un gruppo autocmd in modo da poter
+			" eliminare il tutto con facilita'
+			augroup vimrcEx
+
+				au!
+
+				" Imposta a 78 caratteri la 'textwidth' per i files di tipo
+				" testo
+				" -> Commentato, non mi piace!!!!
+				" autocmd FileType text setlocal textwidth=78
+
+				" Durante la modifica di un file si posiziona sempre
+				" all'ultima posizione conosciuta del cursore.
+				" Da non fare quanto la posizione non e' valida o
+				" all'interno di un event handler (accade quando si
+				" effettua il drop di un file in gvim)
+				" Da non fare anche quando il mark e' sulla prima linea,
+				" che e' la posizione di default quando si apre un file.
+				autocmd BufReadPost *
+					\ if line("'\"") > 1 && line("'\"") <= line("$") |
+					\   exe "normal! g`\"" |
+					\ endif
+
+				"" Imposta la colocolumn
+				"" Viene impostata all'attivazione di ogni buffer in base
+				"" alla variabile textwidt (+1); se textwidth = 0 allora viene
+				"" impostata a 79
+				"autocmd BufEnter *
+				"	\ if &textwidth == 0 |
+				"	\	setlocal colorcolumn=79 |
+				"	\ else |
+				"	\	setlocal colorcolumn=+1 |
+				"	\ endif
+
+			augroup END
+
+		endif " has("autocmd")
+	" }}}
+
+	" Changelog {{{
+		runtime ftplugin/changelog.vim
+		let g:changelog_username='biotti  <noreply@example.local>'
+		" let g:changelog_new_date_format = "%d  %u\n\n\t* %p %c\n\n"
+		" let g:changelog_new_entry_format = "\t* %p %c"
+		let g:changelog_new_date_format = "%d  %u\n\n\t* %c\n\n"
+		let g:changelog_new_entry_format = "\t* %c"
+		let g:changelog_date_entry_search = '^\s*%d\_s*%u'
+		let g:changelog_date_end_entry_search = '^\s*$'
+
+	" }}}
+
+	" "UNIX" Man pages {{{
+		runtime! ftplugin/man.vim
+	" }}}
+
+	" Formatting {{{
+		" wrap long lines
+		set nowrap
+		" indent at the same level of the previous line
+		set autoindent
+		" Imposta la dimensione del tab a 4 caratteri (default = 8)
+		set tabstop=4
+		" Vedi help su tabstop
+		set shiftwidth=4
+		" Vedi help su tabstop
+		set softtabstop=4
+		" Vedi help su tabstop
+		set noexpandtab
+		" match, to be used with %
+		" set matchpairs+=<:>
+		" pastetoggle (sane indentation on pastes)
+		" set pastetoggle=<F12>
+		" auto format comment blocks
+		" set comments=sl:/*,mb:*,elx:*/
+		" Remove trailing whitespaces and ^M chars
+		" autocmd FileType c,cpp,java,php,js,python,twig,xml,yml autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
+	" }}}
+
+	" Impostazioni dipendenti dal sistema operativo {{{
+
+		if has("amiga")
+
+			" Amiga version of Vim
+
+		endif
+
+		if has("beos")
+
+			" BeOS version of Vim
+
+		endif
+
+		if has("dos16")
+
+			" 16 bit DOS version of Vim
+
+		endif
+
+		if has("dos32")
+
+			" 32 bit DOS (DJGPP) version of Vim
+
+		endif
+
+		if has("mac")
+
+			" Macintosh version of Vim
+
+		endif
+
+		if has("macunix")
+
+			" Macintosh version of Vim, using Unix files (OX-X)
+
+		endif
+
+		if has("os2")
+
+			" OS/2 version of Vim
+
+		endif
+
+		if has("qnx")
+
+			" QNX version of Vim
+
+		endif
+
+		if has("unix")
+
+			" Unix version of Vim
+
+		endif
+
+		if has("vms")
+
+			" VMS version of Vim
+			" Se siamo su VMS non usa la creazione del file di backup
+			" perche' questo OS usa nativamente un sistema di versioning
+			" dei files
+			set nobackup   " Non mantiene il file di backup, usa le versioni
+
+		else
+
+			set backup     " Mantiene il file di backup (tutti gli os tranne VMS)
+
+		endif
+
+		if has("win16")
+
+			" Win16 version of Vim (MS-Windows 3.1)
+
+		endif
+
+		if has("win32") || has("win64")
+
+			" Win32 version of Vim (MS-Windows 95 and later, 32 or 64 bits)
+			" Ambiente Windows
+
+			" Setup environment variables uset within vim
+			let $WGETRC = $HOME.'\.wgetrc'
+
+			if has("gui_running")
+
+				" For Win32 GUI: remove 't' flag from 'guioptions':
+				" no tearoff menu entries
+				" let &guioptions = substitute(&guioptions, "t", "", "g")
+				" let &guioptions = substitute(&guioptions, "t\C", "", "g")
+				" let &guioptions = substitute(&guioptions, "t", "", "g")
+				set guioptions-=t
+
+			else
+
+
+			endif
+
+			if has("win64")
+
+				" Win64 version of Vim (MS-Windows 64 bit)
+
+			endif
+
+		endif
+
+		if has("win32unix")
+
+			" Win32 version of Vim, using Unix files (Cygwin)
+
+		endif
+
+		if has("win95")
+
+			" Win32 version for MS-Windows 95/98/ME
+
+		endif
+
+		if !has('win32') && !has('win64')
+
+			set term=$TERM       " Make arrow and other keys work
+
+		endif
+
+		if has("mac")
+
+			" Ambiente Mac/Apple
+
+		endif
+
+		if has("linux")
+
+			" Ambiente Linux
+
+		endif
+
+		if has("directx")
+
+			" Vim in esecuzione in ambiente Windows e compilato
+			" con la feature "DIRECTX"
+			" Migliora il rendering dei caratteri in Windows
+			" e deve essere attivato con l'opzione 'renderoptions' ('rop')
+			" Disponibile soltanto se compilato con GUI e DIRECTX in
+			" MS-Windows
+			" Necessita infine dell'encoding impostato a utf-8
+			" Esempio:
+			" set encoding=utf-8
+			" set renderoptions=type:directx
+
+			if has("win32") || has("win64")
+
+				if has("gui_running")
+
+					set renderoptions=type:directx
+
+				endif
+
+			endif
+
+		endif
+
+	" }}}
+
+	" Impostazioni generiche dipendenti dal tipo di interfaccia {{{
+
+		" Il mouse e' gestito correttamente anche in molti terminali,
+		" quindi lo abilita
+		if has("mouse")
+			set mouse=a
+		endif
+
+		" Se il terminale e' in grado di gestire i colori attiva
+		" l'highlighting della sintassi. Per fare questo verifica che il
+		" terminale gestisca almeno 2 colori o che l'ambiente sia grafico
+		" (gui_running)
+		if &t_Co > 2 || has("gui_running")
+
+			" Attiva la sintassi
+			syntax enable
+
+			" Attiva l'highlighting del testo cercato
+			set hlsearch
+
+			" Syntax coloring lines that are too long just slows down the world
+			set synmaxcol=2048
+
+		endif
+
+		" Se vim e' compilato con l'opzione cmdline_info ne sfrutto le
+		" funzionalita'
+		if has("cmdline_info")
+
+			" Questo blocco e' superato dalla presenza del plugin airline
+			" Nel caso il plugin airline non sia stato caricato allora occorre
+			" reimpostarlo
+			" set ruler
+			" a ruler on steroids
+			" set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
+			set noruler
+
+			" Mostra i comandi incompleti
+			set showcmd
+
+		endif
+
+		if has("statusline")
+
+			" tell VIM to always put a status line in, even if there is only
+			" one window
+			set laststatus=2
+
+			" Superati da airline
+			" " Broken down into easily includeable segments
+			" set statusline=%<%f\    " Filename
+			" set statusline+=%w%h%m%r " Options
+			" set statusline+=%{fugitive#statusline()} "  Git Hotness
+			" set statusline+=\ [%{&ff}/%Y]            " filetype
+			" set statusline+=\ [%{getcwd()}]          " current dir
+			" "set statusline+=\ [A=\%03.3b/H=\%02.2B] " ASCII / Hexadecimal value of char
+			" set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+
+		endif
+
+		" Verifico se sto girando in una GUI o in un terminale
+		if has("gui_running")
+
+			" GUI
+
+			" Evidenzia la riga corrente
+			set cursorline
+
+			" Set up the gui cursor to look nice
+			set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
+
+			" set the gui options the way I like
+			" set guioptions=acg
+
+			" Imposta l'altezza della command line a due righe
+			set cmdheight=2       " Abbreviato: set ch=2
+
+			" Nasconde il mouse mentre si scrive
+			set mousehide
+
+			" remove the toolbar
+			" set guioptions-=T
+
+			" 40 lines of text instead of 24,
+			" set lines=40
+
+			" 132 columns of text instead of 80,
+			" set columns=132
+
+			" Imposta il background a dark (altrimenti: light)
+			" (commentato perche' un colorscheme corretto dovrebbe impostare
+			" questa opzione adeguatamente)
+			" set background=dark
+
+			" Impostazioni relative al tipo di gui
+			if has("gui_athena")
+
+				" set guifont=Courier\ New\ 10
+
+			elseif has("gui_gnome")
+
+				" set guifont=Courier\ New\ 10
+				" set guifont=DejaVu\ Sans\ Mono\ 10
+
+			elseif has("gui_gtk")
+
+				" set guifont=Courier\ New\ 10
+				" set guifont=DejaVu\ Sans\ Mono\ 10
+
+			elseif has("gui_gtk2")
+
+				" set guifont=Courier\ New\ 10
+				" set guifont=DejaVu\ Sans\ Mono\ 10
+
+			elseif has("gui_mac")
+
+				" set guifont=Courier\ New\ 10
+
+			elseif has("gui_motif")
+
+				" set guifont=Courier\ New\ 10
+
+			elseif has("gui_photon")
+
+				" set guifont=Courier\ New:s10
+
+			elseif has("gui_kde")
+
+				" set guifont=Courier\ New/10/-1/5/50/0/0/0/1/0
+
+			elseif has("x11")
+
+				" set guifont=-*-courier-medium-r-normal-*-*-180-*-*-m-*-*
+
+			else
+
+				" Windows????
+				"
+				if has("win32")
+
+					" set guifont=Courier_New:h10:cDEFAULT
+					" set guifont=Courier_New:h10:cANSI
+					" set guifont=DejaVu_Sans_Mono:h10:cANSI
+					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
+					" set guifont=DejaVu_Sans_Mono_for_Powerline:h10:cDEFAULT
+					" set guifont=Consolas:h11:cDEFAULT
+					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
+					set guifont=Consolas:h10:cDEFAULT
+
+					" Massimizzo la dimensione della finestra
+					" Assumo di essere in ambiente Windows in italiano, uso lo
+					" stratagemma di inviare da tastiera i comandi di massimiazzazione
+					" della finestra (dal menu finestra)
+					" au GUIEnter * simalt ~x   " Maximize windows (MS) Versione inglese
+					" au GUIEnter * simalt ~n   " Maximize windows (MS) Versione italiana
+
+				endif
+
+			endif
+
+		else
+
+			" TERMINALE
+
+			" Imposta il background a dark (altrimenti: light)
+			" (commentato perche' un colorscheme corretto dovrebbe impostare
+			" questa opzione adeguatamente)
+			" set background=dark
+
+			" colorscheme
+			" colorscheme koehler
+			" colorscheme cmd
+			" if &t_Co == 256
+			" 	" colorscheme neon-PK
+			" 	" colorscheme molokai
+			" 	" Se il colorscheme ne consente il corretto funzionamento
+			" 	" Evidenzia la riga corrente
+			" 	let g:solarized_termcolors=256
+			" 	" let g:solarized_contrast="high"
+			" 	" let g:solarized_visibility="high"
+			" 	" let g:solarized_hitrail=1
+			" 	" colorscheme solarized
+			" 	" colorscheme baycomb
+			" 	" colorscheme adaryn
+			" 	set cursorline
+			" else
+			" 	" colorscheme default
+			" endif
+
+		endif
+
+		" Non mostro il messaggio intro (richiamabile comunque con :intro)
+		set shortmess+=I
+
+	" }}}
+
+	" Definisco il comando "DiffOrig", utile per vedere le differenze tra il
+	" buffer corrente e il file da cui e' stato caricato, significa che si
+	" possono vedere le modifiche fatte.
+	" Lo definisco soltanto se non l'ho gia' fatto
+	if !exists(":DiffOrig")
+
+		command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+			\ | wincmd p | diffthis
+
+	endif
+
+	" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+	" so that you can undo CTRL-U after inserting a line break.
+	inoremap <C-U> <C-G>u<C-U>
+
+	" Ancora NeoBundle (vedi commento riga successiva)
+	if !has('vim_starting')
+		" Call on_source hook when reloading .vimrc.
+		call neobundle#call_hook('on_source')
+	endif
+
+	" Impostazioni COLORI {{{
+
+		" ATTENZIONE
+		" ----------
+		" I colori non "standard" vim sono legati ai bundle installati
+
+		" Sono in ambiente TERMINALE, determino se il sistema
+		" operativo e Windows e apporto le impostazioni eventuali
+		if has("win32")
+
+			if has("gui_running")
+
+			else
+
+				" Verifico se sono in esecuzione in ambiente conemu
+				" ed ho attivato conemu per usare le impostazioni ANSI
+				" (256 colori). Se lo sono imposto vim per usare conemu
+				" con i 256 colori
+				" --------
+				" Esteticamente il risultato non e' il massimo nel caso in
+				" cui su usi la cursorline (non viene evidenziata la parte
+				" di indentazione ne la fine della riga, ma soltanto il
+				" testo)
+				" -------
+				" Per il momento preferisco non attivare questa funzionalita'
+				" ------
+				let conemuansi=toupper($CONEMUANSI)
+				if conemuansi == "ON"
+					" set &term=xterm
+					" set term=builtin_ansi
+					" set term=pcansi
+					" set term=xterm-color
+					" set t_Co=256
+					" let &t_AB="\e[48;5;%dm"
+					" let &t_AF="\e[38;5;%dm"
+
+					" Se uso Solarized come colorscheme devo
+					" impostarne la variabile che ne definisce
+					" i termcolors
+					" let g:solarized_termcolors=256
+
+					" da https://github.com/saaguero/dotvim
+					set term=pcansi
+					"set t_ut= " prevent vim for looking properly in tmux
+					"set t_ti= t_te= " prevent vim from clobbering the scrollback buffer
+					set t_Co=256
+					" let &t_AF="\e[38;5;%dm"
+					" let &t_AB="\e[48;5;%dm"
+					" inoremap <esc>[62~ <c-x><c-e>
+					" inoremap <esc>[63~ <c-x><c-y>
+					" nnoremap <esc>[62~ 3<c-e>
+					" nnoremap <esc>[63~ 3<c-y>
+
+				endif
+
+			endif
+
+		endif
+
+		" Verifico se il terminale supporta almeno 16 colori e NON sono in GUI
+		if &t_Co>=2 && &t_Co<256 && !has("gui_running")
+
+		endif
+
+		" Verifico se il terminale supporta 256 colori e NON sono in GUI
+		if &t_Co>=256 && !has("gui_running")
+
+		endif
+
+		" Sono in GUI
+		if has("gui_running")
+
+		endif
+
+		" ----------------------------------------
+		" VIM - colorschemes installati di default
+		" (solo a fini informativi)
+		" ----------------------------------------
+		" colorscheme blue
+		" colorscheme darkblue
+		" colorscheme default
+		" colorscheme delek
+		" colorscheme desert
+		" colorscheme elflord
+		" colorscheme evening
+		" colorscheme industry                       " Da vim74
+		" colorscheme koehler
+		" colorscheme morning
+		" colorscheme murphy
+		" colorscheme pablo
+		" colorscheme peachpuff
+		" colorscheme ron
+		" colorscheme shine
+		" colorscheme slate
+		" colorscheme torte
+		" colorscheme zellner
+
+		" Imposto il colorscheme -> Solarized!
+		" if has("gui_running") || &t_Co == 256
+		" 	let g:solarized_termcolors=256
+		" endif
+		" set background=dark
+		" call togglebg#map("")
+		" colorscheme solarized
+		"
+		" colorscheme sorcerer
+
+		" set background=dark
+		" let g:rehash256 = 1
+		" colorscheme molokai
+
+		set background=dark
+		colorscheme jellybeans
+
+	" }}}
+
+" }}}
+
+"
+" vim: set tabstop=4:shiftwidth=4:filetype=vim:fdm=marker:fileformat=unix:
+"
