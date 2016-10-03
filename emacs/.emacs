@@ -392,6 +392,8 @@
 (setq mouse-yank-at-point t)                 ;; Mouse yank commands yank at point instead of at click.
 (setq ring-bell-function 'ignore)            ;; No bell
 
+(set-scroll-bar-mode 'right)                 ;; Scroll bars - right
+
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
 
