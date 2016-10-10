@@ -135,10 +135,10 @@
 	(package-install p)))))
 
 ;; Color Theme
-(use-package color-theme
-  )
-(use-package aurora-theme
-  )
+;; (use-package color-theme
+;;   )
+;; (use-package aurora-theme
+;;   )
 (use-package material-theme
   )
 
