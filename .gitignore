@@ -80,3 +80,4 @@ emacs/.emacs.d/projectile-bookmarks.eld
 # # !vim/.vim/bundle/.neobundle/
 vim/.vim/plugged/*
 !vim/.vim/autoload/plug.vim
+!vim/.vim/autoload/plug.vim.old
