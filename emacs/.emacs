@@ -67,6 +67,12 @@
     ;; A use-package declaration for simplifying your .emacs
     use-package
     ;;
+    ;; Profiling Emacs
+    ;; ---------------
+    ;;
+    ;; ESUP - Emacs Start Up Profiler https://github.com/jschaf/esup
+    esup
+    ;;
     ;; Develpment - Generic
     ;; --------------------
     ;;
@@ -256,10 +262,12 @@
 ;; Elpy
 (use-package elpy
   :after
-  flycheck
-  py-autopep8
+  ;; flycheck
+  ;; py-autopep8
+  :init
+  (with-eval-after-load 'python (elpy-enable))
   :config
-  (elpy-enable)
+  ;; (elpy-enable)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode)
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
