@@ -68,6 +68,7 @@ Session.vim
 # ------------------------------------------------------------------------
 emacs/.emacs.d/elpa/
 emacs/.emacs.d/auto-save-list/
+emacs/.emacs.d/server/
 emacs/.emacs.d/.recentf
 emacs/.emacs.d/.smex-items
 emacs/.emacs.d/ido.last
