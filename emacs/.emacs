@@ -481,6 +481,9 @@
 ;; Color theme setup
 (load-theme 'material)
 
+;; Start Emacs fullscreen mode
+(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
+
 ;; Emacs Server
 ;;(server-start)
 
