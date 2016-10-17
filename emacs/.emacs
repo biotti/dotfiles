@@ -229,6 +229,8 @@
   ("C-x g" . magit-status)
   :ensure t
   :defer t
+  :config
+  ;; (magit-diff-use-overlays nil)
   )
 (use-package gitconfig-mode
   :ensure t
