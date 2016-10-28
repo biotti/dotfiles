@@ -11,6 +11,9 @@
 ;; Customize per Os/Emacs version
 ;; https://www.emacswiki.org/emacs/CustomizingBoth
 
+;; https://github.com/syl20bnr/spacemacs
+;; https://github.com/bbatsov/prelude
+
 ;; Setup package.el
 (require 'package)
 (setq package-enable-at-startup nil)
