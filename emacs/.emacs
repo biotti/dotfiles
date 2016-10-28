@@ -8,6 +8,9 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
+;; Customize per Os/Emacs version
+;; https://www.emacswiki.org/emacs/CustomizingBoth
+
 ;; Setup package.el
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -73,6 +76,11 @@
   :ensure t
   ;; :defer t
   )
+(use-package moe-theme
+  ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
+  :ensure t
+  :defer t
+  )
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
   :ensure t
@@ -93,6 +101,11 @@
   :defer t
   :after
   color-theme
+  )
+(use-package zenburn-theme
+  ;; Port of vim's mustang theme
+  :ensure t
+  :defer t
   )
 
 ;; EMACS enhancements
@@ -376,7 +389,8 @@
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;; Emacs Server
-(server-start)
+;; (require 'server)
+;; (unless (server-running-p) (server-start))
 
 ;; Custom
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
