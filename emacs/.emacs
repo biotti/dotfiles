@@ -15,6 +15,7 @@
 ;; https://github.com/bbatsov/prelude
 
 ;; Setup package.el
+(message "Setup package.el")
 (require 'package)
 (setq package-enable-at-startup nil)
 ;; Manage package repositories
@@ -28,9 +29,11 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+(message "package-initialize")
 (package-initialize)
 
 ;; Bootstrap `use-package'
+(message "Bootstrapping use-package")
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -43,63 +46,89 @@
 ;; ---------------------------------------------
 ;; Color Theme
 (use-package color-theme
+  :init
+  (message "use-package color-theme")
   :defer t
   :ensure t
   ;; :config
   )
 (use-package aurora-theme
+  :init
+  (message "use-package aurora-theme")
   :ensure t
   :defer t
   )
 (use-package badwolf-theme
+  :init
+  (message "use-package badwolf-theme")
   :ensure t
   :defer t
   )
 (use-package darkokai-theme
   ;; A darker variant on Monokai
+  :init
+  (message "use-package darkokai-theme")
   :ensure t
   :defer t
   )
 (use-package darktooth-theme
   ;; Color theme for Emacs, when soothe and gruvbox collide
+  :init
+  (message "use-pakcage darktooth-theme")
   :ensure t
   :defer t
   )
 (use-package gruvbox-theme
   ;; A retro-groove colour theme for Emacs
+  :init
+  (message "use-pakcage gruvbox-theme")
   :ensure t
   :defer t
   )
 (use-package jbeans-theme
+  :init
+  (message "use-package jbeans-theme")
   :ensure t
   :defer t
   )
 (use-package material-theme
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
+  :init
+  (message "use-pakcage material-theme")
   :ensure t
   ;; :defer t
   )
 (use-package moe-theme
   ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
+  :init
+  (message "use-pakcage moe-theme")
   :ensure t
   :defer t
   )
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
+  :init
+  (message "use-package molokai-theme")
   :ensure t
   :defer t
   )
 (use-package monokai-theme
+  :init
+  (message "use-pakcage monokai-theme")
   :ensure t
   :defer t
   )
 (use-package mustang-theme
   ;; Port of vim's mustang theme
+  :init
+  (message "use-pakcage mustang-theme")
   :ensure t
   :defer t
   )
 (use-package color-theme-solarized
   ;; The Solarized color theme, ported to Emacs
+  :init
+  (message "use-package color-theme-solarized")
   :ensure t
   :defer t
   :after
@@ -107,6 +136,8 @@
   )
 (use-package zenburn-theme
   ;; Port of vim's mustang theme
+  :init
+  (message "use-pakcage zenburn-theme")
   :ensure t
   :defer t
   )
@@ -115,21 +146,31 @@
 ;; ------------------
 (use-package company
   ;; A modular text completion framework
+  :init
+  (message "use-package company")
   :disabled t
   :ensure t
   :defer t
   )
 (use-package esup
-  ;; Emacs Start Up Rofiler https://github.com/jschaf/esup
+  ;; Emacs Start Up Profiler https://github.com/jschaf/esup
+  :init
+  (message "use-package esup")
   :ensure t
   )
 (use-package hl-line
   ;; Highlight Current Line
+  :init
+  (message "use-package hl-line")
+  (global-hl-line-mode 1)
   :ensure t
-  :init (global-hl-line-mode 1))
+  )
+
 (use-package ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
+  :init
+  (message "use-package ibuffer")
   :ensure t
   :defer t
   :bind
@@ -142,9 +183,10 @@
   ;; name, ido will narrow down the list of buffers to match the text
   ;; you've typed in
   ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
-  :ensure t
   :init
   ;; (ido-mode t)
+  (message "use-package ido")
+  :ensure t
   :config
   (ido-mode t)
   ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
@@ -162,15 +204,18 @@
   ;; Ido-ubiquitous
   ;; This enables ido in all contexts where it could be useful, not just
   ;; for selecting buffer and file names
+  :init
+  (message "use-package ido-ubiquitous")
+  ;; (ido-ubiquitous-mode 1)
   :ensure t
   :after
   ido
-  :init
-  ;; (ido-ubiquitous-mode 1)
   :config
   (ido-ubiquitous-mode 1)
   )
 (use-package org
+  :init
+  (message "use-package org")
   :ensure t
   :defer t
   :mode "\\.org\\"
@@ -178,9 +223,10 @@
 (use-package recentf
   ;; Turn on recent file mode so that you can more easily switch to
   ;; recently edited files when you first start emacs
-  :ensure t
   :init
+  (message "use-package recentf")
   (recentf-mode 1)
+  :ensure t
   :config
   (setq recentf-save-file (concat user-emacs-directory ".recentf"))
   (setq recentf-exclude '(".ido.last"))
@@ -190,9 +236,10 @@
   ;; Enhances M-x too allow easier execution of commands. Provides
   ;; a filterable list of possible commands in the minibuffer
   ;; http://www.emacswiki.org/emacs/Smex
-  :ensure t
   :init
+  (message "use-package smex")
   ;; (smex-initialize)
+  :ensure t
   :bind
   ("M-x" . smex)
   :config
@@ -208,12 +255,16 @@
   ;; name at the beginning of the buffer name
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
   :disabled t
+  :init
+  (message "use-package uniquify")
   :ensure t
   :defer t
   :config
   (setq uniquify-buffer-name-style 'forward)
   )
 (use-package whitespace
+  :init
+  (message "use-package whitespace")
   :ensure t
   :commands (whitespace-mode)
   :config
@@ -227,17 +278,20 @@
                            newline-mark))
   )
 (use-package whitespace-cleanup-mode
+  :init
+  (message "use-package whitespace-cleanup-mode")
+  (global-whitespace-cleanup-mode)
   :ensure t
   :disabled t
   :defer t
   :diminish whitespace-cleanup-mode
-  :init (global-whitespace-cleanup-mode)
   )
 ;; GIT
 ;; ---
 (use-package magit
   ;; A GIT porcelain inside Emacs
   :init
+  (message "use-package magit")
   ;; Disable built-in VC for Git when using magit
   (setq vc-handled-backends (delq 'Git vc-handled-backends))
   ;; (global-set-key (kbd "C-x g") 'magit-status)
@@ -249,11 +303,15 @@
   ;; (magit-diff-use-overlays nil)
   )
 (use-package gitconfig-mode
+  :init
+  (message "use-package gitconfig-mode")
   :ensure t
   :defer t
   :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'")
   )
 (use-package gitignore-mode
+  :init
+  (message "use-package gitignore-mode")
   :ensure t
   :defer t
   :mode ("/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'")
@@ -261,30 +319,39 @@
 ;; Development: generic
 ;; --------------------
 (use-package flycheck
+  :init
+  (message "use-package flycheck")
   :ensure t
   :defer t
   )
 (use-package indent-guide
   ;; Show vertical lines to guide indentation
+  :init
+  (message "use-package flycheck")
   :defer t
   :ensure t
   )
 (use-package projectile
   ;; Project navigation
+  :init
+  (message "use-package projectile")
+  ;; (projectile-global-mode t)
   :ensure t
   :defer t
-  :init
-  ;; (projectile-global-mode t)
   :config
   (projectile-global-mode t)
   )
 (use-package rainbow-delimiters
   ;; Colorful parentesis matching
+  :init
+  (message "use-package rainwbow-delimiters")
   :ensure t
   :defer t
   )
 (use-package yasnippet
   ;; Yet another snippet extension for Emacs
+  :init
+  (message "use-package yasnippet")
   :ensure t
   :defer t
   )
@@ -292,6 +359,8 @@
 ;; ---------------
 (use-package csharp-mode
   ;; C# mode
+  :init
+  (message "use-package csharp-mode")
   :ensure t
   :defer t
   :mode "\\.cs\\"
@@ -299,6 +368,8 @@
 ;; Development: Powershell
 ;; -----------------------
 (use-package powershell
+  :init
+  (message "use-package powershell")
   :ensure t
   :defer t
   :mode ("\\.ps[dm]?1\\'" . powershell-mode)
@@ -308,14 +379,15 @@
 ;; Develpment: Python
 ;; ------------------
 (use-package elpy
+  :init
+  (message "use-package elpy")
+  (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
   :mode "\\.py[w]?\\"
   :after
   flycheck
   py-autopep8
-  :init
-  (with-eval-after-load 'python (elpy-enable))
   :config
   (elpy-enable)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
@@ -324,6 +396,8 @@
   )
 (use-package py-autopep8
   ;; Autopep8
+  :init
+  (message "use-package py-autopep8")
   :ensure t
   :defer t
   :mode "\\.py[w]?\\"
@@ -339,6 +413,7 @@
 
 ;; Customization (outside of "custom")
 ;; -----------------------------------
+(message "Customization (outside of 'custom'")
 (setq delete-selection-mode t)               ;; Editing basics - See delete-selection-mode command
 (setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
 (setq global-hl-line-mode t)                 ;; Hl line - See global-hl-line-mode command
@@ -396,10 +471,12 @@
 ;; (unless (server-running-p) (server-start))
 
 ;; Custom
+(message "Loading 'custom'")
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
 (load custom-file t)
 
 ;; Color theme setup
+(message "Loading material theme")
 (load-theme 'material)
 
 
