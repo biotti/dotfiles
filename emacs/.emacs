@@ -17,12 +17,12 @@
 ;; Setup package.el
 (message "Setup package.el")
 (require 'package)
-(setq package-enable-at-startup nil)
+;; (setq package-enable-at-startup nil)
 ;; Manage package repositories
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
+             '("melpa" . "https://melpa.org/packages/"))
 
 
 ;; Added by Package.el.  This must come before configurations of
