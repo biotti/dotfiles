@@ -14,6 +14,20 @@
 ;; https://github.com/syl20bnr/spacemacs
 ;; https://github.com/bbatsov/prelude
 
+;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
+;; -------------------------------------------------------------------------------------------------
+;; Garbage collection, valori di default;
+;; gc-cons-threshold  -> 800000
+;; gc-cons-percentage -> 0.1
+(setq gc-cons-threshold (* 64 1024 1024))
+(setq gc-cons-percentage 0.5)
+(run-with-idle-timer 5 t #'garbage-collect)
+(setq garbage-collection-messages t)
+;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
+(if (>= emacs-major-version 25)
+    (remove-hook 'find-file-hooks 'vc-refresh-state)
+  (remove-hook 'find-file-hooks 'vc-find-file-hook))
+
 ;; Setup package.el
 (message "Setup package.el")
 (require 'package)
@@ -22,7 +36,7 @@
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+             '("melpa" . "http://melpa.org/packages/"))
 
 
 ;; Added by Package.el.  This must come before configurations of
@@ -479,6 +493,13 @@
 (message "Loading material theme")
 (load-theme 'material)
 
+
+;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
+;; -------------------------------------------------------------------------------------------------
+;; Riattivo l'hook disattivato in testa al file
+(if (>= emacs-major-version 25)
+    (add-hook 'find-file-hooks 'vc-refresh-state)
+  (add-hook 'find-file-hooks 'vc-find-file-hook))
 
 ;; ***************************************************************************
 ;; Local Variables:
