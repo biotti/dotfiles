@@ -416,8 +416,9 @@
   py-autopep8
   :config
   (elpy-enable)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode)
+  (setq elpy-rpc-backend "jedi")
+  ;; (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  ;; (add-hook 'elpy-mode-hook 'flycheck-mode)
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
 (use-package py-autopep8
