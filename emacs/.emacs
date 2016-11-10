@@ -230,10 +230,19 @@
 (use-package org
   :init
   (message "use-package org")
-  :ensure t
+  :ensure org-plus-contrib
   :defer t
-  :mode "\\.org\\"
+  ;; Non e' necessario impostare :mode
+  ;; :mode "\\.org\\"
+  ;; :mode (("\\.org$" . org-mode))
   )
+;; (use-package org
+;;   :mode (("\\.org$" . org-mode))
+;;   :ensure org-plus-contrib
+;;   :config
+;;   (progn
+;;     ;; config stuff
+;;     ))
 (use-package recentf
   ;; Turn on recent file mode so that you can more easily switch to
   ;; recently edited files when you first start emacs
@@ -377,7 +386,8 @@
   (message "use-package csharp-mode")
   :ensure t
   :defer t
-  :mode "\\.cs\\"
+  ;; Non e' necessario impostare :mode
+  ;; :mode "\\.cs\\"
   )
 ;; Development: Powershell
 ;; -----------------------
@@ -386,7 +396,8 @@
   (message "use-package powershell")
   :ensure t
   :defer t
-  :mode ("\\.ps[dm]?1\\'" . powershell-mode)
+  ;; Non e' necessario impostare :mode
+  ;; :mode ("\\.ps[dm]?1\\'" . powershell-mode)
   :config
   (add-hook 'powershell-mode-hook 'work-style)
   )
@@ -398,7 +409,8 @@
   (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
-  :mode "\\.py[w]?\\"
+  ;; Non e' necessario impostare :mode
+  ;; :mode "\\.py[w]?\\"
   :after
   flycheck
   py-autopep8
@@ -414,7 +426,6 @@
   (message "use-package py-autopep8")
   :ensure t
   :defer t
-  :mode "\\.py[w]?\\"
   :config
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
