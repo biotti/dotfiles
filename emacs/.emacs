@@ -472,25 +472,31 @@
 
 ;; Printing
 ;; --------
-(setq ps-lpr-command "C:/Program Files/gs/gs9.16/bin/gswin64c.exe")
-(setq ps-lpr-switches
-      '("-q"
-        "-dNOPAUSE"
-        "-dBATCH"
-        "-IC:/Program Files/gs/gs9.16/lib"
-        "-sFONTPATH=C:/Windows/Fonts"
-        "-sDEVICE=mswinpr2"
-        "-sOutputICCProfile=default_cmyk.icc"
-        "-dBitsPerPixel=24"
-        "-dEmbedAllFonts=true"))
 (setq ps-paper-type 'a4)
-(setq ps-print-color-p 'black-white)
-(setq ps-printer-name t)
+;; (setq ps-print-color-p 'black-white)
 (setq doc-view-continuous t)
-(setq doc-view-ghostscript-program "C:/Program Files/gs/gs9.16/bin/gswin64c.exe")
+(cond ((eq system-type 'windows-nt)
+       ;; Windows-specific code goes here.
+       (setq ps-lpr-command "C:/Program Files/gs/gs9.16/bin/gswin64c.exe")
+       (setq ps-lpr-switches
+             '("-q"
+               "-dNOPAUSE"
+               "-dBATCH"
+               "-IC:/Program Files/gs/gs9.16/lib"
+               "-sFONTPATH=C:/Windows/Fonts"
+               "-sDEVICE=mswinpr2"
+               "-sOutputICCProfile=default_cmyk.icc"
+               "-dBitsPerPixel=24"
+               "-dEmbedAllFonts=true"))
+       (setq doc-view-ghostscript-program "C:/Program Files/gs/gs9.16/bin/gswin64c.exe")
+       (setq ps-printer-name t)
+       )
+      ((eq system-type 'gnu/linux)
+       ;; Linux-specific code goes here. 
+       ))
 
 ;; Start Emacs fullscreen mode
-(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
+;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;; Emacs Server
 ;; (require 'server)
