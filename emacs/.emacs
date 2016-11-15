@@ -112,13 +112,14 @@
   :ensure t
   ;; :defer t
   )
-(use-package moe-theme
-  ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
-  :init
-  (message "use-pakcage moe-theme")
-  :ensure t
-  :defer t
-  )
+;; Disattivato perche' viene considerato come dipendenza (???)
+;; (use-package moe-theme
+;;   ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
+;;   :init
+;;   (message "use-pakcage moe-theme")
+;;   :ensure t
+;;   :defer t
+;;   )
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
   :init
@@ -148,13 +149,14 @@
   :after
   color-theme
   )
-(use-package zenburn-theme
-  ;; Port of vim's mustang theme
-  :init
-  (message "use-pakcage zenburn-theme")
-  :ensure t
-  :defer t
-  )
+;; Disattivato perche' viene considerato come dipendenza (???)
+;; (use-package zenburn-theme
+;;   ;; Port of vim's mustang theme
+;;   :init
+;;   (message "use-pakcage zenburn-theme")
+;;   :ensure t
+;;   :defer t
+;;   )
 
 ;; EMACS enhancements
 ;; ------------------

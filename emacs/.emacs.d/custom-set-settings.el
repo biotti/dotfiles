@@ -10,7 +10,7 @@
     ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" default)))
  '(package-selected-packages
    (quote
-    (org-plus-contrib org py-autopep8 elpy powershell csharp-mode yasnippet rainbow-delimiters projectile indent-guide flycheck gitignore-mode gitconfig-mode magit smex ido-ubiquitous esup color-theme-solarized mustang-theme monokai-theme molokai-theme material-theme jbeans-theme gruvbox-theme darktooth-theme darkokai-theme badwolf-theme aurora-theme color-theme use-package))))
+    (org-plus-contrib org py-autopep8 elpy powershell csharp-mode rainbow-delimiters projectile indent-guide flycheck gitignore-mode gitconfig-mode magit smex ido-ubiquitous esup color-theme-solarized mustang-theme monokai-theme molokai-theme material-theme jbeans-theme gruvbox-theme darktooth-theme darkokai-theme badwolf-theme aurora-theme color-theme use-package))))
 
 
 ;; -----------------------------------------------------------------------------
