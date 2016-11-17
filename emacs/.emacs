@@ -271,6 +271,19 @@
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
   )
+(use-package tramp
+  :init
+  (message "use-package tramp")
+  :ensure t
+  :config
+  (cond ((eq system-type 'windows-nt)
+         ;; Windows-specific code goes here.
+         (setq tramp-default-method "pscp")
+         )
+        ((eq system-type 'gnu/linux)
+         ;; Linux-specific code goes here
+         ))
+  )
 (use-package uniquify
   ;; When several buffers visit identically-named files,
   ;; Emacs must give the buffers distinct names. The usual method
