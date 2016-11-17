@@ -21,8 +21,8 @@
 ;; gc-cons-percentage -> 0.1
 (setq gc-cons-threshold (* 64 1024 1024))
 (setq gc-cons-percentage 0.5)
-(run-with-idle-timer 5 t #'garbage-collect)
-(setq garbage-collection-messages t)
+;; (run-with-idle-timer 5 t #'garbage-collect)
+;; (setq garbage-collection-messages t)
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
 (if (>= emacs-major-version 25)
     (remove-hook 'find-file-hooks 'vc-refresh-state)
@@ -465,6 +465,12 @@
 
 ;; ;; No cursor blinking, it's distracting
 ;; (blink-cursor-mode 0)
+
+;; Impedisce lo split quando si aprono piu' files
+;; NOTA BENE: Perche' la cosa funzioni correttamente e' necessario che
+;;            inhibit-startup-screen sia impostato a t (vedi piu' sopra)
+(add-hook 'emacs-startup-hook
+          (lambda () (delete-other-windows)) t)
 
 ;; Tabulation settings
 ;; -------------------
