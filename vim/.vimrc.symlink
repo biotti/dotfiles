@@ -84,7 +84,7 @@
 		" https://github.com/Shougo/neobundle.vim
 		if has('vim_starting')
 			set nocompatible              " Richiesto
-			filetype off                  " Richiesto
+			" filetype off                  " Richiesto da neobundle
 			" --------- NEOBUNDLE BEGIN ---------
 			" " Required:
 			" set runtimepath+=~/.vim/bundle/neobundle.vim/
@@ -265,8 +265,15 @@
 			" NeoBundle 'croaker/mustang-vim'
 			Plug 'nanotech/jellybeans.vim'
 
+			" Colorscheme material-theme
+			Plug 'jdkanani/vim-material-theme'
+
 		" }}}
 
+		" --------- VIM-PLUG BEGIN ---------
+		call plug#end()
+		" --------- VIM-PLUG BEGIN ---------
+		
 		" --------- NEOBUNDLE BEGIN ---------
 		" call neobundle#end()
 		" " vedi autocmd per filetype plugin
@@ -279,9 +286,11 @@
 
 		filetype plugin indent on
 
-		" --------- VIM-PLUG BEGIN ---------
-		call plug#end()
-		" --------- VIM-PLUG BEGIN ---------
+		" vim-plug Automatically install missing plugins on startup
+		autocmd VimEnter *
+		  \  if !empty(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
+		  \|   PlugInstall | q
+		  \| endif
 
 	" }}}
 
@@ -1052,7 +1061,7 @@
 		" colorscheme molokai
 
 		set background=dark
-		colorscheme jellybeans
+		colorscheme material-theme
 
 	" }}}
 
