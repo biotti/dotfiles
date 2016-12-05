@@ -275,6 +275,7 @@
   :init
   (message "use-package tramp")
   :ensure t
+  :defer t
   :config
   (cond ((eq system-type 'windows-nt)
          ;; Windows-specific code goes here.
@@ -282,6 +283,7 @@
          )
         ((eq system-type 'gnu/linux)
          ;; Linux-specific code goes here
+         (setq tramp-default-method "ssh")
          ))
   )
 (use-package uniquify
