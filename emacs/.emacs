@@ -469,8 +469,11 @@
 (setq apropos-do-all t)                      ;; Shows all options when running apropos.
 (setq mouse-yank-at-point t)                 ;; Mouse yank commands yank at point instead of at click.
 (setq ring-bell-function 'ignore)            ;; No bell
+(setq transient-mark-mode t)                 ;; Transient mark mode: mostra il testo selezionato come selezionato
 
-(set-scroll-bar-mode 'right)                 ;; Scroll bars - right
+(delete-selection-mode t)                    ;; Attiva delete-selection-mode
+(set-scroll-bar-mode 'right)                 ;; Scrollbars - right
+
 
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
@@ -492,6 +495,25 @@
 (setq-default tab-width 4)                      ;; Set tab width to 4 spaces
 (setq-default indent-tabs-mode nil)             ;; Use spaces instead of tabs
 (setq tab-stop-list (number-sequence 4 200 4))  ;; Create list of tab stops every 4 char
+
+;; Microsoft Windows settings
+(cond ((eq system-type 'windows-nt)
+       ;; Imposto Find e Grep
+       (setq find-program (concat invocation-directory "find.exe")
+             grep-program (concat invocation-directory "grep.exe"))
+       (setq grep-use-null-device nil)
+       ;; (setq grep-find-template (concat
+       ;;                           (concat
+       ;;                            (concat invocation-directory "find.exe")
+       ;;                            " <D> <X> -type f <F> -exec ")
+       ;;                           (concat
+       ;;                            (concat invocation-directory "grep.exe")
+       ;;                            " <C> -nH <R> {} \";\"")))
+       (setq grep-find-template (concat
+                                 (concat find-program " <D> <X> -type f <F> -exec ")
+                                 (concat grep-program " <C> -nH <R> {} \";\"")))
+       ;; "c:/Editors/emacs/emacs/bin/find.exe <D> <X> -type f <F> -exec c:/Editors/emacs/emacs/bin/grep.exe <C> -n <R> {} NUL \";\"")
+       ))
 
 ;; Printing
 ;; --------
