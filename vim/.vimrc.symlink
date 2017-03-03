@@ -52,24 +52,24 @@
 			language messages en_US.UTF-8
 		endif
 
-		" Imposta gestione unicode
-		" http://vim.wikia.com/wiki/Working_with_Unicode
-		if has("multi_byte")
-			if &termencoding == ""
-				let &termencoding = &encoding
-			endif
-			scriptencoding utf-8
-			set encoding=utf-8
-			" setglobal fileencoding=utf-8
-			set fileencodings=ucs-bom,utf-8,cp850,latin1
-		endif
+		" " Imposta gestione unicode
+		" " http://vim.wikia.com/wiki/Working_with_Unicode
+		" if has("multi_byte")
+		" 	if &termencoding == ""
+		" 		let &termencoding = &encoding
+		" 	endif
+		" 	scriptencoding utf-8
+		" 	set encoding=utf-8
+		" 	" setglobal fileencoding=utf-8
+		" 	set fileencodings=ucs-bom,utf-8,cp850,latin1
+		" endif
 
 	" }}}
 
 	" Variabili e impostazioni che saranno utilizzate dai Plugin
 	" caricati con NeoBundle {{{
 
-		let g:airline_symbols = {}
+		" let g:airline_symbols = {}
 		if has("gui_running")
 			" let g:airline_powerline_fonts = 1
 			" set laststatus=2
