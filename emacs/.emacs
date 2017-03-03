@@ -47,6 +47,10 @@
 (package-initialize)
 
 ;; Bootstrap `use-package'
+;;
+;; N.B.: Remove e reinstall "use-package" from "list-packages"
+;;       if there are error processing .emacs file after a
+;;       package upgrade (use-package.el may be empty!!!)
 (message "Bootstrapping use-package")
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
