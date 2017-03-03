@@ -273,7 +273,7 @@
 		" --------- VIM-PLUG BEGIN ---------
 		call plug#end()
 		" --------- VIM-PLUG BEGIN ---------
-		
+
 		" --------- NEOBUNDLE BEGIN ---------
 		" call neobundle#end()
 		" " vedi autocmd per filetype plugin
@@ -288,9 +288,9 @@
 
 		" vim-plug Automatically install missing plugins on startup
 		autocmd VimEnter *
-		  \  if !empty(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
-		  \|   PlugInstall | q
-		  \| endif
+			\  if !empty(filter(copy(g:plugs), '!isdirectory(v:val.dir)'))
+			\|   PlugInstall | q
+			\| endif
 
 	" }}}
 
@@ -875,11 +875,11 @@
 					" set guifont=Courier_New:h10:cDEFAULT
 					" set guifont=Courier_New:h10:cANSI
 					" set guifont=DejaVu_Sans_Mono:h10:cANSI
-					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
+					set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono_for_Powerline:h10:cDEFAULT
 					" set guifont=Consolas:h11:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
-					set guifont=Consolas:h10:cDEFAULT
+					" set guifont=Consolas:h10:cDEFAULT
 
 					" Massimizzo la dimensione della finestra
 					" Assumo di essere in ambiente Windows in italiano, uso lo
