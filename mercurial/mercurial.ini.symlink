@@ -6,12 +6,12 @@
 merge = kdiff3
 
 [extensions]
-mq = 
+mq =
 color =
-convert = 
-extdiff = 
-eol = 
-graphlog = 
+convert =
+extdiff =
+eol =
+graphlog =
 pager =
 histedit =
 
@@ -25,3 +25,8 @@ fontoutputlog = Courier New,8,-1,5,50,0,0,0,0,0
 workbench.single = True
 initialrevision = workingdir
 editor = "C:\Program Files\Notepad++\notepad++.exe" -nosession [-n$LINENUM "$FILE"]
+[http_proxy]
+host =
+no =
+user =
+passwd =
