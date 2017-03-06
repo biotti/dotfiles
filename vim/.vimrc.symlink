@@ -875,9 +875,9 @@
 					" set guifont=Courier_New:h10:cDEFAULT
 					" set guifont=Courier_New:h10:cANSI
 					" set guifont=DejaVu_Sans_Mono:h10:cANSI
-					set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
+					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono_for_Powerline:h10:cDEFAULT
-					" set guifont=Consolas:h11:cDEFAULT
+					set guifont=Consolas:h11:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
 					" set guifont=Consolas:h10:cDEFAULT
 
