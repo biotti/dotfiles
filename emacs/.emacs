@@ -561,6 +561,7 @@
 (load-theme 'jbeans t)
 
 ;; Font setup
+;; from https://www.reddit.com/r/emacs/comments/1xe7vr/check_if_font_is_available_before_setting/
 ; Test char and monospace:
 ; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
 ; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
