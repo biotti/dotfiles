@@ -1061,7 +1061,8 @@
 		" colorscheme molokai
 
 		set background=dark
-		colorscheme material-theme
+		" colorscheme material-theme
+		colorscheme jellybeans 
 
 	" }}}
 
