@@ -877,9 +877,15 @@
 					" set guifont=DejaVu_Sans_Mono:h10:cANSI
 					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono_for_Powerline:h10:cDEFAULT
-					set guifont=Consolas:h11:cDEFAULT
+					" set guifont=Consolas:h11:cDEFAULT
 					" set guifont=DejaVu_Sans_Mono:h10:cDEFAULT
 					" set guifont=Consolas:h10:cDEFAULT
+
+					" DejaVu Sans Mono
+					" Consolas
+					" Inconsolata
+					" Courier New
+					set guifont=DejaVu_Sans_Mono:h11:cDEFAULT,Consolas:h11:cDEFAULT,Inconsolata:h11:cDEFAULT,Courier_New:h11:cDEFAULT
 
 					" Massimizzo la dimensione della finestra
 					" Assumo di essere in ambiente Windows in italiano, uso lo
