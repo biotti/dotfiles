@@ -7,7 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" default)))
+    ("0ad9ed23b1f323e4ba36a7f0cbef6aff66128b94faa473aacd79317fbd24abda" "98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" default)))
  '(package-selected-packages
    (quote
     (org-plus-contrib org py-autopep8 elpy powershell csharp-mode rainbow-delimiters projectile indent-guide flycheck gitignore-mode gitconfig-mode magit smex ido-ubiquitous esup color-theme-solarized mustang-theme monokai-theme molokai-theme material-theme jbeans-theme gruvbox-theme darktooth-theme darkokai-theme badwolf-theme aurora-theme color-theme use-package))))

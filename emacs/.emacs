@@ -107,14 +107,14 @@
   :init
   (message "use-package jbeans-theme")
   :ensure t
-  :defer t
+  ;; :defer t
   )
 (use-package material-theme
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
   :init
   (message "use-pakcage material-theme")
   :ensure t
-  ;; :defer t
+  :defer t
   )
 ;; Disattivato perche' viene considerato come dipendenza (???)
 ;; (use-package moe-theme
@@ -557,9 +557,27 @@
 (load custom-file t)
 
 ;; Color theme setup
-(message "Loading material theme")
-(load-theme 'material)
+(message "Loading jbeans theme")
+(load-theme 'jbeans t)
 
+;; Font setup
+; Test char and monospace:
+; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
+; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
+(cond 
+ ((find-font (font-spec :name "DejaVu Sans Mono"))
+  (set-frame-font "DejaVu Sans Mono-10"))
+ ((find-font (font-spec :name "Consolas"))
+  (set-frame-font "Consolas-10"))
+ ((find-font (font-spec :name "Inconsolata"))
+  (set-frame-font "Inconsolata-10"))
+ ;; ((find-font (font-spec :name "Lucida Console"))
+ ;;  (set-frame-font "Lucida Console-10"))
+ ((find-font (font-spec :name "Courier New"))
+  (set-frame-font "Courier New-10"))
+ ;; ((find-font (font-spec :name "courier"))
+ ;;  (set-frame-font "courier-10"))
+ )
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; -------------------------------------------------------------------------------------------------
