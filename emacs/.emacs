@@ -19,8 +19,11 @@
 ;; Garbage collection, valori di default;
 ;; gc-cons-threshold  -> 800000
 ;; gc-cons-percentage -> 0.1
-(setq gc-cons-threshold (* 64 1024 1024))
-(setq gc-cons-percentage 0.5)
+;; Tempraneamente disabilitato:
+;; -----------------
+;;(setq gc-cons-threshold (* 64 1024 1024))
+;;(setq gc-cons-percentage 0.5)
+;; -----------------
 ;; (run-with-idle-timer 5 t #'garbage-collect)
 ;; (setq garbage-collection-messages t)
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
