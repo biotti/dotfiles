@@ -274,6 +274,7 @@
   :ensure t
   :bind
   ("M-x" . smex)
+  ("M-X" . smex-major-mode-commands)
   :config
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
