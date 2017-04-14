@@ -236,15 +236,21 @@
   :config
   (ido-ubiquitous-mode 1)
   )
-(use-package org
+(use-package org-plus-contrib
   :init
-  (message "use-package org")
-  :ensure org-plus-contrib
+  (message "use-package org-plus-contrib")
+  :ensure t
   :defer t
-  ;; Non e' necessario impostare :mode
-  ;; :mode "\\.org\\"
-  ;; :mode (("\\.org$" . org-mode))
   )
+;;(use-package org
+;;  :init
+;;  (message "use-package org")
+;;  :ensure org-plus-contrib
+;;  :defer t
+;;  ;; Non e' necessario impostare :mode
+;;  ;; :mode "\\.org\\"
+;;  ;; :mode (("\\.org$" . org-mode))
+;;  )
 ;; (use-package org
 ;;   :mode (("\\.org$" . org-mode))
 ;;   :ensure org-plus-contrib
