@@ -208,7 +208,6 @@
   (message "use-package ido")
   :ensure t
   :config
-  (ido-mode t)
   ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
   (setq ido-enable-flex-matching t)
   ;; Turn this behavior off because it's annoying
@@ -219,6 +218,10 @@
   ;; Includes buffer names of recently open files, even if they're not
   ;; open now
   (setq ido-use-virtual-buffers t)
+  ;;
+  (ido-everywhere t)
+  ;;
+  (ido-mode t)
   )
 (use-package ido-ubiquitous
   ;; Ido-ubiquitous
