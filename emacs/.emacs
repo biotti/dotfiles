@@ -250,6 +250,11 @@
   (message "use-package org-plus-contrib")
   :ensure t
   :defer t
+  :config
+  (progn
+    (add-to-list 'org-latex-packages-alist '("" "tabularx"))
+    (add-to-list 'org-latex-packages-alist '("" "tabu"))
+    )
   )
 ;;(use-package org
 ;;  :init
