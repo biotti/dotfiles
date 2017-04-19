@@ -835,13 +835,22 @@
 
 				" set guifont=Courier\ New\ 10
 				" set guifont=DejaVu\ Sans\ Mono\ 10
+				" DejaVu Sans Mono
+				" Monospace
+				set guifont=DejaVu\ Sans\ Mono\ 12
+				" set guifont=Monospace\ 12
+	
 
-			elseif has("gui_gtk")
+			elseif has("gui_gtk2") || has("gui_gtk3")
 
 				" set guifont=Courier\ New\ 10
 				" set guifont=DejaVu\ Sans\ Mono\ 10
+				" DejaVu Sans Mono
+				" Monospace
+				set guifont=DejaVu\ Sans\ Mono\ 12
+				" set guifont=Monospace\ 12
 
-			elseif has("gui_gtk2")
+			elseif has("gui_gtk")
 
 				" set guifont=Courier\ New\ 10
 				" set guifont=DejaVu\ Sans\ Mono\ 10
