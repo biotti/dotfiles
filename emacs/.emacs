@@ -245,16 +245,16 @@
   :config
   (ido-ubiquitous-mode 1)
   )
-(use-package org-plus-contrib
+;;(use-package org-plus-contrib
+(use-package org
   :init
-  (message "use-package org-plus-contrib")
-  :ensure t
+  ;;:ensure t
+  :ensure org-plus-contrib
   :defer t
   :config
-  (progn
-    (add-to-list 'org-latex-packages-alist '("" "tabularx"))
-    (add-to-list 'org-latex-packages-alist '("" "tabu"))
-    )
+  (message "use-package org-plus-contrib :config")
+  (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
+  (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
   )
 ;;(use-package org
 ;;  :init
