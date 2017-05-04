@@ -70,8 +70,9 @@
 (require 'bind-key)
 
 ;; Color Themes (use (load-theme xxx) at the end
-;; ---------------------------------------------
+;; =========================================================================
 ;; Color Theme
+;; =========================================================================
 (use-package color-theme
   :init
   (message "use-package color-theme")
@@ -79,18 +80,21 @@
   :ensure t
   ;; :config
   )
+
 (use-package aurora-theme
   :init
   (message "use-package aurora-theme")
   :ensure t
   :defer t
   )
+
 (use-package badwolf-theme
   :init
   (message "use-package badwolf-theme")
   :ensure t
   :defer t
   )
+
 (use-package darkokai-theme
   ;; A darker variant on Monokai
   :init
@@ -98,6 +102,7 @@
   :ensure t
   :defer t
   )
+
 (use-package darktooth-theme
   ;; Color theme for Emacs, when soothe and gruvbox collide
   :init
@@ -105,6 +110,7 @@
   :ensure t
   :defer t
   )
+
 (use-package gruvbox-theme
   ;; A retro-groove colour theme for Emacs
   :init
@@ -112,12 +118,14 @@
   :ensure t
   :defer t
   )
+
 (use-package jbeans-theme
   :init
   (message "use-package jbeans-theme")
   :ensure t
   ;; :defer t
   )
+
 (use-package material-theme
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
   :init
@@ -125,6 +133,7 @@
   :ensure t
   :defer t
   )
+
 ;; Disattivato perche' viene considerato come dipendenza (???)
 ;; (use-package moe-theme
 ;;   ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
@@ -133,6 +142,7 @@
 ;;   :ensure t
 ;;   :defer t
 ;;   )
+
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
   :init
@@ -140,12 +150,14 @@
   :ensure t
   :defer t
   )
+
 (use-package monokai-theme
   :init
   (message "use-pakcage monokai-theme")
   :ensure t
   :defer t
   )
+
 (use-package mustang-theme
   ;; Port of vim's mustang theme
   :init
@@ -153,6 +165,7 @@
   :ensure t
   :defer t
   )
+
 (use-package color-theme-solarized
   ;; The Solarized color theme, ported to Emacs
   :init
@@ -162,6 +175,7 @@
   :after
   color-theme
   )
+
 ;; Disattivato perche' viene considerato come dipendenza (???)
 ;; (use-package zenburn-theme
 ;;   ;; Port of vim's mustang theme
@@ -171,8 +185,9 @@
 ;;   :defer t
 ;;   )
 
+;; =========================================================================
 ;; EMACS enhancements
-;; ------------------
+;; =========================================================================
 (use-package company
   ;; A modular text completion framework
   :init
@@ -181,12 +196,14 @@
   :ensure t
   :defer t
   )
+
 (use-package esup
   ;; Emacs Start Up Profiler https://github.com/jschaf/esup
   :init
   (message "use-package esup")
   :ensure t
   )
+
 (use-package hl-line
   ;; Highlight Current Line
   :init
@@ -205,6 +222,7 @@
   :bind
   ("C-x C-b" . ibuffer)
   )
+
 (use-package ido
   ;; ido-mode allows you to more easily navigate choices. For example,
   ;; when you want to switch buffers, ido presents you with a list
@@ -232,6 +250,7 @@
   ;;
   (ido-mode t)
   )
+
 (use-package ido-ubiquitous
   ;; Ido-ubiquitous
   ;; This enables ido in all contexts where it could be useful, not just
@@ -245,9 +264,11 @@
   :config
   (ido-ubiquitous-mode 1)
   )
+
 ;;(use-package org-plus-contrib
 (use-package org
   :init
+  (message "use-package org-plus-contrib :init")
   ;;:ensure t
   :ensure org-plus-contrib
   :defer t
@@ -256,6 +277,7 @@
   (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
   )
+
 ;;(use-package org
 ;;  :init
 ;;  (message "use-package org")
@@ -272,6 +294,7 @@
 ;;   (progn
 ;;     ;; config stuff
 ;;     ))
+
 (use-package recentf
   ;; Turn on recent file mode so that you can more easily switch to
   ;; recently edited files when you first start emacs
@@ -284,6 +307,7 @@
   (setq recentf-exclude '(".ido.last"))
   (setq recentf-max-menu-items 40)
   )
+
 (use-package smex
   ;; Enhances M-x too allow easier execution of commands. Provides
   ;; a filterable list of possible commands in the minibuffer
@@ -299,6 +323,7 @@
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
   )
+
 (use-package tramp
   :init
   (message "use-package tramp")
@@ -314,6 +339,7 @@
          (setq tramp-default-method "ssh")
          ))
   )
+
 (use-package uniquify
   ;; When several buffers visit identically-named files,
   ;; Emacs must give the buffers distinct names. The usual method
@@ -330,6 +356,7 @@
   :config
   (setq uniquify-buffer-name-style 'forward)
   )
+
 (use-package whitespace
   :init
   (message "use-package whitespace")
@@ -345,6 +372,7 @@
                            tab-mark
                            newline-mark))
   )
+
 (use-package whitespace-cleanup-mode
   :init
   (message "use-package whitespace-cleanup-mode")
@@ -354,8 +382,34 @@
   :defer t
   :diminish whitespace-cleanup-mode
   )
+
+(use-package smooth-scroll
+  ;; Minor mode for smooth scrolling and in-place scrolling
+  :init
+  (message "use-package smooth-scroll")
+  :ensure t
+  :defer t
+  )
+
+(use-package buffer-move
+  ;; easily swap buffers
+  :init
+  (message "use-package buffer-move")
+  :ensure t
+  :defer t
+  )
+
+(use-package window-number
+  ;; Select windows by numbers
+  :init
+  (message "use-package window-number")
+  :ensure t
+  :defer t
+  )
+
+;; =========================================================================
 ;; GIT
-;; ---
+;; =========================================================================
 (use-package magit
   ;; A GIT porcelain inside Emacs
   :init
@@ -370,6 +424,7 @@
   :config
   ;; (magit-diff-use-overlays nil)
   )
+
 (use-package gitconfig-mode
   :init
   (message "use-package gitconfig-mode")
@@ -377,6 +432,7 @@
   :defer t
   :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'")
   )
+
 (use-package gitignore-mode
   :init
   (message "use-package gitignore-mode")
@@ -384,14 +440,17 @@
   :defer t
   :mode ("/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'")
   )
+
+;; =========================================================================
 ;; Development: generic
-;; --------------------
+;; =========================================================================
 (use-package flycheck
   :init
   (message "use-package flycheck")
   :ensure t
   :defer t
   )
+
 (use-package indent-guide
   ;; Show vertical lines to guide indentation
   :init
@@ -399,6 +458,7 @@
   :defer t
   :ensure t
   )
+
 (use-package projectile
   ;; Project navigation
   :init
@@ -409,6 +469,15 @@
   :config
   (projectile-global-mode t)
   )
+
+(use-package project-explorer
+  ;; A project explorer sidebar
+  :init
+  (message "use-package project-explorer")
+  :ensure t
+  :defer t
+  )
+
 (use-package rainbow-delimiters
   ;; Colorful parentesis matching
   :init
@@ -416,6 +485,7 @@
   :ensure t
   :defer t
   )
+
 (use-package yasnippet
   ;; Yet another snippet extension for Emacs
   :init
@@ -423,8 +493,20 @@
   :ensure t
   :defer t
   )
+
+;; (use-package auto-complete
+;;   ;; Auto Completion for GNU Emacs
+;;   :init
+;;   (message "use-package auto-complete")
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (ac-config-default)
+;;   )
+
+;; =========================================================================
 ;; Development: C#
-;; ---------------
+;; =========================================================================
 (use-package csharp-mode
   ;; C# mode
   :init
@@ -434,8 +516,10 @@
   ;; Non e' necessario impostare :mode
   ;; :mode "\\.cs\\"
   )
+
+;; =========================================================================
 ;; Development: Powershell
-;; -----------------------
+;; =========================================================================
 (use-package powershell
   :init
   (message "use-package powershell")
@@ -446,8 +530,10 @@
   :config
   (add-hook 'powershell-mode-hook 'work-style)
   )
+
+;; =========================================================================
 ;; Develpment: Python
-;; ------------------
+;; =========================================================================
 (use-package elpy
   :init
   (message "use-package elpy")
@@ -464,8 +550,10 @@
   (setq elpy-rpc-backend "jedi")
   ;; (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   ;; (add-hook 'elpy-mode-hook 'flycheck-mode)
-  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+  ;; Non serve qui perche' che' nel config di py-autopep8 ?????
+  ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
+
 (use-package py-autopep8
   ;; Autopep8
   :init
@@ -476,14 +564,119 @@
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
 
+(use-package company-jedi
+  ;; company-mode completion back-end for Python JEDI
+  :init
+  (message "use-package company-jedi")
+  :ensure t
+  :defer t
+  :after
+  company
+  elpy
+  )
+
+(use-package pygen
+  ;; Python code generation using Elpy and Python-mode.
+  :init
+  (message "use-package pygen")
+  :ensure t
+  :defer t
+  :after elpy
+  )
+
+
+;; =========================================================================
+;; Development: Go language
+;; =========================================================================
+(use-package go-mode
+  ;; Major mode for the Go programming language
+  ;;
+  ;; -> occorre installare i seguenti pacchetti:
+  ;; go get -u golang.org/x/tools/cmd/goimports
+  ;; ;; NO - Gia' presente?     ;;go get -u golang.org/x/tools/cmd/vet
+  ;; ;; NO - Sostituito da GURU ;;go get -u golang.org/x/tools/cmd/oracle
+  ;; go get -u golang.org/x/tools/cmd/guru
+  ;; go get -u golang.org/x/tools/cmd/godoc
+  ;; go get -u github.com/golang/lint/golint
+  ;;
+  ;; NonWindwos: go get -u github.com/nsf/gocode
+  ;; Windows: go get -u -ldflags -H=windowsgui github.com/nsf/gocode
+  ;; go get -u github.com/kisielk/errcheck
+  ;;
+  :init
+  (message "use-package go-mode")
+  :ensure t
+  :defer t
+  :config
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
+  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  )
+
+(use-package go-eldoc
+  ;; eldoc for go-mode
+  :init
+  (message "use-package go-eldoc")
+  :ensure t
+  :defer t
+  :after
+  go-mode
+  :config
+  (go-eldoc-setup)
+  )
+
+(use-package company-go
+  ;; company-mode backend for Go (using gocode)
+  :init
+  (message "use-package company-go")
+  :defer t
+  :after
+  company
+  go-mode
+  )
+
+(use-package golint
+  ;; lint for the Go source code
+  :init
+  (message "use-package golint")
+  :ensure t
+  :defer t
+  :config
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
+  )
+
+
+;; =========================================================================
+;; Markdown
+;; =========================================================================
+(use-package markdown-mode
+  ;; Major mode for Markdown-formatted text
+  :init
+  (message "use-package markdown-mode")
+  :ensure t
+  :defer t
+  )
+
+;; =========================================================================
+;; Json
+;; =========================================================================
+(use-package json-mode
+  ;; Major mode for editing JSON files
+  :init
+  (message "use-package json-mode")
+  :ensure t
+  :defer t
+  )
 
 
 
 
 
 
+;; =========================================================================
 ;; Customization (outside of "custom")
-;; -----------------------------------
+;; =========================================================================
 (message "Customization (outside of 'custom'")
 (setq delete-selection-mode t)               ;; Editing basics - See delete-selection-mode command
 (setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
@@ -518,13 +711,16 @@
 (add-hook 'emacs-startup-hook
           (lambda () (delete-other-windows)) t)
 
+;; =========================================================================
 ;; Tabulation settings
-;; -------------------
+;; =========================================================================
 (setq-default tab-width 4)                      ;; Set tab width to 4 spaces
 (setq-default indent-tabs-mode nil)             ;; Use spaces instead of tabs
 (setq tab-stop-list (number-sequence 4 200 4))  ;; Create list of tab stops every 4 char
 
+;; =========================================================================
 ;; Microsoft Windows settings
+;; =========================================================================
 (cond ((eq system-type 'windows-nt)
        ;; Imposto Find e Grep
        (setq find-program (concat invocation-directory "find.exe")
@@ -543,8 +739,9 @@
        ;; "c:/Editors/emacs/emacs/bin/find.exe <D> <X> -type f <F> -exec c:/Editors/emacs/emacs/bin/grep.exe <C> -n <R> {} NUL \";\"")
        ))
 
+;; =========================================================================
 ;; Printing
-;; --------
+;; =========================================================================
 (setq ps-paper-type 'a4)
 ;; (setq ps-print-color-p 'black-white)
 (setq doc-view-continuous t)
@@ -575,16 +772,22 @@
 ;; (require 'server)
 ;; (unless (server-running-p) (server-start))
 
+;; =========================================================================
 ;; Custom
+;; =========================================================================
 (message "Loading 'custom'")
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
 (load custom-file t)
 
+;; =========================================================================
 ;; Color theme setup
+;; =========================================================================
 (message "Loading jbeans theme")
 (load-theme 'jbeans t)
 
+;; =========================================================================
 ;; Font setup
+;; =========================================================================
 ;; from https://www.reddit.com/r/emacs/comments/1xe7vr/check_if_font_is_available_before_setting/
 ; Test char and monospace:
 ; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
@@ -612,7 +815,11 @@
   (add-hook 'find-file-hooks 'vc-find-file-hook))
 
 ;; ***************************************************************************
+;; Per una spiegazione sul coding dei caratteri in emacs vedere:
+;; https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
+;; ---------------------------------------------------------------------------
 ;; Local Variables:
+;; coding: utf-8
 ;; mode: lisp
 ;; indent-tabs-mode: nil
 ;; tab-width: 4
