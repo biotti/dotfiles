@@ -81,12 +81,13 @@
   ;; :config
   )
 
-(use-package aurora-theme
-  :init
-  (message "use-package aurora-theme")
-  :ensure t
-  :defer t
-  )
+;; Non esiste piu' ?????????
+;; (use-package aurora-theme
+;;   :init
+;;   (message "use-package aurora-theme")
+;;   :ensure t
+;;   :defer t
+;;   )
 
 (use-package badwolf-theme
   :init
@@ -192,9 +193,14 @@
   ;; A modular text completion framework
   :init
   (message "use-package company")
-  :disabled t
+  ;; (global-company-mode)
+  ;; (add-hook 'after-init-hook 'global-company-mode)
+  ;; -> Perche' disabled?????? :disabled t
   :ensure t
-  :defer t
+  ;; :defer t
+  :config
+  ;; (add-hook 'after-init-hook 'global-company-mode)
+  (global-company-mode)
   )
 
 (use-package esup
@@ -407,6 +413,14 @@
   :defer t
   )
 
+(use-package which-key
+  ;; Display available keybindings in popup
+  :init
+  (message "use-package which-key")
+  :ensure t
+  :defer t
+  )
+
 ;; =========================================================================
 ;; GIT
 ;; =========================================================================
@@ -444,6 +458,16 @@
 ;; =========================================================================
 ;; Development: generic
 ;; =========================================================================
+(use-package company-quickhelp
+  ;; Popup documentation for completion candidates
+  :init
+  (message "use-package company-quickhelp")
+  :ensure t
+  :defer t
+  :after
+  company
+  )
+
 (use-package flycheck
   :init
   (message "use-package flycheck")
@@ -468,6 +492,17 @@
   :defer t
   :config
   (projectile-global-mode t)
+  )
+
+(use-package ibuffer-projectile
+  ;;Group ibuffer's list by projectile root
+  :init
+  (message "ibuffer-projectile")
+  :ensure t
+  :defer t
+  :after
+  ibuffer
+  projectile
   )
 
 (use-package project-explorer
@@ -571,17 +606,8 @@
   :ensure t
   :defer t
   :after
-  company
-  elpy
-  )
-
-(use-package pygen
-  ;; Python code generation using Elpy and Python-mode.
-  :init
-  (message "use-package pygen")
-  :ensure t
-  :defer t
-  :after elpy
+  ;; company
+  ;; elpy
   )
 
 
@@ -630,10 +656,15 @@
   ;; company-mode backend for Go (using gocode)
   :init
   (message "use-package company-go")
+  ;;(add-to-list 'company-backends 'company-go)
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-go))
+  :ensure t
   :defer t
   :after
   company
   go-mode
+  :config
   )
 
 (use-package golint
@@ -645,6 +676,25 @@
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
   )
+
+(use-package go-guru
+  ;; Integration of the Go 'guru' analysis tool into Emacs.
+  :init
+  (message "use-package go-guru")
+  :ensure t
+  :defer t
+  )
+
+(use-package go-errcheck
+  ;; errcheck integration for go-mode
+  :init
+  (message "use-package go-errcheck")
+  :ensure t
+  :defer t
+  )
+
+
+
 
 
 ;; =========================================================================
