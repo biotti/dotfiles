@@ -868,8 +868,8 @@
 ;; Color theme setup
 ;; =========================================================================
 (when (display-graphic-p)
-  (message "Loading obsidian theme")
-  (load-theme 'obsidian t))
+  (message "Loading material theme")
+  (load-theme 'material t))
 
 
 ;; =========================================================================
