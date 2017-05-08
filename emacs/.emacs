@@ -599,16 +599,16 @@
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
 
-(use-package company-jedi
-  ;; company-mode completion back-end for Python JEDI
-  :init
-  (message "use-package company-jedi")
-  :ensure t
-  :defer t
-  :after
-  ;; company
-  ;; elpy
-  )
+;; (use-package company-jedi
+;;   ;; company-mode completion back-end for Python JEDI
+;;   :init
+;;   (message "use-package company-jedi")
+;;   :ensure t
+;;   :defer t
+;;   :after
+;;   ;; company
+;;   ;; elpy
+;;   )
 
 
 ;; =========================================================================
