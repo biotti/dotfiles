@@ -181,6 +181,15 @@
   :defer t
   )
 
+(use-package obsidian-theme
+  ;; port of the eclipse obsidian theme
+  :if (display-graphic-p)
+  :init
+  (message "use-pakcage obsidian-theme")
+  :ensure t
+  :defer t
+  )
+
 (use-package color-theme-solarized
   ;; The Solarized color theme, ported to Emacs
   :if (display-graphic-p)
@@ -859,8 +868,8 @@
 ;; Color theme setup
 ;; =========================================================================
 (when (display-graphic-p)
-  (message "Loading solarized theme")
-  (load-theme 'solarized t))
+  (message "Loading obsidian theme")
+  (load-theme 'obsidian t))
 
 
 ;; =========================================================================
