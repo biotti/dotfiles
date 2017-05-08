@@ -859,8 +859,8 @@
 ;; Color theme setup
 ;; =========================================================================
 (when (display-graphic-p)
-  (message "Loading jbeans theme")
-  (load-theme 'jbeans t))
+  (message "Loading solarized theme")
+  (load-theme 'solarized t))
 
 
 ;; =========================================================================
