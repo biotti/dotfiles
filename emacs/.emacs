@@ -74,6 +74,8 @@
 ;; Color Theme
 ;; =========================================================================
 (use-package color-theme
+  ;; install color themes
+  :if (display-graphic-p)
   :init
   (message "use-package color-theme")
   :defer t
@@ -90,6 +92,8 @@
 ;;   )
 
 (use-package badwolf-theme
+  ;; Bad Wolf color theme
+  :if (display-graphic-p)
   :init
   (message "use-package badwolf-theme")
   :ensure t
@@ -98,6 +102,7 @@
 
 (use-package darkokai-theme
   ;; A darker variant on Monokai
+  :if (display-graphic-p)
   :init
   (message "use-package darkokai-theme")
   :ensure t
@@ -106,6 +111,7 @@
 
 (use-package darktooth-theme
   ;; Color theme for Emacs, when soothe and gruvbox collide
+  :if (display-graphic-p)
   :init
   (message "use-pakcage darktooth-theme")
   :ensure t
@@ -114,6 +120,7 @@
 
 (use-package gruvbox-theme
   ;; A retro-groove colour theme for Emacs
+  :if (display-graphic-p)
   :init
   (message "use-pakcage gruvbox-theme")
   :ensure t
@@ -121,6 +128,8 @@
   )
 
 (use-package jbeans-theme
+  ;; Jbeans theme for GNU Emacs 24 (deftheme)
+  :if (display-graphic-p)
   :init
   (message "use-package jbeans-theme")
   :ensure t
@@ -129,23 +138,25 @@
 
 (use-package material-theme
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
+  :if (display-graphic-p)
   :init
   (message "use-pakcage material-theme")
   :ensure t
   :defer t
   )
 
-;; Disattivato perche' viene considerato come dipendenza (???)
-;; (use-package moe-theme
-;;   ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
-;;   :init
-;;   (message "use-pakcage moe-theme")
-;;   :ensure t
-;;   :defer t
-;;   )
+(use-package moe-theme
+  ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
+  :if (display-graphic-p)
+  :init
+  (message "use-pakcage moe-theme")
+  :ensure t
+  :defer t
+  )
 
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
+  :if (display-graphic-p)
   :init
   (message "use-package molokai-theme")
   :ensure t
@@ -153,6 +164,8 @@
   )
 
 (use-package monokai-theme
+  ;; A fruity color theme for Emacs.
+  :if (display-graphic-p)
   :init
   (message "use-pakcage monokai-theme")
   :ensure t
@@ -161,6 +174,7 @@
 
 (use-package mustang-theme
   ;; Port of vim's mustang theme
+  :if (display-graphic-p)
   :init
   (message "use-pakcage mustang-theme")
   :ensure t
@@ -169,6 +183,7 @@
 
 (use-package color-theme-solarized
   ;; The Solarized color theme, ported to Emacs
+  :if (display-graphic-p)
   :init
   (message "use-package color-theme-solarized")
   :ensure t
@@ -177,14 +192,14 @@
   color-theme
   )
 
-;; Disattivato perche' viene considerato come dipendenza (???)
-;; (use-package zenburn-theme
-;;   ;; Port of vim's mustang theme
-;;   :init
-;;   (message "use-pakcage zenburn-theme")
-;;   :ensure t
-;;   :defer t
-;;   )
+(use-package zenburn-theme
+  ;; Port of vim's mustang theme
+  :if (display-graphic-p)
+  :init
+  (message "use-pakcage zenburn-theme")
+  :ensure t
+  :defer t
+  )
 
 ;; =========================================================================
 ;; EMACS enhancements
@@ -419,6 +434,17 @@
   (message "use-package which-key")
   :ensure t
   :defer t
+  )
+
+(use-package cursor-chg
+  ;; Change cursor dynamically, depending on the context.
+  :init
+  (message "use-package cursor-chg")
+  :ensure t
+  :config
+  (change-cursor-mode 1) ; On for overwrite/read-only/input mode
+  ;;(toggle-cursor-type-when-idle 1) ; On when idle
+  
   )
 
 ;; =========================================================================
@@ -832,8 +858,10 @@
 ;; =========================================================================
 ;; Color theme setup
 ;; =========================================================================
-(message "Loading jbeans theme")
-(load-theme 'jbeans t)
+(when (display-graphic-p)
+  (message "Loading jbeans theme")
+  (load-theme 'jbeans t))
+
 
 ;; =========================================================================
 ;; Font setup
