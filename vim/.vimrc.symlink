@@ -216,7 +216,7 @@
 
 			" Gestione dei files di grandi dimensioni
 			" NeoBundle 'LargeFile'
-			Plug 'largeFile'
+			Plug 'vim-scripts/largeFile'
 
 			" Gestione dei numeri riga (effettivi in insert mode e
 			" relativi in command mode)
@@ -230,11 +230,11 @@
 			endif
 
 			" NeoBundle 'dbext.vim'
-			Plug 'dbext.vim'
+			Plug 'vim-scripts/dbext.vim'
 
 			" Syntax file per Microsoft SQL Server (2005/2008)
 			" NeoBundle 'sqlserver.vim'
-			Plug 'sqlserver.vim'
+			Plug 'vim-scripts/sqlserver.vim'
 
 			" Colorscheme Solarized
 			" NeoBundle 'altercation/vim-colors-solarized'
@@ -242,7 +242,7 @@
 
 			" Colorscheme Sorcerer
 			" NeoBundle 'Sorcerer'
-			Plug 'Sorcerer'
+			Plug 'vim-scripts/Sorcerer'
 
 			" Colorscheme Molokai
 			" NeoBundle 'tomasr/molokai'
