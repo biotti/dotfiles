@@ -19,12 +19,11 @@
 ;; Garbage collection, valori di default;
 ;; gc-cons-threshold  -> 800000
 ;; gc-cons-percentage -> 0.1
-;; Tempraneamente disabilitato:
 ;; -----------------
-;;(setq gc-cons-threshold (* 64 1024 1024))
-;;(setq gc-cons-percentage 0.5)
+(setq gc-cons-threshold (* 64 1024 1024))
+(setq gc-cons-percentage 0.5)
 ;; -----------------
-;; (run-with-idle-timer 5 t #'garbage-collect)
+(run-with-idle-timer 5 t #'garbage-collect)
 ;; (setq garbage-collection-messages t)
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
 (if (>= emacs-major-version 25)
@@ -221,7 +220,7 @@
   ;; (add-hook 'after-init-hook 'global-company-mode)
   ;; -> Perche' disabled?????? :disabled t
   :ensure t
-  ;; :defer t
+  :defer t
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode)
   (global-company-mode)
@@ -289,6 +288,7 @@
   (message "use-package ido-ubiquitous")
   ;; (ido-ubiquitous-mode 1)
   :ensure t
+  :defer t
   :after
   ido
   :config
@@ -421,21 +421,48 @@
   :defer t
   )
 
-(use-package buffer-move
-  ;; easily swap buffers
+(use-package switch-window
+  ;; A *visual* way to choose a window to switch to
   :init
-  (message "use-package buffer-move")
+  (message "use-package switch-window")
+  ;; (global-set-key (kbd "C-x o") 'switch-window)
+  ;; (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
+  ;; (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
+  ;; (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
+  ;; (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
+  :ensure t
+  :defer t
+  :bind (("C-x o" . switch-window)
+           ("C-x 1" . switch-window-then-maximize)
+           ("C-x 2" . switch-window-then-split-below)
+           ("C-x 3" . switch-window-then-split-right)
+           ("C-x 0" . switch-window-then-delete))
+  :config
+  )
+
+(use-package swap-buffers
+  ;; A *visual* way to choose a window to switch to
+  :init
+  (message "use-package swap-buffers")
   :ensure t
   :defer t
   )
 
-(use-package window-number
-  ;; Select windows by numbers
-  :init
-  (message "use-package window-number")
-  :ensure t
-  :defer t
-  )
+;; (use-package buffer-move
+;;   ;; easily swap buffers
+;;   :init
+;;   (message "use-package buffer-move")
+;;   :ensure t
+;;   :defer t
+;;   )
+
+;; (use-package window-number
+;;   ;; Select windows by numbers
+;;   :init
+;;   (message "use-package window-number")
+;;   :ensure t
+;;   :defer t
+;;   )
 
 (use-package which-key
   ;; Display available keybindings in popup
@@ -454,6 +481,20 @@
   (change-cursor-mode 1) ; On for overwrite/read-only/input mode
   ;;(toggle-cursor-type-when-idle 1) ; On when idle
   
+  )
+
+(use-package undo-tree
+  ;; Treat undo history as a tree
+  :init
+  (message "use-package undo-tree")
+  :ensure t
+  :defer t
+  :diminish undo-tree-mode
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t))
   )
 
 ;; =========================================================================
