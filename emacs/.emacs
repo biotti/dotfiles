@@ -663,6 +663,10 @@
   ;; (add-hook 'elpy-mode-hook 'flycheck-mode)
   ;; Non serve qui perche' che' nel config di py-autopep8 ?????
   ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+  (cond ((eq system-type 'windows-nt)
+         ;; Windows-specific code goes here.
+         (setq python-shell-completion-native-enable nil)
+         ))
   )
 
 (use-package py-autopep8
