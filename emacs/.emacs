@@ -65,8 +65,15 @@
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
+
 (require 'diminish)
 (require 'bind-key)
+
+(use-package benchmark-init
+  :init
+  (message "use-package benchmark-init")
+  :ensure t
+  )
 
 ;; Color Themes (use (load-theme xxx) at the end
 ;; =========================================================================
