@@ -7,12 +7,9 @@ merge = kdiff3
 
 [extensions]
 mq =
-color =
 convert =
 extdiff =
 eol =
-graphlog =
-pager =
 histedit =
 
 [tortoisehg]
