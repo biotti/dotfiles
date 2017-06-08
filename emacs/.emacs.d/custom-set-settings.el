@@ -12,7 +12,6 @@
    (quote
     (benchmark-init json-mode markdown-mode go-errcheck go-guru golint company-go go-eldoc go-mode py-autopep8 elpy powershell csharp-mode yasnippet rainbow-delimiters project-explorer ibuffer-projectile projectile indent-guide flycheck company-quickhelp gitignore-mode gitconfig-mode magit undo-tree cursor-chg which-key swap-buffers switch-window smooth-scroll smex org-plus-contrib ido-ubiquitous esup company zenburn-theme color-theme-solarized obsidian-theme mustang-theme monokai-theme molokai-theme moe-theme material-theme jbeans-theme gruvbox-theme darktooth-theme darkokai-theme badwolf-theme color-theme use-package))))
 
-
 ;; -----------------------------------------------------------------------------
 ;; Custom: faces
 ;; ATTENZIONE
@@ -31,66 +30,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-
-;; '(ansi-color-faces-vector
-;;   [default bold shadow italic underline bold bold-italic bold])
-;; '(ansi-color-names-vector
-;;   ["#3c3836" "#fb4934" "#b8bb26" "#fabd2f" "#83a598" "#d3869b" "#8ec07c" "#ebdbb2"])
-;; '(compilation-message-face (quote default))
-;; '(fci-rule-color "#383838")
-;; '(highlight-changes-colors (quote ("#ff8eff" "#ab7eff")))
-;; '(highlight-tail-colors
-;;   (quote
-;;    (("#424748" . 0)
-;;     ("#63de5d" . 20)
-;;     ("#4BBEAE" . 30)
-;;     ("#1DB4D0" . 50)
-;;     ("#9A8F21" . 60)
-;;     ("#A75B00" . 70)
-;;     ("#F309DF" . 85)
-;;     ("#424748" . 100))))
-;; '(hl-sexp-background-color "#1c1f26")
-;; '(linum-format " %3i ")
-;; '(magit-diff-use-overlays nil)
-;; '(notmuch-search-line-faces
-;;   (quote
-;;    (("unread" :foreground "#aeee00")
-;;     ("flagged" :foreground "#0a9dff")
-;;     ("deleted" :foreground "#ff2c4b" :bold t))))
-;; '(nrepl-message-colors
-;;   (quote
-;;    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
-;; '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
-;; '(pos-tip-background-color "#36473A")
-;; '(pos-tip-foreground-color "#FFFFC8")
-;; '(vc-annotate-background "#2B2B2B")
-;; '(vc-annotate-color-map
-;;   (quote
-;;    ((20 . "#BC8383")
-;;     (40 . "#CC9393")
-;;     (60 . "#DFAF8F")
-;;     (80 . "#D0BF8F")
-;;     (100 . "#E0CF9F")
-;;     (120 . "#F0DFAF")
-;;     (140 . "#5F7F5F")
-;;     (160 . "#7F9F7F")
-;;     (180 . "#8FB28F")
-;;     (200 . "#9FC59F")
-;;     (220 . "#AFD8AF")
-;;     (240 . "#BFEBBF")
-;;     (260 . "#93E0E3")
-;;     (280 . "#6CA0A3")
-;;     (300 . "#7CB8BB")
-;;     (320 . "#8CD0D3")
-;;     (340 . "#94BFF3")
-;;     (360 . "#DC8CC3"))))
-;; '(vc-annotate-very-old-color "#DC8CC3")
-;; '(weechat-color-list
-;;   (unspecified "#242728" "#424748" "#F70057" "#ff0066" "#86C30D" "#63de5d" "#BEB244" "#E6DB74" "#40CAE4" "#06d8ff" "#FF61FF" "#ff8eff" "#00b2ac" "#53f2dc" "#f8fbfc" "#ffffff"))
-;; '(package-selected-packages
-;;   (quote
-;;    (org-plus-contrib org py-autopep8 elpy powershell csharp-mode rainbow-delimiters projectile indent-guide flycheck gitignore-mode gitconfig-mode magit smex ido-ubiquitous esup color-theme-solarized mustang-theme monokai-theme molokai-theme material-theme jbeans-theme gruvbox-theme darktooth-theme darkokai-theme badwolf-theme aurora-theme color-theme)))
  
 ;; ***************************************************************************
 ;; Local Variables:
