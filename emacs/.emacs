@@ -512,7 +512,7 @@
   :init
   (message "use-package magit")
   ;; Disable built-in VC for Git when using magit
-  (setq vc-handled-backends (delq 'Git vc-handled-backends))
+  ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   ;; (global-set-key (kbd "C-x g") 'magit-status)
   :bind
   ("C-x g" . magit-status)
@@ -832,7 +832,6 @@
 (delete-selection-mode t)                    ;; Attiva delete-selection-mode
 (set-scroll-bar-mode 'right)                 ;; Scrollbars - right
 
-
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
 
@@ -842,11 +841,17 @@
 ;; ;; No cursor blinking, it's distracting
 ;; (blink-cursor-mode 0)
 
+;; VC Auto Revert mode updates the version control status information
+;; every "auto-revert-interval" seconds, even if the work file itself is unchanged
+;; auto-revert-interval - Default = 5 sec
+(setq auto-revert-check-vc-info t)
+
 ;; Impedisce lo split quando si aprono piu' files
 ;; NOTA BENE: Perche' la cosa funzioni correttamente e' necessario che
 ;;            inhibit-startup-screen sia impostato a t (vedi piu' sopra)
 (add-hook 'emacs-startup-hook
           (lambda () (delete-other-windows)) t)
+
 
 ;; =========================================================================
 ;; Tabulation settings
