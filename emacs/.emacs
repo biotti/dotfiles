@@ -44,8 +44,8 @@
 ;; Then we ll make sure we always load newer files if they are available,
 ;; even if there s a byte compiled version and disable automatic requiring
 ;; of packages on start as it ll be handled by use-package.
-(setq load-prefer-newer t
-      package-enable-at-startup nil)
+(setq load-prefer-newer t)
+(setq package-enable-at-startup nil)
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
