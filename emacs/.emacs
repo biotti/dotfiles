@@ -69,6 +69,10 @@
 (require 'diminish)
 (require 'bind-key)
 
+;; =========================================================================
+;; Benchmark-init
+;; Se voglio fare benchmarking devo caricarlo prima posssibile
+;; =========================================================================
 (use-package benchmark-init
   :init
   (message "use-package benchmark-init")
