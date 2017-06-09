@@ -54,8 +54,9 @@
 (message "package-initialize")
 (package-initialize)
 
+;; =========================================================================
 ;; Bootstrap `use-package'
-;;
+;; =========================================================================
 ;; N.B.: Remove e reinstall "use-package" from "list-packages"
 ;;       if there are error processing .emacs file after a
 ;;       package upgrade (use-package.el may be empty!!!)
@@ -68,6 +69,13 @@
 
 (require 'diminish)
 (require 'bind-key)
+
+;; =========================================================================
+;; use-package custom setup
+;; =========================================================================
+;; (setq use-package-debug t)
+;; (setq use-package-verbose t)
+;; (setq use-package-enable-imenu-support t)
 
 ;; =========================================================================
 ;; Benchmark-init
