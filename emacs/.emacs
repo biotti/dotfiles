@@ -31,7 +31,7 @@
   (remove-hook 'find-file-hooks 'vc-find-file-hook))
 
 ;; Setup package.el
-(message "Setup package.el")
+;; Cancellami? (message "Setup package.el")
 (require 'package)
 ;; (setq package-enable-at-startup nil)
 ;; Manage package repositories
@@ -51,7 +51,7 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(message "package-initialize")
+;; Cancellami? (message "package-initialize")
 (package-initialize)
 
 ;; =========================================================================
@@ -60,7 +60,7 @@
 ;; N.B.: Remove e reinstall "use-package" from "list-packages"
 ;;       if there are error processing .emacs file after a
 ;;       package upgrade (use-package.el may be empty!!!)
-(message "Bootstrapping use-package")
+;; Cancellami? (message "Bootstrapping use-package")
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -83,7 +83,7 @@
 ;; =========================================================================
 (use-package benchmark-init
   :init
-  (message "use-package benchmark-init")
+  ;; Cancellami? (message "use-package benchmark-init")
   :ensure t
   )
 
@@ -95,7 +95,7 @@
   ;; install color themes
   :if (display-graphic-p)
   :init
-  (message "use-package color-theme")
+  ;; Cancellami? (message "use-package color-theme")
   :defer t
   :ensure t
   ;; :config
@@ -104,7 +104,7 @@
 ;; Non esiste piu' ?????????
 ;; (use-package aurora-theme
 ;;   :init
-;;   (message "use-package aurora-theme")
+;;   ;; Cancellami? (message "use-package aurora-theme")
 ;;   :ensure t
 ;;   :defer t
 ;;   )
@@ -113,7 +113,7 @@
   ;; Bad Wolf color theme
   :if (display-graphic-p)
   :init
-  (message "use-package badwolf-theme")
+  ;; Cancellami? (message "use-package badwolf-theme")
   :ensure t
   :defer t
   )
@@ -122,7 +122,7 @@
   ;; A darker variant on Monokai
   :if (display-graphic-p)
   :init
-  (message "use-package darkokai-theme")
+  ;; Cancellami? (message "use-package darkokai-theme")
   :ensure t
   :defer t
   )
@@ -131,7 +131,7 @@
   ;; Color theme for Emacs, when soothe and gruvbox collide
   :if (display-graphic-p)
   :init
-  (message "use-pakcage darktooth-theme")
+  ;; Cancellami? (message "use-pakcage darktooth-theme")
   :ensure t
   :defer t
   )
@@ -140,7 +140,7 @@
   ;; A retro-groove colour theme for Emacs
   :if (display-graphic-p)
   :init
-  (message "use-pakcage gruvbox-theme")
+  ;; Cancellami? (message "use-pakcage gruvbox-theme")
   :ensure t
   :defer t
   )
@@ -149,7 +149,7 @@
   ;; Jbeans theme for GNU Emacs 24 (deftheme)
   :if (display-graphic-p)
   :init
-  (message "use-package jbeans-theme")
+  ;; Cancellami? (message "use-package jbeans-theme")
   :ensure t
   ;; :defer t
   )
@@ -158,7 +158,7 @@
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
   :if (display-graphic-p)
   :init
-  (message "use-pakcage material-theme")
+  ;; Cancellami? (message "use-pakcage material-theme")
   :ensure t
   :defer t
   )
@@ -167,7 +167,7 @@
   ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
   :if (display-graphic-p)
   :init
-  (message "use-pakcage moe-theme")
+  ;; Cancellami? (message "use-pakcage moe-theme")
   :ensure t
   :defer t
   )
@@ -176,7 +176,7 @@
   ;; Molokai theme with Emacs theme engine
   :if (display-graphic-p)
   :init
-  (message "use-package molokai-theme")
+  ;; Cancellami? (message "use-package molokai-theme")
   :ensure t
   :defer t
   )
@@ -185,7 +185,7 @@
   ;; A fruity color theme for Emacs.
   :if (display-graphic-p)
   :init
-  (message "use-pakcage monokai-theme")
+  ;; Cancellami? (message "use-pakcage monokai-theme")
   :ensure t
   :defer t
   )
@@ -194,7 +194,7 @@
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
   :init
-  (message "use-pakcage mustang-theme")
+  ;; Cancellami? (message "use-pakcage mustang-theme")
   :ensure t
   :defer t
   )
@@ -203,7 +203,7 @@
   ;; port of the eclipse obsidian theme
   :if (display-graphic-p)
   :init
-  (message "use-pakcage obsidian-theme")
+  ;; Cancellami? (message "use-pakcage obsidian-theme")
   :ensure t
   :defer t
   )
@@ -212,7 +212,7 @@
   ;; The Solarized color theme, ported to Emacs
   :if (display-graphic-p)
   :init
-  (message "use-package color-theme-solarized")
+  ;; Cancellami? (message "use-package color-theme-solarized")
   :ensure t
   :defer t
   :after
@@ -223,7 +223,7 @@
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
   :init
-  (message "use-pakcage zenburn-theme")
+  ;; Cancellami? (message "use-pakcage zenburn-theme")
   :ensure t
   :defer t
   )
@@ -234,7 +234,7 @@
 (use-package company
   ;; A modular text completion framework
   :init
-  (message "use-package company")
+  ;; Cancellami? (message "use-package company")
   ;; (global-company-mode)
   ;; (add-hook 'after-init-hook 'global-company-mode)
   ;; -> Perche' disabled?????? :disabled t
@@ -248,14 +248,14 @@
 (use-package esup
   ;; Emacs Start Up Profiler https://github.com/jschaf/esup
   :init
-  (message "use-package esup")
+  ;; Cancellami? (message "use-package esup")
   :ensure t
   )
 
 (use-package hl-line
   ;; Highlight Current Line
   :init
-  (message "use-package hl-line")
+  ;; Cancellami? (message "use-package hl-line")
   (global-hl-line-mode 1)
   :ensure t
   )
@@ -264,7 +264,7 @@
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
   :init
-  (message "use-package ibuffer")
+  ;; Cancellami? (message "use-package ibuffer")
   :ensure t
   :defer t
   :bind
@@ -280,7 +280,7 @@
   ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
   :init
   ;; (ido-mode t)
-  (message "use-package ido")
+  ;; Cancellami? (message "use-package ido")
   :ensure t
   :config
   ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
@@ -304,7 +304,7 @@
   ;; This enables ido in all contexts where it could be useful, not just
   ;; for selecting buffer and file names
   :init
-  (message "use-package ido-ubiquitous")
+  ;; Cancellami? (message "use-package ido-ubiquitous")
   ;; (ido-ubiquitous-mode 1)
   :ensure t
   :defer t
@@ -317,19 +317,19 @@
 ;;(use-package org-plus-contrib
 (use-package org
   :init
-  (message "use-package org-plus-contrib :init")
+  ;; Cancellami? (message "use-package org-plus-contrib :init")
   ;;:ensure t
   :ensure org-plus-contrib
   :defer t
   :config
-  (message "use-package org-plus-contrib :config")
+  ;; Cancellami? (message "use-package org-plus-contrib :config")
   (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
   )
 
 ;;(use-package org
 ;;  :init
-;;  (message "use-package org")
+;;  ;; Cancellami? (message "use-package org")
 ;;  :ensure org-plus-contrib
 ;;  :defer t
 ;;  ;; Non e' necessario impostare :mode
@@ -348,7 +348,7 @@
   ;; Turn on recent file mode so that you can more easily switch to
   ;; recently edited files when you first start emacs
   :init
-  (message "use-package recentf")
+  ;; Cancellami? (message "use-package recentf")
   (recentf-mode 1)
   :ensure t
   :config
@@ -362,7 +362,7 @@
   ;; a filterable list of possible commands in the minibuffer
   ;; http://www.emacswiki.org/emacs/Smex
   :init
-  (message "use-package smex")
+  ;; Cancellami? (message "use-package smex")
   ;; (smex-initialize)
   :ensure t
   :bind
@@ -375,7 +375,7 @@
 
 (use-package tramp
   :init
-  (message "use-package tramp")
+  ;; Cancellami? (message "use-package tramp")
   :ensure t
   :defer t
   :config
@@ -399,7 +399,7 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
   :disabled t
   :init
-  (message "use-package uniquify")
+  ;; Cancellami? (message "use-package uniquify")
   :ensure t
   :defer t
   :config
@@ -408,7 +408,7 @@
 
 (use-package whitespace
   :init
-  (message "use-package whitespace")
+  ;; Cancellami? (message "use-package whitespace")
   :ensure t
   :commands (whitespace-mode)
   :config
@@ -424,7 +424,7 @@
 
 (use-package whitespace-cleanup-mode
   :init
-  (message "use-package whitespace-cleanup-mode")
+  ;; Cancellami? (message "use-package whitespace-cleanup-mode")
   (global-whitespace-cleanup-mode)
   :ensure t
   :disabled t
@@ -435,7 +435,7 @@
 (use-package smooth-scroll
   ;; Minor mode for smooth scrolling and in-place scrolling
   :init
-  (message "use-package smooth-scroll")
+  ;; Cancellami? (message "use-package smooth-scroll")
   :ensure t
   :defer t
   )
@@ -443,7 +443,7 @@
 (use-package switch-window
   ;; A *visual* way to choose a window to switch to
   :init
-  (message "use-package switch-window")
+  ;; Cancellami? (message "use-package switch-window")
   ;; (global-set-key (kbd "C-x o") 'switch-window)
   ;; (global-set-key (kbd "C-x 1") 'switch-window-then-maximize)
   ;; (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
@@ -462,7 +462,7 @@
 (use-package swap-buffers
   ;; A *visual* way to choose a window to switch to
   :init
-  (message "use-package swap-buffers")
+  ;; Cancellami? (message "use-package swap-buffers")
   :ensure t
   :defer t
   )
@@ -470,7 +470,7 @@
 ;; (use-package buffer-move
 ;;   ;; easily swap buffers
 ;;   :init
-;;   (message "use-package buffer-move")
+;;   ;; Cancellami? (message "use-package buffer-move")
 ;;   :ensure t
 ;;   :defer t
 ;;   )
@@ -478,7 +478,7 @@
 ;; (use-package window-number
 ;;   ;; Select windows by numbers
 ;;   :init
-;;   (message "use-package window-number")
+;;   ;; Cancellami? (message "use-package window-number")
 ;;   :ensure t
 ;;   :defer t
 ;;   )
@@ -486,7 +486,7 @@
 (use-package which-key
   ;; Display available keybindings in popup
   :init
-  (message "use-package which-key")
+  ;; Cancellami? (message "use-package which-key")
   :ensure t
   :defer t
   )
@@ -494,7 +494,7 @@
 (use-package cursor-chg
   ;; Change cursor dynamically, depending on the context.
   :init
-  (message "use-package cursor-chg")
+  ;; Cancellami? (message "use-package cursor-chg")
   :ensure t
   :config
   (change-cursor-mode 1) ; On for overwrite/read-only/input mode
@@ -505,7 +505,7 @@
 (use-package undo-tree
   ;; Treat undo history as a tree
   :init
-  (message "use-package undo-tree")
+  ;; Cancellami? (message "use-package undo-tree")
   :ensure t
   :defer t
   :diminish undo-tree-mode
@@ -522,7 +522,7 @@
 (use-package magit
   ;; A GIT porcelain inside Emacs
   :init
-  (message "use-package magit")
+  ;; Cancellami? (message "use-package magit")
   ;; Disable built-in VC for Git when using magit
   ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   ;; (global-set-key (kbd "C-x g") 'magit-status)
@@ -536,7 +536,7 @@
 
 (use-package gitconfig-mode
   :init
-  (message "use-package gitconfig-mode")
+  ;; Cancellami? (message "use-package gitconfig-mode")
   :ensure t
   :defer t
   :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'")
@@ -544,7 +544,7 @@
 
 (use-package gitignore-mode
   :init
-  (message "use-package gitignore-mode")
+  ;; Cancellami? (message "use-package gitignore-mode")
   :ensure t
   :defer t
   :mode ("/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'")
@@ -556,7 +556,7 @@
 (use-package company-quickhelp
   ;; Popup documentation for completion candidates
   :init
-  (message "use-package company-quickhelp")
+  ;; Cancellami? (message "use-package company-quickhelp")
   :ensure t
   :defer t
   :after
@@ -565,7 +565,7 @@
 
 (use-package flycheck
   :init
-  (message "use-package flycheck")
+  ;; Cancellami? (message "use-package flycheck")
   :ensure t
   :defer t
   )
@@ -573,7 +573,7 @@
 (use-package indent-guide
   ;; Show vertical lines to guide indentation
   :init
-  (message "use-package flycheck")
+  ;; Cancellami? (message "use-package flycheck")
   :defer t
   :ensure t
   )
@@ -581,7 +581,7 @@
 (use-package projectile
   ;; Project navigation
   :init
-  (message "use-package projectile")
+  ;; Cancellami? (message "use-package projectile")
   ;; (projectile-global-mode t)
   :ensure t
   :defer t
@@ -592,7 +592,7 @@
 (use-package ibuffer-projectile
   ;;Group ibuffer's list by projectile root
   :init
-  (message "ibuffer-projectile")
+  ;; Cancellami? (message "ibuffer-projectile")
   :ensure t
   :defer t
   :after
@@ -603,7 +603,7 @@
 (use-package project-explorer
   ;; A project explorer sidebar
   :init
-  (message "use-package project-explorer")
+  ;; Cancellami? (message "use-package project-explorer")
   :ensure t
   :defer t
   )
@@ -611,7 +611,7 @@
 (use-package rainbow-delimiters
   ;; Colorful parentesis matching
   :init
-  (message "use-package rainwbow-delimiters")
+  ;; Cancellami? (message "use-package rainwbow-delimiters")
   :ensure t
   :defer t
   )
@@ -619,7 +619,7 @@
 (use-package yasnippet
   ;; Yet another snippet extension for Emacs
   :init
-  (message "use-package yasnippet")
+  ;; Cancellami? (message "use-package yasnippet")
   :ensure t
   :defer t
   )
@@ -627,7 +627,7 @@
 ;; (use-package auto-complete
 ;;   ;; Auto Completion for GNU Emacs
 ;;   :init
-;;   (message "use-package auto-complete")
+;;   ;; Cancellami? (message "use-package auto-complete")
 ;;   :ensure t
 ;;   :defer t
 ;;   :config
@@ -640,7 +640,7 @@
 (use-package csharp-mode
   ;; C# mode
   :init
-  (message "use-package csharp-mode")
+  ;; Cancellami? (message "use-package csharp-mode")
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
@@ -652,7 +652,7 @@
 ;; =========================================================================
 (use-package powershell
   :init
-  (message "use-package powershell")
+  ;; Cancellami? (message "use-package powershell")
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
@@ -666,7 +666,7 @@
 ;; =========================================================================
 (use-package elpy
   :init
-  (message "use-package elpy")
+  ;; Cancellami? (message "use-package elpy")
   (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
@@ -691,7 +691,7 @@
 (use-package py-autopep8
   ;; Autopep8
   :init
-  (message "use-package py-autopep8")
+  ;; Cancellami? (message "use-package py-autopep8")
   :ensure t
   :defer t
   :config
@@ -701,7 +701,7 @@
 ;; (use-package company-jedi
 ;;   ;; company-mode completion back-end for Python JEDI
 ;;   :init
-;;   (message "use-package company-jedi")
+;;   ;; Cancellami? (message "use-package company-jedi")
 ;;   :ensure t
 ;;   :defer t
 ;;   :after
@@ -729,7 +729,7 @@
   ;; go get -u github.com/kisielk/errcheck
   ;;
   :init
-  (message "use-package go-mode")
+  ;; Cancellami? (message "use-package go-mode")
   :ensure t
   :defer t
   :config
@@ -742,7 +742,7 @@
 (use-package go-eldoc
   ;; eldoc for go-mode
   :init
-  (message "use-package go-eldoc")
+  ;; Cancellami? (message "use-package go-eldoc")
   :ensure t
   :defer t
   :after
@@ -754,7 +754,7 @@
 (use-package company-go
   ;; company-mode backend for Go (using gocode)
   :init
-  (message "use-package company-go")
+  ;; Cancellami? (message "use-package company-go")
   ;;(add-to-list 'company-backends 'company-go)
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-go))
@@ -769,7 +769,7 @@
 (use-package golint
   ;; lint for the Go source code
   :init
-  (message "use-package golint")
+  ;; Cancellami? (message "use-package golint")
   :ensure t
   :defer t
   :config
@@ -779,7 +779,7 @@
 (use-package go-guru
   ;; Integration of the Go 'guru' analysis tool into Emacs.
   :init
-  (message "use-package go-guru")
+  ;; Cancellami? (message "use-package go-guru")
   :ensure t
   :defer t
   )
@@ -787,7 +787,7 @@
 (use-package go-errcheck
   ;; errcheck integration for go-mode
   :init
-  (message "use-package go-errcheck")
+  ;; Cancellami? (message "use-package go-errcheck")
   :ensure t
   :defer t
   )
@@ -802,7 +802,7 @@
 (use-package markdown-mode
   ;; Major mode for Markdown-formatted text
   :init
-  (message "use-package markdown-mode")
+  ;; Cancellami? (message "use-package markdown-mode")
   :ensure t
   :defer t
   )
@@ -813,7 +813,7 @@
 (use-package json-mode
   ;; Major mode for editing JSON files
   :init
-  (message "use-package json-mode")
+  ;; Cancellami? (message "use-package json-mode")
   :ensure t
   :defer t
   )
@@ -826,7 +826,7 @@
 ;; =========================================================================
 ;; Customization (outside of "custom")
 ;; =========================================================================
-(message "Customization (outside of 'custom'")
+;; Cancellami? (message "Customization (outside of 'custom'")
 (setq delete-selection-mode t)               ;; Editing basics - See delete-selection-mode command
 (setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
 (setq global-hl-line-mode t)                 ;; Hl line - See global-hl-line-mode command
@@ -929,7 +929,7 @@
 ;; =========================================================================
 ;; Custom
 ;; =========================================================================
-(message "Loading 'custom'")
+;; Cancellami? (message "Loading 'custom'")
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
 (load custom-file t)
 
@@ -937,7 +937,7 @@
 ;; Color theme setup
 ;; =========================================================================
 (when (display-graphic-p)
-  (message "Loading material theme")
+  ;; Cancellami? (message "Loading material theme")
   (load-theme 'material t))
 
 
