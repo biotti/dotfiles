@@ -876,9 +876,11 @@
 ;; Microsoft Windows settings
 ;; =========================================================================
 (cond ((eq system-type 'windows-nt)
-       ;; Imposto Find e Grep
-       (setq find-program (concat invocation-directory "find.exe")
-             grep-program (concat invocation-directory "grep.exe"))
+       ;; ;; Imposto Find e Grep
+       ;; (setq find-program (concat invocation-directory "find.exe")
+       ;;       grep-program (concat invocation-directory "grep.exe"))
+       (setenv "PATH" (concat "C:\\msys64\\usr\\bin;" (getenv "PATH")))
+       (setq exec-path (append exec-path '("C:/msys64/usr/bin")))
        (setq grep-use-null-device nil)
        ;; (setq grep-find-template (concat
        ;;                           (concat
