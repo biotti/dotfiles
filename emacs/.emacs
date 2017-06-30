@@ -879,8 +879,11 @@
        ;; ;; Imposto Find e Grep
        ;; (setq find-program (concat invocation-directory "find.exe")
        ;;       grep-program (concat invocation-directory "grep.exe"))
-       (setenv "PATH" (concat "C:\\msys64\\usr\\bin;" (getenv "PATH")))
-       (setq exec-path (append exec-path '("C:/msys64/usr/bin")))
+       ;; (setenv "PATH" (concat "C:\\msys64\\usr\\bin;" (getenv "PATH")))
+       ;; (setq exec-path (append exec-path '("C:/msys64/usr/bin")))
+       (setq msys2-path "C:\\msys64\\usr\\bin")
+       (setq find-program (concat msys2-path "\\" "find.exe")
+             grep-program (concat msys2-path "\\" "grep.exe"))
        (setq grep-use-null-device nil)
        ;; (setq grep-find-template (concat
        ;;                           (concat
