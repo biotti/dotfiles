@@ -883,7 +883,9 @@
        ;; (setq exec-path (append exec-path '("C:/msys64/usr/bin")))
        (setq msys2-path "C:\\msys64\\usr\\bin")
        (setq find-program (concat msys2-path "\\" "find.exe")
-             grep-program (concat msys2-path "\\" "grep.exe"))
+             grep-program (concat msys2-path "\\" "grep.exe")
+             diff-command (concat msys2-path "\\" "diff.exe")
+             )
        (setq grep-use-null-device nil)
        ;; (setq grep-find-template (concat
        ;;                           (concat
