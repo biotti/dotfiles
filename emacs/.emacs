@@ -148,14 +148,18 @@
   :defer t
   )
 
-(use-package jbeans-theme
-  ;; Jbeans theme for GNU Emacs 24 (deftheme)
-  :if (display-graphic-p)
-  :init
-  ;; Cancellami? (message "use-package jbeans-theme")
-  :ensure t
-  ;; :defer t
-  )
+;;
+;; Rimosso perche' rallenta molto lo startup
+;; e non puo' essere :defer t
+;; perche' altrimenti incasina gli altri themes
+;;(use-package jbeans-theme
+;;  ;; Jbeans theme for GNU Emacs 24 (deftheme)
+;;  :if (display-graphic-p)
+;;  :init
+;;  ;; Cancellami? (message "use-package jbeans-theme")
+;;  :ensure t
+;;  ;; :defer t
+;;  )
 
 (use-package material-theme
   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
