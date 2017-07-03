@@ -55,6 +55,13 @@
 (package-initialize)
 
 ;; =========================================================================
+;; use-package custom setup
+;; =========================================================================
+;; (setq use-package-debug t)
+;; (setq use-package-verbose t)
+;; (setq use-package-enable-imenu-support t)
+;; (setq use-package-minimum-reported-time 0.0001)
+;; =========================================================================
 ;; Bootstrap `use-package'
 ;; =========================================================================
 ;; N.B.: Remove e reinstall "use-package" from "list-packages"
@@ -67,15 +74,11 @@
 (eval-when-compile
   (require 'use-package))
 
-(require 'diminish)
-(require 'bind-key)
+;; Non servono???? (sono dipendenze di use-package???)
+;; (require 'diminish)
+;; (require 'bind-key)
 
-;; =========================================================================
-;; use-package custom setup
-;; =========================================================================
-;; (setq use-package-debug t)
-;; (setq use-package-verbose t)
-;; (setq use-package-enable-imenu-support t)
+
 
 ;; =========================================================================
 ;; Benchmark-init
