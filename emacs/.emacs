@@ -301,17 +301,35 @@
   ;; open now
   (setq ido-use-virtual-buffers t)
   ;;
-  (ido-everywhere t)
-  ;;
   (ido-mode t)
+  ;;
+  (ido-everywhere t)
   )
 
-(use-package ido-ubiquitous
-  ;; Ido-ubiquitous
-  ;; This enables ido in all contexts where it could be useful, not just
-  ;; for selecting buffer and file names
+
+;; Warning (ido-ubiquitous): The ido-ubiquitous package is now redundant.
+;; All functionality, including ido-ubiquitous-mode, has been merged into the ido-completing-read+ package.
+;; You should replace ido-ubiquitous with ido-completing-read+ in your Emacs config.
+;; (use-package ido-ubiquitous
+;;   ;; Ido-ubiquitous
+;;   ;; This enables ido in all contexts where it could be useful, not just
+;;   ;; for selecting buffer and file names
+;;   :init
+;;   ;; Cancellami? (message "use-package ido-ubiquitous")
+;;   ;; (ido-ubiquitous-mode 1)
+;;   :ensure t
+;;   :defer t
+;;   :after
+;;   ido
+;;   :config
+;;   (ido-ubiquitous-mode 1)
+;;   )
+
+(use-package ido-completing-read+
+  ;; Ido-completing-read+
+  ;; A completing-read-function using ido
   :init
-  ;; Cancellami? (message "use-package ido-ubiquitous")
+  ;; Cancellami? (message "use-package ido-completing-read+")
   ;; (ido-ubiquitous-mode 1)
   :ensure t
   :defer t
@@ -375,6 +393,9 @@
   :bind
   ("M-x" . smex)
   ("M-X" . smex-major-mode-commands)
+  ;; This is your old M-x.
+  ("C-c C-c M-x" . execute-extended-command)
+
   :config
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
@@ -539,6 +560,11 @@
   :defer t
   :config
   ;; (magit-diff-use-overlays nil)
+  ;; some packages already provide their own interfaces to ido, so
+  ;; ido-completing-read+ specifically avoids interfering with these.
+  ;; If you use any of the following packages, you need to enable ido for
+  ;; each of them separately.
+  (setq magit-completing-read-function 'magit-ido-completing-read)
   )
 
 (use-package gitconfig-mode
