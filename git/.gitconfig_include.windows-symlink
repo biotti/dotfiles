@@ -3,9 +3,9 @@
     whitespace = cr-at-eol
     # editor = gvim
 [diff]
-    tool = p4merge
+    # tool = p4merge
 [merge]
-    tool = p4merge
+    # tool = p4merge
 [mergetool "p4merge"]
     trustExitCode = true
 [mergetool]
