@@ -259,14 +259,6 @@
   :ensure t
   )
 
-(use-package hl-line
-  ;; Highlight Current Line
-  :init
-  ;; Cancellami? (message "use-package hl-line")
-  (global-hl-line-mode 1)
-  :ensure t
-  )
-
 (use-package ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
@@ -861,7 +853,6 @@
 ;; Cancellami? (message "Customization (outside of 'custom'")
 (setq delete-selection-mode t)               ;; Editing basics - See delete-selection-mode command
 (setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
-(setq global-hl-line-mode t)                 ;; Hl line - See global-hl-line-mode command
 (setq hscroll-step 1)                        ;; Windows - Number of column to scroll when points get too close to the edge
 (setq scroll-step 1)                         ;; Windows - Number of lines to try scrolling a windows when point moves out
 (setq inhibit-startup-screen t)              ;; Initialization - Inhibits the startup screen
@@ -875,6 +866,7 @@
 
 (delete-selection-mode t)                    ;; Attiva delete-selection-mode
 (set-scroll-bar-mode 'right)                 ;; Scrollbars - right
+(global-hl-line-mode 1)                      ;; Highlight current line
 
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
