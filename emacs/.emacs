@@ -395,7 +395,6 @@
   ("M-X" . smex-major-mode-commands)
   ;; This is your old M-x.
   ("C-c C-c M-x" . execute-extended-command)
-
   :config
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
