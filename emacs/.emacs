@@ -30,10 +30,13 @@
     (remove-hook 'find-file-hooks 'vc-refresh-state)
   (remove-hook 'find-file-hooks 'vc-find-file-hook))
 
+;; https://github.com/howardabrams/dot-files/blob/master/emacs.org
+(setq gnutls-min-prime-bits 4096)
+
 ;; Setup package.el
 ;; Cancellami? (message "Setup package.el")
 (require 'package)
-;; (setq package-enable-at-startup nil)
+
 ;; Manage package repositories
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/"))
@@ -67,6 +70,7 @@
 ;; N.B.: Remove e reinstall "use-package" from "list-packages"
 ;;       if there are error processing .emacs file after a
 ;;       package upgrade (use-package.el may be empty!!!)
+;; Utile da leggere: http://irreal.org/blog/?p=6442
 ;; Cancellami? (message "Bootstrapping use-package")
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -533,6 +537,16 @@
     (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t))
+  )
+
+(use-package fill-column-indicator
+  ;; Graphically indicate the fill column
+  :init
+  :ensure t
+  :defer t
+  :config
+  (setq fci-handle-truncate-lines nil)
+  (setq fci-rule-width 1)
   )
 
 ;; =========================================================================
