@@ -98,15 +98,21 @@
 ;; =========================================================================
 ;; Color Theme
 ;; =========================================================================
-(use-package color-theme
-  ;; install color themes
-  :if (display-graphic-p)
-  :init
-  ;; Cancellami? (message "use-package color-theme")
-  :defer t
-  :ensure t
-  ;; :config
+;; Il package color-theme e' necessario soltanto per versioni di emacs
+;; precedenti alla 24.
+;; Lo carico quindi soltanto in queste situazioni
+(if (< emacs-major-version 24)
+    (use-package color-theme
+      ;; install color themes
+      :if (display-graphic-p)
+      :init
+      ;; Cancellami? (message "use-package color-theme")
+      :defer t
+      :ensure t
+      ;; :config
+      )
   )
+
 
 ;; Non esiste piu' ?????????
 ;; (use-package aurora-theme
@@ -219,15 +225,20 @@
   :defer t
   )
 
-(use-package color-theme-solarized
-  ;; The Solarized color theme, ported to Emacs
-  :if (display-graphic-p)
-  :init
-  ;; Cancellami? (message "use-package color-theme-solarized")
-  :ensure t
-  :defer t
-  :after
-  color-theme
+(if (>= emacs-major-version 24)
+    (use-package solarized-theme
+      ;; Da non confondere con color-theme-solarized
+      ;; The Solarized color theme, ported to Emacs
+      :if (display-graphic-p)
+      :init
+      ;; Cancellami? (message "use-package color-theme-solarized")
+      :config
+      ;; (setq frame-background-mode 'dark)
+      :ensure t
+      :defer t
+      :after
+      ;; color-theme
+      )
   )
 
 (use-package zenburn-theme
@@ -983,7 +994,11 @@
 ;; =========================================================================
 (when (display-graphic-p)
   ;; Cancellami? (message "Loading material theme")
-  (load-theme 'material t))
+  ;; (load-theme 'material t)
+  (if (>= emacs-major-version 24)
+      (load-theme 'solarized-dark t)
+    )
+  )
 
 
 ;; =========================================================================
