@@ -268,6 +268,9 @@
 			" Colorscheme material-theme
 			Plug 'jdkanani/vim-material-theme'
 
+			" Colorscheme zenburn
+			Plug 'jnurmine/Zenburn'
+
 		" }}}
 
 		" --------- VIM-PLUG BEGIN ---------
@@ -894,7 +897,7 @@
 					" Consolas
 					" Inconsolata
 					" Courier New
-					set guifont=DejaVu_Sans_Mono:h11:cDEFAULT,Consolas:h11:cDEFAULT,Inconsolata:h11:cDEFAULT,Courier_New:h11:cDEFAULT
+					set guifont=DejaVu_Sans_Mono:h10:cDEFAULT,Consolas:h10:cDEFAULT,Inconsolata:h10:cDEFAULT,Courier_New:h10:cDEFAULT
 
 					" Massimizzo la dimensione della finestra
 					" Assumo di essere in ambiente Windows in italiano, uso lo
@@ -1077,7 +1080,8 @@
 
 		set background=dark
 		" colorscheme material-theme
-		colorscheme jellybeans 
+		" colorscheme jellybeans
+		colorscheme zenburn
 
 	" }}}
 
