@@ -842,7 +842,7 @@
 				" Monospace
 				set guifont=DejaVu\ Sans\ Mono\ 12
 				" set guifont=Monospace\ 12
-	
+
 
 			elseif has("gui_gtk2") || has("gui_gtk3")
 
