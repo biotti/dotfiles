@@ -547,6 +547,22 @@
   (setq fci-rule-width 1)
   )
 
+(use-package try
+  ;; Try out Emacs packages.
+  :init
+  :ensure t
+  :defer t
+  :config
+  )
+
+(use-package origami
+  ;; Flexible text folding
+  :init
+  :ensure t
+  :defer t
+  :config
+  )
+
 ;; =========================================================================
 ;; GIT
 ;; =========================================================================
