@@ -229,6 +229,8 @@
 (use-package zenburn-theme
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
+
+
   :init
   ;; Cancellami? (message "use-pakcage zenburn-theme")
   :ensure t
@@ -981,9 +983,10 @@
 (when (display-graphic-p)
   ;; Cancellami? (message "Loading material theme")
   ;; (load-theme 'material t)
-  (if (>= emacs-major-version 24)
-      (load-theme 'solarized-dark t)
-    )
+  ;; (if (>= emacs-major-version 24)
+  ;;     (load-theme 'solarized-dark t)
+  ;;  )
+  (load-theme 'zenburn t)
   )
 
 
