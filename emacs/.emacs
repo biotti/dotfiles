@@ -180,15 +180,6 @@
   :defer t
   )
 
-(use-package moe-theme
-  ;; A customizable colorful eye-candy theme for Emacser. Moe, moe, kyun!
-  :if (display-graphic-p)
-  :init
-  ;; Cancellami? (message "use-pakcage moe-theme")
-  :ensure t
-  :defer t
-  )
-
 (use-package molokai-theme
   ;; Molokai theme with Emacs theme engine
   :if (display-graphic-p)
@@ -892,6 +883,7 @@
 (delete-selection-mode t)                    ;; Attiva delete-selection-mode
 (set-scroll-bar-mode 'right)                 ;; Scrollbars - right
 (global-hl-line-mode 1)                      ;; Highlight current line
+(setq custom-safe-themes t)                  ;; Treat all themes as safe (warning: security issue!!!!)
 
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
