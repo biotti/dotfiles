@@ -98,21 +98,15 @@
 ;; =========================================================================
 ;; Color Theme
 ;; =========================================================================
-;; Il package color-theme e' necessario soltanto per versioni di emacs
-;; precedenti alla 24.
-;; Lo carico quindi soltanto in queste situazioni
-(if (< emacs-major-version 24)
-    (use-package color-theme
-      ;; install color themes
-      :if (display-graphic-p)
-      :init
-      ;; Cancellami? (message "use-package color-theme")
-      :defer t
-      :ensure t
-      ;; :config
-      )
+(use-package color-theme
+  ;; install color themes
+  :if (display-graphic-p)
+  :init
+  ;; Cancellami? (message "use-package color-theme")
+  :defer t
+  :ensure t
+  ;; :config
   )
-
 
 ;; Non esiste piu' ?????????
 ;; (use-package aurora-theme
