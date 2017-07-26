@@ -350,6 +350,14 @@
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
   )
 
+(use-package org-bullets
+  :init
+  :ensure t
+  :defer t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  )
+
 ;;(use-package org
 ;;  :init
 ;;  ;; Cancellami? (message "use-package org")
