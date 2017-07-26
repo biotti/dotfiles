@@ -690,7 +690,9 @@
   :init
   ;; Cancellami? (message "use-package yasnippet")
   :ensure t
-  :defer t
+  :defer 2
+  :config
+  (yas-global-mode t)
   )
 
 ;; (use-package auto-complete
