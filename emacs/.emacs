@@ -252,10 +252,10 @@
   ;; (add-hook 'after-init-hook 'global-company-mode)
   ;; -> Perche' disabled?????? :disabled t
   :ensure t
-  :defer t
+  :defer 2
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode)
-  (global-company-mode)
+  (global-company-mode t)
   )
 
 (use-package esup
