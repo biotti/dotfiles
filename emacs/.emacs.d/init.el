@@ -300,9 +300,9 @@
   ;; open now
   (setq ido-use-virtual-buffers t)
   ;;
-  (ido-mode t)
+  (setq ido-everywhere t)
   ;;
-  (ido-everywhere t)
+  (ido-mode t)
   )
 
 
