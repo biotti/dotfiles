@@ -521,9 +521,10 @@
   :init
   ;; Cancellami? (message "use-package which-key")
   :ensure t
-  :defer t
+  ;; Non si deve differire altrimenti non parte
+  ;;:defer t
   :config
-  (which-key-mode)
+  (which-key-mode t)
   )
 
 (use-package cursor-chg
