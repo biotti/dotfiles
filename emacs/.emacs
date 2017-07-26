@@ -75,8 +75,12 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
+
+;; Da testare: sembra non essere necessario
+;; https://cestlaz.github.io/posts/using-emacs-1-setup/
+;; Per questo commento la eval-when-compile
+;; (eval-when-compile
+;;   (require 'use-package))
 
 ;; Non servono???? (sono dipendenze di use-package???)
 ;; (require 'diminish)
