@@ -1,3 +1,4 @@
+
 ;; Interesting variables: C-h v
 ;; ----------------------------
 ;; data-directory
@@ -631,6 +632,8 @@
   :defer t
   :after
   company
+  :config
+  (company-quickhelp-mode t)
   )
 
 (use-package flycheck
@@ -770,16 +773,16 @@
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
 
-;; (use-package company-jedi
-;;   ;; company-mode completion back-end for Python JEDI
-;;   :init
-;;   ;; Cancellami? (message "use-package company-jedi")
-;;   :ensure t
-;;   :defer t
-;;   :after
-;;   ;; company
-;;   ;; elpy
-;;   )
+(use-package company-jedi
+  ;; company-mode completion back-end for Python JEDI
+  :init
+  ;; Cancellami? (message "use-package company-jedi")
+  :ensure t
+  :defer t
+  :after
+  company
+  elpy
+  )
 
 
 ;; =========================================================================
