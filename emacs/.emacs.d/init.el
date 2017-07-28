@@ -1025,7 +1025,10 @@
   ;; (if (>= emacs-major-version 24)
   ;;     (load-theme 'solarized-dark t)
   ;;  )
-  (load-theme 'zenburn t)
+
+  ;; Pre il momento torno alle origini!!!!
+  ;; uso il tema di default!!!
+  ;; (load-theme 'zenburn t)
   )
 
 
