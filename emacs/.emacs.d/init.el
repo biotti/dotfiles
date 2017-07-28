@@ -469,14 +469,6 @@
   :diminish whitespace-cleanup-mode
   )
 
-(use-package smooth-scroll
-  ;; Minor mode for smooth scrolling and in-place scrolling
-  :init
-  ;; Cancellami? (message "use-package smooth-scroll")
-  :ensure t
-  :defer t
-  )
-
 (use-package switch-window
   ;; A *visual* way to choose a window to switch to
   :init
