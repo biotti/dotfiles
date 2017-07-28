@@ -902,7 +902,6 @@
 ;; Customization (outside of "custom")
 ;; =========================================================================
 ;; Cancellami? (message "Customization (outside of 'custom'")
-(setq delete-selection-mode t)               ;; Editing basics - See delete-selection-mode command
 (setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
 (setq hscroll-step 1)                        ;; Windows - Number of column to scroll when points get too close to the edge
 (setq scroll-step 1)                         ;; Windows - Number of lines to try scrolling a windows when point moves out
