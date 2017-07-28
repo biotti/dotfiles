@@ -459,16 +459,6 @@
                            newline-mark))
   )
 
-(use-package whitespace-cleanup-mode
-  :init
-  ;; Cancellami? (message "use-package whitespace-cleanup-mode")
-  (global-whitespace-cleanup-mode)
-  :ensure t
-  :disabled t
-  :defer t
-  :diminish whitespace-cleanup-mode
-  )
-
 (use-package switch-window
   ;; A *visual* way to choose a window to switch to
   :init
