@@ -902,29 +902,29 @@
 ;; Customization (outside of "custom")
 ;; =========================================================================
 ;; Cancellami? (message "Customization (outside of 'custom'")
-(setq column-number-mode t)                      ;; Modeline - Display current column number (modeline)
-(setq hscroll-step 1)                            ;; Windows - Number of column to scroll when points get too close to the edge
-(setq scroll-step 1)                             ;; Windows - Number of lines to try scrolling a windows when point moves out
-(setq inhibit-startup-screen t)                  ;; Initialization - Inhibits the startup screen
+(setq column-number-mode t)                       ;; Modeline - Display current column number (modeline)
+(setq hscroll-step 1)                             ;; Windows - Number of column to scroll when points get too close to the edge
+(setq scroll-conservatively most-positive-fixnum) ;; Windows - Number of lines to try scrolling a windows when point moves out
+(setq inhibit-startup-screen t)                   ;; Initialization - Inhibits the startup screen
 
 (if (< emacs-major-version 25)
     ;; "x-" versions considered obsolete after
     ;; emacs 25.1
-    (progn (setq x-select-enable-clipboard t)    ;; makes killing/yanking interact with the clipboard 
-           (setq x-select-enable-primary t))     ;;
+    (progn (setq x-select-enable-clipboard t)     ;; makes killing/yanking interact with the clipboard 
+           (setq x-select-enable-primary t))      ;;
   (progn (setq select-enable-clipboard t)
          (setq select-enable-primary t)))
 
-(setq save-interprogram-paste-before-kill t) ;;
-(setq apropos-do-all t)                      ;; Shows all options when running apropos.
-(setq mouse-yank-at-point t)                 ;; Mouse yank commands yank at point instead of at click.
-(setq ring-bell-function 'ignore)            ;; No bell
-(setq transient-mark-mode t)                 ;; Transient mark mode: mostra il testo selezionato come selezionato
+(setq save-interprogram-paste-before-kill t)      ;;
+(setq apropos-do-all t)                           ;; Shows all options when running apropos.
+(setq mouse-yank-at-point t)                      ;; Mouse yank commands yank at point instead of at click.
+(setq ring-bell-function 'ignore)                 ;; No bell
+(setq transient-mark-mode t)                      ;; Transient mark mode: mostra il testo selezionato come selezionato
 
-(delete-selection-mode t)                    ;; Attiva delete-selection-mode
-(set-scroll-bar-mode 'right)                 ;; Scrollbars - right
-(global-hl-line-mode 1)                      ;; Highlight current line
-(setq custom-safe-themes t)                  ;; Treat all themes as safe (warning: security issue!!!!)
+(delete-selection-mode t)                         ;; Attiva delete-selection-mode
+(set-scroll-bar-mode 'right)                      ;; Scrollbars - right
+(global-hl-line-mode 1)                           ;; Highlight current line
+(setq custom-safe-themes t)                       ;; Treat all themes as safe (warning: security issue!!!!)
 
 ;; (setq cua-mode t nil)                        ;; CUA Mode
 ;; (setq-default frame-title-format "%b (%f)")  ;; full path in title bar
