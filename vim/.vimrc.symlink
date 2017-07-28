@@ -1078,10 +1078,10 @@
 		" let g:rehash256 = 1
 		" colorscheme molokai
 
-		set background=dark
+		" set background=dark
 		" colorscheme material-theme
 		" colorscheme jellybeans
-		colorscheme zenburn
+		" colorscheme zenburn
 
 	" }}}
 
