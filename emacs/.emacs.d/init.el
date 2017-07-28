@@ -902,12 +902,19 @@
 ;; Customization (outside of "custom")
 ;; =========================================================================
 ;; Cancellami? (message "Customization (outside of 'custom'")
-(setq column-number-mode t)                  ;; Modeline - Display current column number (modeline)
-(setq hscroll-step 1)                        ;; Windows - Number of column to scroll when points get too close to the edge
-(setq scroll-step 1)                         ;; Windows - Number of lines to try scrolling a windows when point moves out
-(setq inhibit-startup-screen t)              ;; Initialization - Inhibits the startup screen
-(setq x-select-enable-clipboard t)           ;; makes killing/yanking interact with the clipboard
-(setq x-select-enable-primary t)             ;;
+(setq column-number-mode t)                      ;; Modeline - Display current column number (modeline)
+(setq hscroll-step 1)                            ;; Windows - Number of column to scroll when points get too close to the edge
+(setq scroll-step 1)                             ;; Windows - Number of lines to try scrolling a windows when point moves out
+(setq inhibit-startup-screen t)                  ;; Initialization - Inhibits the startup screen
+
+(if (< emacs-major-version 25)
+    ;; "x-" versions considered obsolete after
+    ;; emacs 25.1
+    (progn (setq x-select-enable-clipboard t)    ;; makes killing/yanking interact with the clipboard 
+           (setq x-select-enable-primary t))     ;;
+  (progn (setq select-enable-clipboard t)
+         (setq select-enable-primary t)))
+
 (setq save-interprogram-paste-before-kill t) ;;
 (setq apropos-do-all t)                      ;; Shows all options when running apropos.
 (setq mouse-yank-at-point t)                 ;; Mouse yank commands yank at point instead of at click.
