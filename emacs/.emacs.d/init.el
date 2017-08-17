@@ -85,7 +85,7 @@
 
 ;; Non servono???? (sono dipendenze di use-package???)
 ;; (require 'diminish)
-;; (require 'bind-key)
+;; (require 'bindkey)
 
 
 
@@ -338,6 +338,48 @@
   :config
   (ido-ubiquitous-mode 1)
   )
+
+;; ;; Testing Ivy, Swiper & Counsel
+;; ;; -----------------------------
+;; (use-package ivy
+;;   :init
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   )
+
+;; (use-package swiper
+;;   :init
+;;   :ensure t
+;;   ;; :defer t
+;;   :config
+;;   (ivy-mode 1)
+;;   (setq ivy-use-virtual-buffers t)
+;;   (setq enable-recursive-minibuffers t)
+;;   (global-set-key "\C-s" 'swiper)
+;;   (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;   (global-set-key (kbd "<f6>") 'ivy-resume)
+;;   (global-set-key (kbd "M-x") 'counsel-M-x)
+;;   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;;   (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;;   (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;;   (global-set-key (kbd "<f1> l") 'counsel-find-library)
+;;   (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;   (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;;   (global-set-key (kbd "C-c g") 'counsel-git)
+;;   (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;;   (global-set-key (kbd "C-c k") 'counsel-ag)
+;;   (global-set-key (kbd "C-x l") 'counsel-locate)
+;;   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;;   )
+
+;; (use-package counsel
+;;   :init
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   )
 
 ;;(use-package org-plus-contrib
 (use-package org
@@ -875,8 +917,27 @@
   :defer t
   )
 
+;;
+;; SQL
+;;
+(use-package sql
+  ;;
+  :init
+  ;;(setq sql-ms-program "sqlcmd")
+  :ensure t
+  :defer t
+  :config
+  )
 
-
+(use-package sql-indent
+  ;;
+  :init
+  :ensure t
+  :defer t
+  :config
+  :after
+  sql
+  )
 
 
 
