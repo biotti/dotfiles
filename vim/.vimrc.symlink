@@ -238,38 +238,38 @@
 
 			" Colorscheme Solarized
 			" NeoBundle 'altercation/vim-colors-solarized'
-			Plug 'altercation/vim-colors-solarized'
+			" Plug 'altercation/vim-colors-solarized'
 
 			" Colorscheme Sorcerer
 			" NeoBundle 'Sorcerer'
-			Plug 'vim-scripts/Sorcerer'
+			" Plug 'vim-scripts/Sorcerer'
 
 			" Colorscheme Molokai
 			" NeoBundle 'tomasr/molokai'
-			Plug 'tomasr/molokai'
+			" Plug 'tomasr/molokai'
 
 			" Colorscheme Badwolf
 			" NeoBundle 'sjl/badwolf'
-			Plug 'sjl/badwolf'
+			" Plug 'sjl/badwolf'
 
 			" Colorscheme Gruvbox
 			" NeoBundle 'morhetz/gruvbox'
-			Plug 'morhetz/gruvbox'
+			" Plug 'morhetz/gruvbox'
 
 			" Colorscheme Jellybeans
 			" NeoBundle 'nanotech/jellybeans.vim'
-			Plug 'nanotech/jellybeans.vim'
+			" Plug 'nanotech/jellybeans.vim'
 
 			" Colorscheme Mustang (leggera variazione dall'originale non
 			" disponibile in Github)
 			" NeoBundle 'croaker/mustang-vim'
-			Plug 'nanotech/jellybeans.vim'
+			" Plug 'nanotech/jellybeans.vim'
 
 			" Colorscheme material-theme
-			Plug 'jdkanani/vim-material-theme'
+			" Plug 'jdkanani/vim-material-theme'
 
 			" Colorscheme zenburn
-			Plug 'jnurmine/Zenburn'
+			" Plug 'jnurmine/Zenburn'
 
 		" }}}
 
@@ -1082,6 +1082,9 @@
 		" colorscheme material-theme
 		" colorscheme jellybeans
 		" colorscheme zenburn
+		
+		set background=dark
+		colorscheme desert
 
 	" }}}
 
