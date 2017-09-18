@@ -248,6 +248,7 @@
 (use-package ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
+  ;; - emacs internal -
   :init
   :ensure t
   :defer t
@@ -262,6 +263,7 @@
   ;; name, ido will narrow down the list of buffers to match the text
   ;; you've typed in
   ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
+  ;; - emacs internal -
   :init
   ;; (ido-mode t)
   :ensure t
@@ -395,6 +397,7 @@
 (use-package recentf
   ;; Turn on recent file mode so that you can more easily switch to
   ;; recently edited files when you first start emacs
+  ;; - emacs internal -
   :init
   (recentf-mode 1)
   :ensure t
@@ -422,6 +425,7 @@
   )
 
 (use-package tramp
+  ;; - emacs internal -
   :init
   :ensure t
   :defer t
@@ -444,6 +448,7 @@
   ;; The forward naming method includes part of the file's directory
   ;; name at the beginning of the buffer name
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
+  ;; - emacs internal -
   :disabled t
   :init
   :ensure t
@@ -453,6 +458,7 @@
   )
 
 (use-package whitespace
+  ;; - emacs internal -
   :init
   :ensure t
   :commands (whitespace-mode)
@@ -855,7 +861,7 @@
 ;; SQL
 ;;
 (use-package sql
-  ;;
+  ;; - emacs internal -
   :init
   ;;(setq sql-ms-program "sqlcmd")
   :ensure t
