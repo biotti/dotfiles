@@ -46,23 +46,38 @@
 
 		" Imposta la lingua dei "messaggi" in inglese.
 		" Altrimenti usa quella di sistema
-		if has("win32")
+		if has("win32") || has("win64")
 			language messages en_US
 		else
 			language messages en_US.UTF-8
 		endif
 
-		" " Imposta gestione unicode
-		" " http://vim.wikia.com/wiki/Working_with_Unicode
-		" if has("multi_byte")
-		" 	if &termencoding == ""
-		" 		let &termencoding = &encoding
-		" 	endif
-		" 	scriptencoding utf-8
-		" 	set encoding=utf-8
-		" 	" setglobal fileencoding=utf-8
-		" 	set fileencodings=ucs-bom,utf-8,cp850,latin1
-		" endif
+		" Imposta gestione unicode
+		" http://vim.wikia.com/wiki/Working_with_Unicode
+		if has("multi_byte")
+			" if &termencoding == ""
+			" 	let &termencoding = &encoding
+			" endif
+			
+			" scriptencoding utf-8
+			
+			" Necessario in caso di DIRECX
+			" Quindi se sono in Windows e in Gui perche' altrimenti
+			" in console mostra caratteri "strani" nella statusbar
+			if has("win32") || has("win64")
+
+				if has("gui_running")
+
+					set encoding=utf-8
+
+				endif
+
+			endif
+			set encoding=utf-8
+			
+			" setglobal fileencoding=utf-8
+			" set fileencodings=ucs-bom,utf-8,cp850,latin1
+		endif
 
 	" }}}
 
@@ -124,7 +139,7 @@
 		" --------- NEOBUNDLE BEGIN ---------
 
 		" --------- VIM-PLUG BEGIN ---------
-		if has("win32")
+		if has("win32") || has("win64")
 			" Workaround per posizionare il plugin in ~/vim/autoload
 			" invece che in ~/vimfiles in ambiente Microsoft Windows
 			set runtimepath+=~/.vim/autoload/
@@ -725,6 +740,9 @@
 
 				if has("gui_running")
 
+					" E' obbligatorio impostare l'encoding a utf-8
+					" se si attiva il DIRECTX
+					set encoding=utf-8
 					set renderoptions=type:directx
 
 				endif
@@ -882,7 +900,7 @@
 
 				" Windows????
 				"
-				if has("win32")
+				if has("win32") || has("win64")
 
 					" set guifont=Courier_New:h10:cDEFAULT
 					" set guifont=Courier_New:h10:cANSI
@@ -975,7 +993,7 @@
 
 		" Sono in ambiente TERMINALE, determino se il sistema
 		" operativo e Windows e apporto le impostazioni eventuali
-		if has("win32")
+		if has("win32") || has("win64")
 
 			if has("gui_running")
 
