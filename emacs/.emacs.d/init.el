@@ -228,6 +228,27 @@
 ;;   :defer t
 ;;   )
 
+(use-package spacemacs-theme
+  ;; Port of vim's mustang theme
+  :if (display-graphic-p)
+  :init
+  :ensure t
+  ;;:defer t
+  )
+
+;; =========================================================================
+;; Color theme setup
+;; =========================================================================
+(when (display-graphic-p)
+  ;; (load-theme 'material t)
+  ;; (if (>= emacs-major-version 24)
+  ;;     (load-theme 'solarized-dark t)
+  ;;  )
+
+  ;;(load-theme 'tango-dark t)
+  (load-theme 'spacemacs-dark t)
+  )
+
 ;; =========================================================================
 ;; EMACS enhancements
 ;; =========================================================================
@@ -1092,19 +1113,6 @@
 ;; Emacs Server
 ;; (require 'server)
 ;; (unless (server-running-p) (server-start))
-
-;; =========================================================================
-;; Color theme setup
-;; =========================================================================
-(when (display-graphic-p)
-  ;; (load-theme 'material t)
-  ;; (if (>= emacs-major-version 24)
-  ;;     (load-theme 'solarized-dark t)
-  ;;  )
-
-  (load-theme 'tango-dark t)
-  )
-
 
 ;; =========================================================================
 ;; Font setup
