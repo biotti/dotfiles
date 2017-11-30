@@ -238,7 +238,8 @@
   ;; (add-hook 'after-init-hook 'global-company-mode)
   ;; -> Perche' disabled?????? :disabled t
   :ensure t
-  :defer 2
+  ;; :defer 2
+  :defer t
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode)
   (global-company-mode t)
@@ -643,7 +644,13 @@
 ;;  :config
 ;;  (spaceline-all-the-icons-theme)
 
-
+(use-package highlight-indentation
+  ;; https://github.com/antonj/Highlight-Indentation-for-Emacs
+  :init
+  :ensure t
+  :defer t
+  :config
+  )
 
 ;; =========================================================================
 ;; GIT
@@ -746,7 +753,8 @@
   ;; Yet another snippet extension for Emacs
   :init
   :ensure t
-  :defer 2
+  ;;:defer 2
+  :defer t
   :config
   (yas-global-mode t)
   )
@@ -798,6 +806,7 @@
   :after
   flycheck
   py-autopep8
+  highlight-indentation
   :config
   (elpy-enable)
   (setq elpy-rpc-backend "jedi")
