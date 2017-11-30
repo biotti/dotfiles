@@ -31,6 +31,12 @@
     (remove-hook 'find-file-hooks 'vc-refresh-state)
   (remove-hook 'find-file-hooks 'vc-find-file-hook))
 
+;; =========================================================================
+;; Custom
+;; =========================================================================
+(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
+(load custom-file t)
+
 ;; https://github.com/howardabrams/dot-files/blob/master/emacs.org
 (setq gnutls-min-prime-bits 4096)
 
@@ -1009,12 +1015,6 @@
 ;; Emacs Server
 ;; (require 'server)
 ;; (unless (server-running-p) (server-start))
-
-;; =========================================================================
-;; Custom
-;; =========================================================================
-(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
-(load custom-file t)
 
 ;; =========================================================================
 ;; Color theme setup
