@@ -577,6 +577,59 @@
   :config
   )
 
+;; Sperimentazione modeline migliorate:
+;; -> powerline
+;; -> smart-mode-line
+;; -> spaceline, magari con spaceline-all-the-icons
+;;    se installato all-the-icons e i relativi fonts
+;;    e magari spacemacs-theme
+;; -> telephone-line
+;; -> micgoline
+;;(use-package smart-mode-line
+;;  ;; https://github.com/Malabarba/smart-mode-line
+;;  :init
+;;  :ensure t
+;;  ;;:defer t
+;;  :config
+;;  (setq sml/no-confirm-load-theme t)
+;;  (sml/setup)
+;;  )
+(use-package powerline
+  ;; https://github.com/milkypostman/powerline/
+  :init
+  :ensure t
+  ;; NON USARE DEFER!
+  ;; :defer t
+  :config
+  ;;(powerline-default-theme)
+  ;;(powerline-center-theme)
+  ;;(powerline-center-evil-theme)
+  ;;(powerline-vim-theme)
+  ;;(powerline-nano-theme)
+  )
+(use-package spaceline-config
+  ;; https://github.com/TheBB/spaceline
+  :init
+  :ensure spaceline
+  ;; NON USARE DEFER!
+  ;; :defer t
+  :after
+  powerline
+  :config
+  (spaceline-spacemacs-theme)
+  ;;(spaceline-emacs-theme)
+  )
+;;(use-package spaceline-all-the-icons 
+;;  ;; https://github.com/domtronn/spaceline-all-the-icons.el
+;;  :init
+;;  ;;:defer t
+;;  :after
+;;  spaceline
+;;  :config
+;;  (spaceline-all-the-icons-theme)
+
+
+
 ;; =========================================================================
 ;; GIT
 ;; =========================================================================
