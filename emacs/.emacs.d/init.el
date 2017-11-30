@@ -31,6 +31,12 @@
     (remove-hook 'find-file-hooks 'vc-refresh-state)
   (remove-hook 'find-file-hooks 'vc-find-file-hook))
 
+;; =========================================================================
+;; Custom
+;; =========================================================================
+(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
+;;(load custom-file t)
+
 ;; https://github.com/howardabrams/dot-files/blob/master/emacs.org
 (setq gnutls-min-prime-bits 4096)
 
@@ -55,12 +61,6 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
-
-;; =========================================================================
-;; Custom
-;; =========================================================================
-(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
-(load custom-file t)
 
 ;; =========================================================================
 ;; use-package custom setup
