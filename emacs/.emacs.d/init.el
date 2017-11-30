@@ -504,6 +504,19 @@
   :defer t
   )
 
+(use-package winum
+  ;; https://github.com/deb0ch/emacs-winum
+  :init
+  :ensure t
+  ;; NON USARE DEFER!
+  ;;:defer t
+  :config
+  ;; Per l'uso con spaceline
+  ;; https://github.com/TheBB/spaceline#winum
+  ;;(setq winum-auto-setup-mode-line nil)
+  (winum-mode)
+  )
+
 ;; (use-package buffer-move
 ;;   ;; easily swap buffers
 ;;   :init
@@ -600,6 +613,8 @@
   :ensure t
   ;; NON USARE DEFER!
   ;; :defer t
+  :after
+  winum
   :config
   ;;(powerline-default-theme)
   ;;(powerline-center-theme)
