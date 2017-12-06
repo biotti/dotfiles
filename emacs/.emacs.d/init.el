@@ -1,3 +1,27 @@
+;;
+;; Da verificare:
+;; https://sam217pa.github.io/2016/08/30/how-to-make-your-own-spacemacs/
+;; http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
+;;
+;; https://github.com/syl20bnr/spacemacs
+;; https://github.com/bbatsov/prelude
+;; https://github.com/purcell/emacs.d
+;; https://github.com/magnars/.emacs.d
+;; https://github.com/eschulte/emacs24-starter-kit
+;; https://github.com/xiaohanyu/oh-my-emacs
+;; https://github.com/technomancy/better-defaults
+;; https://github.com/rdallasgray/graphene
+;; https://github.com/bodil/ohai-emacs
+;; https://github.com/ergoemacs/ergoemacs-mode
+;; https://github.com/technomancy/emacs-starter-kit
+;; https://github.com/dimitri/emacs-kicker
+;; https://github.com/kjhealy/emacs-starter-kit
+;; https://github.com/jabranham/emacs-for-social-science
+;; https://github.com/overtone/emacs-live
+;; https://github.com/jkitchin/scimax
+;;
+;; Customize per Os/Emacs version
+;; https://www.emacswiki.org/emacs/CustomizingBoth
 
 ;; Interesting variables: C-h v
 ;; ----------------------------
@@ -9,11 +33,11 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
-;; Customize per Os/Emacs version
-;; https://www.emacswiki.org/emacs/CustomizingBoth
-
-;; https://github.com/syl20bnr/spacemacs
-;; https://github.com/bbatsov/prelude
+;; =========================================================================
+;; Custom
+;; =========================================================================
+(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
+;;(load custom-file t)
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; -------------------------------------------------------------------------------------------------
@@ -31,23 +55,40 @@
     (remove-hook 'find-file-hooks 'vc-refresh-state)
   (remove-hook 'find-file-hooks 'vc-find-file-hook))
 
-;; =========================================================================
-;; Custom
-;; =========================================================================
-(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
-;;(load custom-file t)
-
 ;; https://github.com/howardabrams/dot-files/blob/master/emacs.org
 (setq gnutls-min-prime-bits 4096)
 
 ;; Setup package.el
 (require 'package)
 
+;; =========================================================================
 ;; Manage package repositories
+;; =========================================================================
+;;
+;; Org (org-mode)
 (add-to-list 'package-archives
              '("org" . "http://orgmode.org/elpa/"))
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
+;;
+;; MELPA - Stable
+;;(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+;;                    (not (gnutls-available-p))))
+;;       (url (concat (if no-ssl "http" "https") "://stable.melpa.org/packages/")))
+;;  (add-to-list 'package-archives (cons "melpa-stable" url) t))
+;;
+;; MELPA - Unstable
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+  (add-to-list 'package-archives (cons "melpa" url) t))
+;;
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+;;
+;;(setq package-archive-priorities
+;;      '(("melpa-stable" . 10)
+;;        ("gnu"          . 5)
+;;        ("melpa"        . 0)))
 
 ;; https://github.com/sondr3/dotfiles/blob/master/emacs.org
 ;; Then we ll make sure we always load newer files if they are available,
@@ -97,6 +138,16 @@
 ;; Se voglio fare benchmarking devo caricarlo prima posssibile
 ;; =========================================================================
 (use-package benchmark-init
+  :init
+  :ensure t
+  )
+
+;; =========================================================================
+;; Diminish
+;; Non piu' inserito come dipendenza in use-package, occorre installarlo
+;; esplicitamente se si usa il :diminish
+;; =========================================================================
+(use-package diminish
   :init
   :ensure t
   )
@@ -232,22 +283,22 @@
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
   :init
+  (load-theme 'spacemacs-dark t)
   :ensure t
   ;;:defer t
   )
 
-;; =========================================================================
-;; Color theme setup
-;; =========================================================================
-(when (display-graphic-p)
-  ;; (load-theme 'material t)
-  ;; (if (>= emacs-major-version 24)
-  ;;     (load-theme 'solarized-dark t)
-  ;;  )
-
-  ;;(load-theme 'tango-dark t)
-  (load-theme 'spacemacs-dark t)
-  )
+;; ;; =========================================================================
+;; ;; Color theme setup
+;; ;; =========================================================================
+;; (when (display-graphic-p)
+;;   ;; (load-theme 'material t)
+;;   ;; (if (>= emacs-major-version 24)
+;;   ;;     (load-theme 'solarized-dark t)
+;;   ;;  )
+;;   ;;(load-theme 'tango-dark t)
+;;   
+;;   )
 
 ;; =========================================================================
 ;; EMACS enhancements
@@ -427,12 +478,12 @@
   ;; recently edited files when you first start emacs
   ;; - emacs internal -
   :init
-  (recentf-mode 1)
   :ensure t
   :config
   (setq recentf-save-file (concat user-emacs-directory ".recentf"))
   (setq recentf-exclude '(".ido.last"))
   (setq recentf-max-menu-items 40)
+  (recentf-mode 1)
   )
 
 (use-package smex
@@ -632,6 +683,23 @@
 (use-package powerline
   ;; https://github.com/milkypostman/powerline/
   :init
+  ;; (setq powerline-default-separator 'alternate)
+  ;; (setq powerline-default-separator 'arrow)
+  ;; (setq powerline-default-separator 'arrow-fade)
+  ;; (setq powerline-default-separator 'bar)
+  ;; (setq powerline-default-separator 'box)
+  ;; (setq powerline-default-separator 'brace)
+  ;; (setq powerline-default-separator 'butt)
+  ;; (setq powerline-default-separator 'chamfer)
+  ;; (setq powerline-default-separator 'contour)
+  ;; (setq powerline-default-separator 'curve)
+  ;; (setq powerline-default-separator 'rounded)
+  ;; (setq powerline-default-separator 'roundstub)
+  (setq powerline-default-separator 'slant)
+  ;; (setq powerline-default-separator 'wave)
+  ;; (setq powerline-default-separator 'zigzag)
+  ;; (setq powerline-default-separator 'nil)
+  ;; (setq powerline-default-separator 'utf-8)
   :ensure t
   ;; NON USARE DEFER!
   ;; :defer t
