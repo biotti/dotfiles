@@ -279,13 +279,13 @@
 ;;   :defer t
 ;;   )
 
-(use-package spacemacs-theme
+(use-package spacemacs-common
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
-  :init
-  (load-theme 'spacemacs-dark t)
-  :ensure t
+  :ensure spacemacs-theme
   ;;:defer t
+  :config
+  (load-theme 'spacemacs-dark t)
   )
 
 ;; ;; =========================================================================
