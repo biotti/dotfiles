@@ -934,22 +934,24 @@
 ;; =========================================================================
 (use-package go-mode
   ;; Major mode for the Go programming language
-  ;;
-  ;; -> occorre installare i seguenti pacchetti:
+  ;; Installation:
+  ;; 
   ;; go get -u golang.org/x/tools/cmd/goimports
+  ;; go get -u golang.org/x/tools/cmd/godoc
   ;; ;; NO - Gia' presente?     ;;go get -u golang.org/x/tools/cmd/vet
   ;; ;; NO - Sostituito da GURU ;;go get -u golang.org/x/tools/cmd/oracle
-  ;; go get -u golang.org/x/tools/cmd/guru
-  ;; go get -u golang.org/x/tools/cmd/godoc
-  ;; go get -u github.com/golang/lint/golint
+  ;; -- https://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/
+  ;; go get github.com/rogpeppe/godef
   ;;
-  ;; NonWindwos: go get -u github.com/nsf/gocode
-  ;; Windows: go get -u -ldflags -H=windowsgui github.com/nsf/gocode
-  ;; go get -u github.com/kisielk/errcheck
+  ;; Documentazione utilizzata:
+  ;; https://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/
+  ;; https://johnsogg.github.io/emacs-golang
   ;;
   :init
   :ensure t
   :defer t
+  :after
+  flyckeck
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
   (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
@@ -959,6 +961,11 @@
 
 (use-package go-eldoc
   ;; eldoc for go-mode
+  ;; Installation:
+  ;;
+  ;; Non Windwos: go get -u github.com/nsf/gocode
+  ;; Windows    : go get -u -ldflags -H=windowsgui github.com/nsf/gocode
+  ;;
   :init
   :ensure t
   :defer t
@@ -970,6 +977,11 @@
 
 (use-package company-go
   ;; company-mode backend for Go (using gocode)
+  ;; Installation:
+  ;;
+  ;; Non Windwos: go get -u github.com/nsf/gocode
+  ;; Windows    : go get -u -ldflags -H=windowsgui github.com/nsf/gocode
+  ;;
   :init
   ;;(add-to-list 'company-backends 'company-go)
   (with-eval-after-load 'company
@@ -984,6 +996,10 @@
 
 (use-package golint
   ;; lint for the Go source code
+  ;; Installation: Golint requires Go 1.6 or later.
+  ;;
+  ;; go get -u github.com/golang/lint/golint
+  ;;
   :init
   :ensure t
   :defer t
@@ -1000,6 +1016,10 @@
 
 (use-package go-errcheck
   ;; errcheck integration for go-mode
+  ;; Installation
+  ;;
+  ;; go get -u github.com/kisielk/errcheck
+  ;;
   :init
   :ensure t
   :defer t
