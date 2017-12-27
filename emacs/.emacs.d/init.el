@@ -680,50 +680,51 @@
 ;;  (setq sml/no-confirm-load-theme t)
 ;;  (sml/setup)
 ;;  )
-(use-package powerline
-  ;; https://github.com/milkypostman/powerline/
-  :init
-  ;; (setq powerline-default-separator 'alternate)
-  ;; (setq powerline-default-separator 'arrow)
-  ;; (setq powerline-default-separator 'arrow-fade)
-  ;; (setq powerline-default-separator 'bar)
-  ;; (setq powerline-default-separator 'box)
-  ;; (setq powerline-default-separator 'brace)
-  ;; (setq powerline-default-separator 'butt)
-  ;; (setq powerline-default-separator 'chamfer)
-  ;; (setq powerline-default-separator 'contour)
-  ;; (setq powerline-default-separator 'curve)
-  ;; (setq powerline-default-separator 'rounded)
-  ;; (setq powerline-default-separator 'roundstub)
-  (setq powerline-default-separator 'slant)
-  ;; (setq powerline-default-separator 'wave)
-  ;; (setq powerline-default-separator 'zigzag)
-  ;; (setq powerline-default-separator 'nil)
-  ;; (setq powerline-default-separator 'utf-8)
-  :ensure t
-  ;; NON USARE DEFER!
-  ;; :defer t
-  :after
-  winum
-  :config
-  ;;(powerline-default-theme)
-  ;;(powerline-center-theme)
-  ;;(powerline-center-evil-theme)
-  ;;(powerline-vim-theme)
-  ;;(powerline-nano-theme)
-  )
-(use-package spaceline-config
-  ;; https://github.com/TheBB/spaceline
-  :init
-  :ensure spaceline
-  ;; NON USARE DEFER!
-  ;; :defer t
-  :after
-  powerline
-  :config
-  (spaceline-spacemacs-theme)
-  ;;(spaceline-emacs-theme)
-  )
+
+;; (use-package powerline
+;;   ;; https://github.com/milkypostman/powerline/
+;;   :init
+;;   ;; (setq powerline-default-separator 'alternate)
+;;   ;; (setq powerline-default-separator 'arrow)
+;;   ;; (setq powerline-default-separator 'arrow-fade)
+;;   ;; (setq powerline-default-separator 'bar)
+;;   ;; (setq powerline-default-separator 'box)
+;;   ;; (setq powerline-default-separator 'brace)
+;;   ;; (setq powerline-default-separator 'butt)
+;;   ;; (setq powerline-default-separator 'chamfer)
+;;   ;; (setq powerline-default-separator 'contour)
+;;   ;; (setq powerline-default-separator 'curve)
+;;   ;; (setq powerline-default-separator 'rounded)
+;;   ;; (setq powerline-default-separator 'roundstub)
+;;   (setq powerline-default-separator 'slant)
+;;   ;; (setq powerline-default-separator 'wave)
+;;   ;; (setq powerline-default-separator 'zigzag)
+;;   ;; (setq powerline-default-separator 'nil)
+;;   ;; (setq powerline-default-separator 'utf-8)
+;;   :ensure t
+;;   ;; NON USARE DEFER!
+;;   ;; :defer t
+;;   :after
+;;   winum
+;;   :config
+;;   ;;(powerline-default-theme)
+;;   ;;(powerline-center-theme)
+;;   ;;(powerline-center-evil-theme)
+;;   ;;(powerline-vim-theme)
+;;   ;;(powerline-nano-theme)
+;;   )
+;; (use-package spaceline-config
+;;   ;; https://github.com/TheBB/spaceline
+;;   :init
+;;   :ensure spaceline
+;;   ;; NON USARE DEFER!
+;;   ;; :defer t
+;;   :after
+;;   powerline
+;;   :config
+;;   (spaceline-spacemacs-theme)
+;;   ;;(spaceline-emacs-theme)
+;;   )
 ;;(use-package spaceline-all-the-icons 
 ;;  ;; https://github.com/domtronn/spaceline-all-the-icons.el
 ;;  :init
