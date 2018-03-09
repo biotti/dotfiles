@@ -2,15 +2,21 @@
     autocrlf = true
     whitespace = cr-at-eol
     # editor = gvim
+    # editor = \"C:/Program Files (x86)/GitExtensions/GitExtensions.exe\" fileeditor
 [diff]
     # tool = p4merge
-[merge]
-    # tool = p4merge
-[mergetool "p4merge"]
-    trustExitCode = true
-[mergetool]
-    keepBackup = false
+    tool = kdiff3
+    guitool = kdiff3
 [difftool]
     prompt = false
+[mergetool "kdiff3"]
+    path = C:/Program Files/KDiff3/kdiff3.exe
+[merge]
+    # tool = p4merge
+    tool = kdiff3
+[mergetool]
+    keepBackup = false
+[mergetool "p4merge"]
+    trustExitCode = true
 
 # vim: set ft=gitconfig :

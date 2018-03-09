@@ -10,11 +10,16 @@
 # [core]
 #     excludesfile = ~/.gitignore_global
 [credential]
-	# interactive = always
+    # interactive = always
 [include]
     path = ~/.gitconfig_user
     path = ~/.gitconfig_include
 [init]
     templatedir = ~/.git_template
+[filter "lfs"]
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
 
 # vim: set ft=gitconfig :
