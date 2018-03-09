@@ -888,17 +888,20 @@
 ;; =========================================================================
 (use-package elpy
   :init
-  (with-eval-after-load 'python (elpy-enable))
+  ;; (with-eval-after-load 'python (elpy-enable))
+  (elpy-enable)
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
   ;; :mode "\\.py[w]?\\"
-  :after
-  flycheck
-  py-autopep8
-  highlight-indentation
+  ;; -----
+  ;; :after
+  ;; flycheck
+  ;; py-autopep8
+  ;; highlight-indentation
+  ;; --
   :config
-  (elpy-enable)
+  ;; (elpy-enable)
   (setq elpy-rpc-backend "jedi")
   ;; (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   ;; (add-hook 'elpy-mode-hook 'flycheck-mode)
