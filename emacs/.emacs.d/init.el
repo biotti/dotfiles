@@ -311,7 +311,7 @@
   ;; -> Perche' disabled?????? :disabled t
   :ensure t
   ;; :defer 2
-  :defer t
+  defer t
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode)
   (global-company-mode t)
