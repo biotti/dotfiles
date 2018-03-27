@@ -311,7 +311,7 @@
   ;; -> Perche' disabled?????? :disabled t
   :ensure t
   ;; :defer 2
-  defer t
+  :defer t
   :config
   ;; (add-hook 'after-init-hook 'global-company-mode)
   (global-company-mode t)
@@ -1052,8 +1052,12 @@
 (use-package markdown-mode
   ;; Major mode for Markdown-formatted text
   :init
+  ;; (setq markdown-command "multimarkdown")
   :ensure t
   :defer t
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
   )
 
 ;; =========================================================================
