@@ -33,6 +33,9 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
+;; Set default coding system to UTF-8
+(prefer-coding-system 'utf-8)
+
 ;; =========================================================================
 ;; Custom
 ;; =========================================================================
