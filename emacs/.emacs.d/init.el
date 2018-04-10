@@ -849,6 +849,15 @@
   (yas-global-mode t)
   )
 
+(use-package yasnippet-snippets
+  ;; Collection of yasnippet snippets
+  :init
+  :ensure t
+  :defer t
+  :after
+  yasnippet
+  )
+
 ;; (use-package auto-complete
 ;;   ;; Auto Completion for GNU Emacs
 ;;   :init
@@ -857,6 +866,18 @@
 ;;   :config
 ;;   (ac-config-default)
 ;;   )
+
+;; =========================================================================
+;; Development: Emacs Lisp
+;; =========================================================================
+(use-package el-autoyas
+  ;; Automatically create Emacs-Lisp Yasnippets
+  :init
+  :ensure t
+  :defer t
+  :after
+  yasnippet
+  )
 
 ;; =========================================================================
 ;; Development: C#
@@ -1027,6 +1048,16 @@
   :init
   :ensure t
   :defer t
+  )
+
+(use-package go-snippets
+  ;; Yasnippets for go
+  :init
+  :ensure t
+  :defer t
+  :after
+  yasnippet
+  go-mode
   )
 
 
