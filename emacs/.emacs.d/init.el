@@ -973,14 +973,14 @@
   ;; https://johnsogg.github.io/emacs-golang
   ;;
   :init
+  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
+  (setq gofmt-command "goimports")
   :ensure t
   :defer t
   :after
   flyckeck
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
-  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
-  (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   )
 
@@ -1030,6 +1030,8 @@
   :defer t
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
+  :after
+  go-mode
   )
 
 (use-package go-guru
@@ -1037,6 +1039,8 @@
   :init
   :ensure t
   :defer t
+  :after
+  go-mode
   )
 
 (use-package go-errcheck
@@ -1048,6 +1052,8 @@
   :init
   :ensure t
   :defer t
+  :after
+  go-mode
   )
 
 (use-package go-snippets
@@ -1060,6 +1066,18 @@
   go-mode
   )
 
+(use-package flycheck-gometalinter
+  ;; Flycheck checker for golang using gometalinter
+  :init
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (flycheck-gometalinter-setup))
+  :after
+  flycheck
+  go-mode
+  )
 
 
 
