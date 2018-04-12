@@ -982,15 +982,27 @@
   ;; https://johnsogg.github.io/emacs-golang
   ;;
   :init
-  (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
-  (setq gofmt-command "goimports")
   :ensure t
   :defer t
-  :after
-  flyckeck
+  ;; :after
+  ;; flyckeck
   :config
+  ;; (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
+  ;; (add-hook ’before-save-hook #’gofmt-before-save)
+  ;; (add-hook ’go-mode-hook (lambda ()
+  ;;                         (local-set-key (kbd "M-.") #’godef-jump)))
+  ;; (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
+  ;; (setq gofmt-command "goimports")
+  ;; (setq godoc-at-point-function 'godoc-gogetdoc)
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
   (add-hook 'before-save-hook 'gofmt-before-save)
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode)))
+  (add-hook 'go-mode-hook 'yas-minor-mode)
+  (add-hook 'go-mode-hook 'flycheck-mode)
   )
 
 (use-package go-eldoc
