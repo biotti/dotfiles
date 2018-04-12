@@ -617,15 +617,16 @@
   (which-key-mode t)
   )
 
-(use-package cursor-chg
-  ;; Change cursor dynamically, depending on the context.
-  :init
-  :ensure t
-  :config
-  (change-cursor-mode 1) ; On for overwrite/read-only/input mode
-  ;;(toggle-cursor-type-when-idle 1) ; On when idle
-  
-  )
+;; Non piu' presente su melpa 2018-04-11
+;; (use-package cursor-chg
+;;   ;; Change cursor dynamically, depending on the context.
+;;   :init
+;;   :ensure t
+;;   :config
+;;   (change-cursor-mode 1) ; On for overwrite/read-only/input mode
+;;   ;;(toggle-cursor-type-when-idle 1) ; On when idle
+;;   
+;;   )
 
 (use-package undo-tree
   ;; Treat undo history as a tree
