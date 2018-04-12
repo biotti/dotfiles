@@ -1036,9 +1036,9 @@
     (add-to-list 'company-backends 'company-go))
   :ensure t
   :defer t
-  :after
-  company
-  go-mode
+  ;; :after
+  ;; company
+  ;; go-mode
   :config
   )
 
@@ -1053,8 +1053,8 @@
   :defer t
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
-  :after
-  go-mode
+  ;; :after
+  ;; go-mode
   )
 
 (use-package go-guru
@@ -1062,8 +1062,8 @@
   :init
   :ensure t
   :defer t
-  :after
-  go-mode
+  ;; :after
+  ;; go-mode
   )
 
 (use-package go-errcheck
@@ -1075,8 +1075,8 @@
   :init
   :ensure t
   :defer t
-  :after
-  go-mode
+  ;; :after
+  ;; go-mode
   )
 
 (use-package go-snippets
@@ -1084,9 +1084,9 @@
   :init
   :ensure t
   :defer t
-  :after
-  yasnippet
-  go-mode
+  ;; :after
+  ;; yasnippet
+  ;; go-mode
   )
 
 (use-package flycheck-gometalinter
@@ -1112,9 +1112,10 @@
   ;; (setq flycheck-gometalinter-enable-linters '("golint"))
   ;; ;; Set different deadline (default: 5s)
   ;; (setq flycheck-gometalinter-deadline "10s")
-  :after
-  flycheck
-  go-mode
+  ;; ----
+  ;; :after
+  ;; flycheck
+  ;; go-mode
   )
 
 
