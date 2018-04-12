@@ -918,8 +918,7 @@
 ;; =========================================================================
 (use-package elpy
   :init
-  ;; (with-eval-after-load 'python (elpy-enable))
-  (elpy-enable)
+  (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
@@ -1000,9 +999,12 @@
   (add-hook 'go-mode-hook 'go-eldoc-setup)
   (add-hook 'go-mode-hook (lambda ()
                             (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)))
-  (add-hook 'go-mode-hook 'yas-minor-mode)
-  (add-hook 'go-mode-hook 'flycheck-mode)
+                            (company-mode)
+                            (yas-minor-mode)
+                            (flycheck-mode)
+                            (go-set-project)
+                            )
+            )
   )
 
 (use-package go-eldoc
