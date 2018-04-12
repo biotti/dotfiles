@@ -798,6 +798,11 @@
 
 (use-package flycheck
   :init
+  ;; (progn
+  ;;   ;; Enable flycheck mode as long as we're not in TRAMP
+  ;;   (add-hook 'prog-mode-hook
+  ;;             (lambda () (if (not (is-current-file-tramp)) (flycheck-mode 1))))
+  ;;   )
   :ensure t
   :defer t
   )
