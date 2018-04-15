@@ -985,8 +985,8 @@
   :init
   :ensure t
   :defer t
-  ;; :after
-  ;; flyckeck
+  :after
+  flycheck-gometalinter
   :config
   ;; (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
   ;; (add-hook ’before-save-hook #’gofmt-before-save)
