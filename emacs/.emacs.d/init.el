@@ -1113,7 +1113,7 @@
   ;; Flycheck checker for golang using gometalinter
   :init
   :ensure t
-  :defer t
+  ;; :Defer t
   :config
   (progn
     (flycheck-gometalinter-setup))
@@ -1133,9 +1133,8 @@
   ;; ;; Set different deadline (default: 5s)
   ;; (setq flycheck-gometalinter-deadline "10s")
   ;; ----
-  ;; :after
-  ;; flycheck
-  ;; go-mode
+  :after
+  flycheck
   )
 
 
