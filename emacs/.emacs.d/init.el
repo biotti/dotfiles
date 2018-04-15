@@ -819,6 +819,7 @@
   ;; Project navigation
   :init
   ;; (projectile-global-mode t)
+  (projectile-mode)
   :ensure t
   :defer t
   :config
