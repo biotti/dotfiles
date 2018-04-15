@@ -803,8 +803,9 @@
   ;;   (add-hook 'prog-mode-hook
   ;;             (lambda () (if (not (is-current-file-tramp)) (flycheck-mode 1))))
   ;;   )
+  (global-flycheck-mode)
   :ensure t
-  :defer t
+  ;; :defer t
   )
 
 (use-package indent-guide
