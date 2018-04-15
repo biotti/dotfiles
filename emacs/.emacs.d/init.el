@@ -998,17 +998,35 @@
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
   (add-hook 'before-save-hook 'gofmt-before-save)
   (setq-default gofmt-command "goimports")
-  (add-hook 'go-mode-hook 'go-eldoc-setup)
   (add-hook 'go-mode-hook (lambda ()
                             (set (make-local-variable 'company-backends) '(company-go))
                             (company-mode)
                             (yas-minor-mode)
                             (flycheck-mode)
                             (go-set-project)
+                            (go-eldoc-setup)
+                            (flycheck-gometalinter-setup)
+                            (if (not (string-match "go" compile-command))
+                                (if (eq system-type 'windows-nt)
+                                    (setq compile-command "go build -v & go test -v & go vet & gometalinter -t --enable-gc & errcheck")
+                                  (setq compile-command "go build -v && go test -v && go vet && gometalinter -t --enable-gc && errcheck")
+                                  )
+                              (set (make-local-variable 'compile-command)
+                                   "go build -v && go test -v && go vet && gometalinter && errcheck"))
                             )
             )
   )
 
+(use-package go-rename
+  ;; To install:
+  ;; % go get golang.org/x/tools/cmd/gorename
+  :init
+  :ensure t
+  :defer t
+  :after
+  go-mode
+  :config
+  )
 (use-package go-eldoc
   ;; eldoc for go-mode
   ;; Installation:
