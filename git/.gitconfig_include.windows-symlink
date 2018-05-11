@@ -9,13 +9,15 @@
     guitool = kdiff3
 [difftool]
     prompt = false
-[mergetool "kdiff3"]
+[difftool "kdiff3"]
     path = C:/Program Files/KDiff3/kdiff3.exe
 [merge]
     # tool = p4merge
     tool = kdiff3
 [mergetool]
     keepBackup = false
+[mergetool "kdiff3"]
+    path = C:/Program Files/KDiff3/kdiff3.exe
 [mergetool "p4merge"]
     trustExitCode = true
 

@@ -1,25 +1,17 @@
 [alias]
-    graph = log --decorate --oneline --graph
-    whatsnew = !git log ..origin/`git rev-parse --abbrev-ref HEAD`
+	graph = log --decorate --oneline --graph
+	whatsnew = !git log ..origin/`git rev-parse --abbrev-ref HEAD`
 [color]
-    ui = true
+	ui = true
 [help]
-    autocorrect = 1
-# 20171227 - Commentato excludesFile per problemi di regressione
-#            con la versione di Git for Windows 2.15.1.windows.2
-# [core]
-#     excludesfile = ~/.gitignore_global
-[credential]
-    # interactive = always
+	autocorrect = 1
 [include]
-    path = ~/.gitconfig_user
-    path = ~/.gitconfig_include
+	path = ~/.gitconfig_user
+	path = ~/.gitconfig_include
 [init]
-    templatedir = ~/.git_template
+	templatedir = ~/.git_template
 [filter "lfs"]
-    process = git-lfs filter-process
-    required = true
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-
-# vim: set ft=gitconfig :
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
