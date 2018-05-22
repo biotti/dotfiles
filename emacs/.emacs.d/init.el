@@ -1314,8 +1314,9 @@
 ;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;; Emacs Server
-;; (require 'server)
-;; (unless (server-running-p) (server-start))
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 ;; =========================================================================
 ;; Font setup
