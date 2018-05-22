@@ -1,0 +1,10 @@
+{
+    "RegistryEntries": [
+		{
+			Path: "HKCU:\\Environment",
+			Key: {Name: "HOME",
+			Type: "ExpandString",
+			Value: "%USERPROFILE%"}
+		}
+	]
+}
