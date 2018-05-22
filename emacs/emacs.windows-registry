@@ -11,6 +11,6 @@
 			Key: {Name: "PWD",
 			Type: "ExpandString",
 			Value: "%USERPROFILE%\\Documents"}
-		},
+		}
 	]
 }
