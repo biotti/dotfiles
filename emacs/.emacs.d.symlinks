@@ -1,3 +1,2 @@
 linux: .emacs.d
-windows: appdata\roaming\.emacs.d
 windows: .emacs.d

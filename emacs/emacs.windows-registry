@@ -1,0 +1,16 @@
+{
+    "RegistryEntries": [
+		{
+			Path: "HKCU:\\Software\\GNU\\Emacs",
+			Key: {Name: "HOME",
+			Type: "ExpandString",
+			Value: "%USERPROFILE%"}
+		},
+		{
+			Path: "HKCU:\\Software\\GNU\\Emacs",
+			Key: {Name: "PWD",
+			Type: "ExpandString",
+			Value: "%USERPROFILE%\\Documents"}
+		},
+	]
+}

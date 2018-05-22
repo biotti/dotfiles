@@ -1,2 +1,2 @@
 linux: .newsrc.eld
-windows: appdata\roaming\.newsrc.eld
+windows: .newsrc.eld

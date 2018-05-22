@@ -1,2 +1,2 @@
 linux: .gnus.el
-windows: appdata\roaming\.gnus.el
+windows: .gnus.el
