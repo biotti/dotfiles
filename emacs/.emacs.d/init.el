@@ -287,9 +287,11 @@
   :if (display-graphic-p)
   :ensure spacemacs-theme
   ;;:defer t
-  :config
-  (load-theme 'spacemacs-dark t)
+  ;; :config
+  ;; (load-theme 'spacemacs-dark t)
   )
+
+(load-theme 'spacemacs-dark t)
 
 ;; ;; =========================================================================
 ;; ;; Color theme setup
@@ -1328,15 +1330,15 @@
 ; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
 (cond 
  ((find-font (font-spec :name "DejaVu Sans Mono"))
-  (set-frame-font "DejaVu Sans Mono-10"))
+  (set-default-font "DejaVu Sans Mono-10"))
  ((find-font (font-spec :name "Consolas"))
-  (set-frame-font "Consolas-10"))
+  (set-default-font "Consolas-10"))
  ((find-font (font-spec :name "Inconsolata"))
-  (set-frame-font "Inconsolata-10"))
+  (set-default-font "Inconsolata-10"))
  ;; ((find-font (font-spec :name "Lucida Console"))
  ;;  (set-frame-font "Lucida Console-10"))
  ((find-font (font-spec :name "Courier New"))
-  (set-frame-font "Courier New-10"))
+  (set-default-font "Courier New-10"))
  ;; ((find-font (font-spec :name "courier"))
  ;;  (set-frame-font "courier-10"))
  )
