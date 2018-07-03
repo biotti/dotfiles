@@ -33,6 +33,15 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
+;; https://blog.d46.us/advanced-emacs-startup/
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
 ;; Set default coding system to UTF-8
 (prefer-coding-system 'utf-8)
 
@@ -40,19 +49,21 @@
 ;; Custom
 ;; =========================================================================
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
-;;(load custom-file t)
+(load custom-file 'noerror)
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; -------------------------------------------------------------------------------------------------
 ;; Garbage collection, valori di default;
 ;; gc-cons-threshold  -> 800000
 ;; gc-cons-percentage -> 0.1
+;; Li reimposto in coda al file
 ;; -----------------
 (setq gc-cons-threshold (* 64 1024 1024))
 (setq gc-cons-percentage 0.5)
 ;; -----------------
-(run-with-idle-timer 5 t #'garbage-collect)
+;; ???? (run-with-idle-timer 5 t #'garbage-collect)
 ;; (setq garbage-collection-messages t)
+
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
 (if (>= emacs-major-version 25)
     (remove-hook 'find-file-hooks 'vc-refresh-state)
@@ -98,7 +109,7 @@
 ;; even if there s a byte compiled version and disable automatic requiring
 ;; of packages on start as it ll be handled by use-package.
 (setq load-prefer-newer t)
-(setq package-enable-at-startup nil)
+;; (setq package-enable-at-startup nil)
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -121,7 +132,9 @@
 ;;       package upgrade (use-package.el may be empty!!!)
 ;; Utile da leggere: http://irreal.org/blog/?p=6442
 (unless (package-installed-p 'use-package)
+  (message "%s" "Refreshing package database...")
   (package-refresh-contents)
+  (message "done.")
   (package-install 'use-package))
 
 ;; Da testare: sembra non essere necessario
@@ -635,7 +648,7 @@
   :init
   :ensure t
   :defer t
-  :diminish undo-tree-mode
+  :diminish undo-tree-mode "Ut"
   :config
   (progn
     (global-undo-tree-mode)
@@ -826,7 +839,13 @@
   :ensure t
   :defer t
   :config
-  (projectile-global-mode t)
+  (progn
+    (projectile-global-mode t)
+    (setq projectile-mode-line
+	      '(:eval (if (file-remote-p default-directory)
+		              " Prj[*remote*]"
+                    (format " Prj[%s]" (projectile-project-name)))))
+    )
   )
 
 (use-package ibuffer-projectile
@@ -844,6 +863,26 @@
   :init
   :ensure t
   :defer t
+  )
+
+;; (use-package paren
+;;   :init
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (progn
+;;     (setq show-paren-style 'parenthesis)
+;;     (show-paren-mode t))
+;;   )
+
+(use-package smartparens
+  :ensure t
+  :diminish smartparens-mode
+  :config
+  (progn
+    (require 'smartparens-config)
+    (smartparens-global-mode 1)
+    (show-smartparens-global-mode 1))
   )
 
 (use-package rainbow-delimiters
@@ -1317,30 +1356,42 @@
 ;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;; Emacs Server
-(require 'server)
-(unless (server-running-p)
-  (server-start))
+;; (require 'server)
+;; (unless (server-running-p)
+;;   (server-start))
 
 ;; =========================================================================
 ;; Font setup
 ;; =========================================================================
 ;; from https://www.reddit.com/r/emacs/comments/1xe7vr/check_if_font_is_available_before_setting/
-; Test char and monospace:
-; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
-; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
+;; Test char and monospace:
+;; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
+;; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
+;;
+;; https://www.reddit.com/r/emacs/comments/6i55x3/emacs_serverclient_doesnt_respect_setfaceattribute/
+;; If you run emacs as server in the background (--daemon or script),
+;; it will not create any frame. Because of that, any frame settings wont
+;; take any effect.
+;; If interested, check 'after-make-frame-functions' hook
 (cond 
  ((find-font (font-spec :name "DejaVu Sans Mono"))
-  (set-default-font "DejaVu Sans Mono-10"))
+  (set-frame-font "DejaVu Sans Mono-10" t t)
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10")))
  ((find-font (font-spec :name "Consolas"))
-  (set-default-font "Consolas-10"))
+  (set-frame-font "Consolas-10" t t)
+  (add-to-list 'default-frame-alist '(font . "Consolas-10")))
  ((find-font (font-spec :name "Inconsolata"))
-  (set-default-font "Inconsolata-10"))
+  (set-frame-font "Inconsolata-10" t t)
+  (add-to-list 'default-frame-alist '(font . "Incosolata-10")))
  ;; ((find-font (font-spec :name "Lucida Console"))
- ;;  (set-frame-font "Lucida Console-10"))
+ ;;  (set-frame-font "Lucida Console-10")
+ ;;  (add-to-list 'default-frame-alist '(font . "Lucida Console-10")))
  ((find-font (font-spec :name "Courier New"))
-  (set-default-font "Courier New-10"))
+  (set-frame-font "Courier New-10" t t)
+  (add-to-list 'default-frame-alist '(font . "Courier New-10")))
  ;; ((find-font (font-spec :name "courier"))
- ;;  (set-frame-font "courier-10"))
+ ;;  (set-frame-font "courier-10")
+ ;;  (add-to-list 'default-frame-alist '(font . "courier-10")))
  )
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
@@ -1349,6 +1400,10 @@
 (if (>= emacs-major-version 25)
     (add-hook 'find-file-hooks 'vc-refresh-state)
   (add-hook 'find-file-hooks 'vc-find-file-hook))
+
+;; Reimposto i valori di default per il garbage collector
+(setq gc-cons-threshold 800000)
+(setq gc-cons-percentage 0.1)
 
 ;; ***************************************************************************
 ;; Per una spiegazione sul coding dei caratteri in emacs vedere:
