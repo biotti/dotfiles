@@ -168,133 +168,10 @@
   :ensure t
   )
 
-;; ;; Color Themes (use (load-theme xxx) at the end
-;; ;; =========================================================================
-;; ;; Color Theme
-;; ;; =========================================================================
-;; (use-package color-theme
-;;   ;; install color themes
-;;   :if (display-graphic-p)
-;;   :init
-;;   :defer t
-;;   :ensure t
-;;   ;; :config
-;;   )
-
-;; ;; Non esiste piu' ?????????
-;; ;; (use-package aurora-theme
-;; ;;   :init
-;; ;;   :ensure t
-;; ;;   :defer t
-;; ;;   )
-
-;; (use-package badwolf-theme
-;;   ;; Bad Wolf color theme
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package darkokai-theme
-;;   ;; A darker variant on Monokai
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package darktooth-theme
-;;   ;; Color theme for Emacs, when soothe and gruvbox collide
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package gruvbox-theme
-;;   ;; A retro-groove colour theme for Emacs
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; ;;
-;; ;; Rimosso perche' rallenta molto lo startup
-;; ;; e non puo' essere :defer t
-;; ;; perche' altrimenti incasina gli altri themes
-;; ;;(use-package jbeans-theme
-;; ;;  ;; Jbeans theme for GNU Emacs 24 (deftheme)
-;; ;;  :if (display-graphic-p)
-;; ;;  :init
-;; ;;  :ensure t
-;; ;;  ;; :defer t
-;; ;;  )
-
-;; (use-package material-theme
-;;   ;; Material theme see https://realpython.com/blog/python/emacs-the-best-python-editor/
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package molokai-theme
-;;   ;; Molokai theme with Emacs theme engine
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package monokai-theme
-;;   ;; A fruity color theme for Emacs.
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package mustang-theme
-;;   ;; Port of vim's mustang theme
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package obsidian-theme
-;;   ;; port of the eclipse obsidian theme
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (if (>= emacs-major-version 24)
-;;     (use-package solarized-theme
-;;       ;; Da non confondere con color-theme-solarized
-;;       ;; The Solarized color theme, ported to Emacs
-;;       :if (display-graphic-p)
-;;       :init
-;;       :config
-;;       ;; (setq frame-background-mode 'dark)
-;;       :ensure t
-;;       :defer t
-;;       :after
-;;       ;; color-theme
-;;       )
-;;   )
-
-;; (use-package zenburn-theme
-;;   ;; Port of vim's mustang theme
-;;   :if (display-graphic-p)
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   )
-
+;; Color Themes (use (load-theme xxx) at the end
+;; =========================================================================
+;; Color Theme
+;; =========================================================================
 (use-package spacemacs-common
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
@@ -306,9 +183,9 @@
 
 (load-theme 'spacemacs-dark t)
 
-;; ;; =========================================================================
-;; ;; Color theme setup
-;; ;; =========================================================================
+;; =========================================================================
+;; Color theme setup
+;; =========================================================================
 ;; (when (display-graphic-p)
 ;;   ;; (load-theme 'material t)
 ;;   ;; (if (>= emacs-major-version 24)
@@ -321,17 +198,20 @@
 ;; =========================================================================
 ;; EMACS enhancements
 ;; =========================================================================
+(use-package try
+  :init
+  :ensure t
+  ;; Do not defer
+  ;; defer t
+  :config
+  )
+
 (use-package company
   ;; A modular text completion framework
   :init
-  ;; (global-company-mode)
-  ;; (add-hook 'after-init-hook 'global-company-mode)
-  ;; -> Perche' disabled?????? :disabled t
   :ensure t
-  ;; :defer 2
   :defer t
   :config
-  ;; (add-hook 'after-init-hook 'global-company-mode)
   (global-company-mode t)
   :diminish company-mode "CMP"
   )
@@ -353,42 +233,40 @@
   ("C-x C-b" . ibuffer)
   )
 
-(use-package ido
-  ;; ido-mode allows you to more easily navigate choices. For example,
-  ;; when you want to switch buffers, ido presents you with a list
-  ;; of buffers in the the mini-buffer. As you start to type a buffer's
-  ;; name, ido will narrow down the list of buffers to match the text
-  ;; you've typed in
-  ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
-  ;; - emacs internal -
-  :init
-  ;; (ido-mode t)
-  :ensure t
-  :config
-  ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
-  (setq ido-enable-flex-matching t)
-  ;; Turn this behavior off because it's annoying
-  (setq ido-use-filename-at-point nil)
-  ;; Don't try to match file across all "work" directories; only match files
-  ;; in the current directory displayed in the minibuffer
-  (setq ido-auto-merge-work-directories-length -1)
-  ;; Includes buffer names of recently open files, even if they're not
-  ;; open now
-  (setq ido-use-virtual-buffers t)
-  ;;
-  (setq ido-everywhere t)
-  ;;
-  (ido-mode t)
-  )
+;; Disattivo IDO per provare?????
+;; (use-package ido
+;;   ;; ido-mode allows you to more easily navigate choices. For example,
+;;   ;; when you want to switch buffers, ido presents you with a list
+;;   ;; of buffers in the the mini-buffer. As you start to type a buffer's
+;;   ;; name, ido will narrow down the list of buffers to match the text
+;;   ;; you've typed in
+;;   ;; http://www.emacswiki.org/emacs/InteractivelyDoThings
+;;   ;; - emacs internal -
+;;   :init
+;;   ;; (ido-mode t)
+;;   :ensure t
+;;   :config
+;;   ;; This allows partial matches, e.g. "tl" will match "Tyrion Lannister"
+;;   (setq ido-enable-flex-matching t)
+;;   ;; Turn this behavior off because it's annoying
+;;   (setq ido-use-filename-at-point nil)
+;;   ;; Don't try to match file across all "work" directories; only match files
+;;   ;; in the current directory displayed in the minibuffer
+;;   (setq ido-auto-merge-work-directories-length -1)
+;;   ;; Includes buffer names of recently open files, even if they're not
+;;   ;; open now
+;;   (setq ido-use-virtual-buffers t)
+;;   ;;
+;;   (setq ido-everywhere t)
+;;   ;;
+;;   (ido-mode t)
+;;   )
 
 
-;; Warning (ido-ubiquitous): The ido-ubiquitous package is now redundant.
-;; All functionality, including ido-ubiquitous-mode, has been merged into the ido-completing-read+ package.
-;; You should replace ido-ubiquitous with ido-completing-read+ in your Emacs config.
-;; (use-package ido-ubiquitous
-;;   ;; Ido-ubiquitous
-;;   ;; This enables ido in all contexts where it could be useful, not just
-;;   ;; for selecting buffer and file names
+;; Disattivo IDO per provare?????
+;; (use-package ido-completing-read+
+;;   ;; Ido-completing-read+
+;;   ;; A completing-read-function using ido
 ;;   :init
 ;;   ;; (ido-ubiquitous-mode 1)
 ;;   :ensure t
@@ -399,62 +277,54 @@
 ;;   (ido-ubiquitous-mode 1)
 ;;   )
 
-(use-package ido-completing-read+
-  ;; Ido-completing-read+
-  ;; A completing-read-function using ido
+;; Testing Ivy, Swiper & Counsel
+(use-package ivy
   :init
-  ;; (ido-ubiquitous-mode 1)
   :ensure t
-  :defer t
-  :after
-  ido
+  :demand t
+  :diminish (ivy-mode)
+  :bind ("C-c C-r" . ivy-resume)
   :config
-  (ido-ubiquitous-mode 1)
+  (progn
+    (ivy-mode t)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;;(global-set-key (kbd "C-c C-r") 'ivy-resume)
+    ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+    )
   )
 
-;; ;; Testing Ivy, Swiper & Counsel
-;; ;; -----------------------------
-;; (use-package ivy
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   :config
-;;   )
+(use-package counsel
+  :init
+  :ensure t
+  :demand t
+  :after (:all ivy swiper)
+  :bind (("<f2> u" . counsel-unicode-char)
+         ("C-c g" . counsel-git)
+         ("C-c j" . counsel-git-grep))
+  :config
+  (progn
+    (counsel-mode t)
+    ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    ;; (global-set-key (kbd "C-c g") 'counsel-git)
+    ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    ;; ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+    ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+    ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    )
+  )
 
-;; (use-package swiper
-;;   :init
-;;   :ensure t
-;;   ;; :defer t
-;;   :config
-;;   (ivy-mode 1)
-;;   (setq ivy-use-virtual-buffers t)
-;;   (setq enable-recursive-minibuffers t)
-;;   (global-set-key "\C-s" 'swiper)
-;;   (global-set-key (kbd "C-c C-r") 'ivy-resume)
-;;   (global-set-key (kbd "<f6>") 'ivy-resume)
-;;   (global-set-key (kbd "M-x") 'counsel-M-x)
-;;   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;;   (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-;;   (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-;;   (global-set-key (kbd "<f1> l") 'counsel-find-library)
-;;   (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-;;   (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-;;   (global-set-key (kbd "C-c g") 'counsel-git)
-;;   (global-set-key (kbd "C-c j") 'counsel-git-grep)
-;;   (global-set-key (kbd "C-c k") 'counsel-ag)
-;;   (global-set-key (kbd "C-x l") 'counsel-locate)
-;;   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-;;   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-;;   )
+(use-package swiper
+  :init
+  :ensure t
+  :demand t
+  :after (:all ivy)
+  :bind ("\C-s" . swiper)
+  :config
+  ;; (global-set-key "\C-s" 'swiper)
+  )
 
-;; (use-package counsel
-;;   :init
-;;   :ensure t
-;;   :defer t
-;;   :config
-;;   )
-
-;;(use-package org-plus-contrib
 (use-package org
   :init
   ;;:ensure t
@@ -471,25 +341,8 @@
   :defer t
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  :after
-  org
+  :after (:all org)
   )
-
-;;(use-package org
-;;  :init
-;;  :ensure org-plus-contrib
-;;  :defer t
-;;  ;; Non e' necessario impostare :mode
-;;  ;; :mode "\\.org\\"
-;;  ;; :mode (("\\.org$" . org-mode))
-;;  )
-;; (use-package org
-;;   :mode (("\\.org$" . org-mode))
-;;   :ensure org-plus-contrib
-;;   :config
-;;   (progn
-;;     ;; config stuff
-;;     ))
 
 (use-package recentf
   ;; Turn on recent file mode so that you can more easily switch to
@@ -511,11 +364,12 @@
   :init
   ;; (smex-initialize)
   :ensure t
-  :bind
-  ("M-x" . smex)
-  ("M-X" . smex-major-mode-commands)
-  ;; This is your old M-x.
-  ("C-c C-c M-x" . execute-extended-command)
+  ;; Using IVY counsel-M-x
+  ;; :bind
+  ;; ("M-x" . smex)
+  ;; ("M-X" . smex-major-mode-commands)
+  ;; ;; This is your old M-x.
+  ;; ("C-c C-c M-x" . execute-extended-command)
   :config
   (smex-initialize)
   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
@@ -535,6 +389,15 @@
          ;; Linux-specific code goes here
          (setq tramp-default-method "ssh")
          ))
+  )
+
+(use-package counsel-tramp
+  ;; Tramp ivy interface for ssh, docker, vagrant
+  :init
+  :ensure t
+  :defer t
+  :after (all: counsel tramp)
+  :config
   )
 
 (use-package uniquify
@@ -806,8 +669,7 @@
   :init
   :ensure t
   :defer t
-  :after
-  company
+  :after (:all company)
   :config
   (company-quickhelp-mode t)
   )
@@ -853,9 +715,15 @@
   :init
   :ensure t
   :defer t
-  :after
-  ibuffer
-  projectile
+  :after (:all ibuffer projectile)
+  )
+
+(use-package counsel-projectile
+  ;; Ivy integration for Projectile
+  :init
+  :ensure t
+  :defer t
+  :after (:all counsel projectile)
   )
 
 (use-package project-explorer
@@ -907,8 +775,7 @@
   :init
   :ensure t
   :defer t
-  :after
-  yasnippet
+  :after (:all yasnippet)
   )
 
 ;; (use-package auto-complete
@@ -928,8 +795,7 @@
   :init
   :ensure t
   :defer t
-  :after
-  yasnippet
+  :after (:all yasnippet)
   )
 
 ;; =========================================================================
@@ -965,14 +831,7 @@
   (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
-  ;; Non e' necessario impostare :mode
-  ;; :mode "\\.py[w]?\\"
-  ;; -----
-  ;; :after
-  ;; flycheck
-  ;; py-autopep8
-  ;; highlight-indentation
-  ;; --
+  :after (:all company highlight-indentation yasnippet)
   :config
   ;; (elpy-enable)
   (setq elpy-rpc-backend "jedi")
@@ -1000,9 +859,7 @@
   :init
   :ensure t
   :defer t
-  :after
-  company
-  elpy
+  :after (:all company elpy)
   )
 
 
@@ -1027,16 +884,8 @@
   :init
   :ensure t
   :defer t
-  :after
-  flycheck-gometalinter
+  :after (:all flycheck-gometalinter company-mode)
   :config
-  ;; (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
-  ;; (add-hook ’before-save-hook #’gofmt-before-save)
-  ;; (add-hook ’go-mode-hook (lambda ()
-  ;;                         (local-set-key (kbd "M-.") #’godef-jump)))
-  ;; (setq compile-command "go build -v && go test -v && go vet && golint && errcheck")
-  ;; (setq gofmt-command "goimports")
-  ;; (setq godoc-at-point-function 'godoc-gogetdoc)
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
   (add-hook 'before-save-hook 'gofmt-before-save)
   (setq-default gofmt-command "goimports")
@@ -1059,16 +908,33 @@
             )
   )
 
+(use-package company-go
+  ;; company-mode backend for Go (using gocode)
+  ;; Installation:
+  ;;
+  ;; Non Windwos: go get -u github.com/nsf/gocode
+  ;; Windows    : go get -u -ldflags -H=windowsgui github.com/nsf/gocode
+  ;;
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-go))
+  :ensure t
+  :defer t
+  :after (:all company go-mode)
+  :config
+  )
+
+
 (use-package go-rename
   ;; To install:
   ;; % go get golang.org/x/tools/cmd/gorename
   :init
   :ensure t
   :defer t
-  :after
-  go-mode
+  :after (:all go-mode)
   :config
   )
+
 (use-package go-eldoc
   ;; eldoc for go-mode
   ;; Installation:
@@ -1079,30 +945,11 @@
   :init
   :ensure t
   :defer t
-  :after
-  go-mode
+  :after (:all go-mode)
   :config
   (go-eldoc-setup)
   )
 
-(use-package company-go
-  ;; company-mode backend for Go (using gocode)
-  ;; Installation:
-  ;;
-  ;; Non Windwos: go get -u github.com/nsf/gocode
-  ;; Windows    : go get -u -ldflags -H=windowsgui github.com/nsf/gocode
-  ;;
-  :init
-  ;;(add-to-list 'company-backends 'company-go)
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-go))
-  :ensure t
-  :defer t
-  ;; :after
-  ;; company
-  ;; go-mode
-  :config
-  )
 
 (use-package golint
   ;; lint for the Go source code
@@ -1115,8 +962,7 @@
   :defer t
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/golang/lint/misc/emacs"))
-  ;; :after
-  ;; go-mode
+  :after (:all go-mode)
   )
 
 (use-package go-guru
@@ -1124,8 +970,7 @@
   :init
   :ensure t
   :defer t
-  ;; :after
-  ;; go-mode
+  :after (:all go-mode)
   )
 
 (use-package go-errcheck
@@ -1137,8 +982,7 @@
   :init
   :ensure t
   :defer t
-  ;; :after
-  ;; go-mode
+  :after (:all go-mode)
   )
 
 (use-package go-snippets
@@ -1146,9 +990,7 @@
   :init
   :ensure t
   :defer t
-  ;; :after
-  ;; yasnippet
-  ;; go-mode
+  :after (:all yasnippet go-mode)
   )
 
 (use-package flycheck-gometalinter
@@ -1175,12 +1017,8 @@
   ;; ;; Set different deadline (default: 5s)
   ;; (setq flycheck-gometalinter-deadline "10s")
   ;; ----
-  :after
-  flycheck
+  :after (:all flycheck go-mode)
   )
-
-
-
 
 
 
@@ -1237,8 +1075,7 @@
   :ensure t
   :defer t
   :config
-  :after
-  sql
+  :after (:all sql)
   )
 
 
