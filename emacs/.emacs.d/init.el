@@ -298,6 +298,7 @@
   :init
   :ensure t
   :demand t
+  :diminish (counsel-mode)
   :after (:all ivy swiper)
   :bind (("<f2> u" . counsel-unicode-char)
          ("C-c g" . counsel-git)
