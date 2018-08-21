@@ -683,7 +683,11 @@
   ;;   (add-hook 'prog-mode-hook
   ;;             (lambda () (if (not (is-current-file-tramp)) (flycheck-mode 1))))
   ;;   )
-  (global-flycheck-mode)
+  ;; Disattivo la modalita' globale di flycheck perche'
+  ;; spesso interferisce con i buffers dove non porta
+  ;; nessun vantaggio
+  ;; Meglio abilitare la modalita' caso (modo) per caso
+  ;; (global-flycheck-mode)
   :ensure t
   ;; :defer t
   )
