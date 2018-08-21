@@ -801,7 +801,7 @@
   :interpreter ("emacs" . emacs-lisp-mode)
   :diminish emacs-lisp-mode "El"
   :config
-  (add-hook 'emacs-lisp-mode (lambda()
+  (add-hook 'emacs-lisp-mode-hook (lambda()
                                (company-mode)
                                (yas-minor-mode)
                                (flycheck-mode)
@@ -1069,7 +1069,7 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :config
-  (add-hook 'markdown-mode (lambda()
+  (add-hook 'markdown-mode-hook (lambda()
                              (flycheck-mode)
                              ))
   )
@@ -1083,7 +1083,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook 'json-mode (lambda()
+  (add-hook 'json-mode-hook (lambda()
                          (flycheck-mode)
                          ))
   )
