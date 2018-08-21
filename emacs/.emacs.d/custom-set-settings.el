@@ -7,7 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel-projectile counsel-tramp counsel swiper use-package go-mode yasnippet-snippets yasnippet smartparens flycheck highlight-indentation org-plus-contrib ivy company ibuffer-projectile projectile winum which-key undo-tree try switch-window swap-buffers sql-indent spacemacs-theme smex rainbow-delimiters py-autopep8 project-explorer powershell origami org-bullets markdown-mode magit json-mode indent-guide ido-completing-read+ golint go-snippets go-rename go-guru go-errcheck go-eldoc gitignore-mode gitconfig-mode flycheck-gometalinter fill-column-indicator esup elpy el-autoyas diminish csv-mode csharp-mode company-quickhelp company-jedi company-go benchmark-init))))
+    (projectile org-plus-contrib company-restclient restclient smartparens counsel-projectile counsel-tramp counsel use-package go-mode yasnippet-snippets yasnippet flycheck highlight-indentation ivy company ibuffer-projectile winum which-key undo-tree try switch-window swap-buffers sql-indent smex rainbow-delimiters py-autopep8 project-explorer powershell origami org-bullets markdown-mode magit json-mode indent-guide ido-completing-read+ golint go-snippets go-rename go-guru go-errcheck go-eldoc gitignore-mode gitconfig-mode flycheck-gometalinter fill-column-indicator esup elpy el-autoyas diminish csv-mode csharp-mode company-quickhelp company-jedi company-go benchmark-init))))
 
 ;; -----------------------------------------------------------------------------
 ;; Custom: faces
