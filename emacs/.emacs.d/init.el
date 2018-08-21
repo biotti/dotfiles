@@ -283,7 +283,7 @@
   :init
   :ensure t
   :demand t
-  :diminish (ivy-mode)
+  :diminish ivy-mode
   :bind ("C-c C-r" . ivy-resume)
   :config
   (progn
@@ -299,7 +299,7 @@
   :init
   :ensure t
   :demand t
-  :diminish (counsel-mode)
+  :diminish counsel-mode
   :after (:all ivy swiper)
   :bind (("<f2> u" . counsel-unicode-char)
          ("C-c g" . counsel-git)
