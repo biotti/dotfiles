@@ -796,6 +796,18 @@
 ;; =========================================================================
 ;; Development: Emacs Lisp
 ;; =========================================================================
+(use-package emacs-lisp-mode
+  :defer t
+  :interpreter ("emacs" . emacs-lisp-mode)
+  :diminish emacs-lisp-mode "El"
+  :config
+  (add-hook 'emacs-lisp-mode (lambda()
+                               (company-mode)
+                               (yas-minor-mode)
+                               (flycheck-mode)
+                               ))
+  )
+
 (use-package el-autoyas
   ;; Automatically create Emacs-Lisp Yasnippets
   :init
