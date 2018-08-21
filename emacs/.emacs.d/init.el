@@ -213,7 +213,8 @@
   :defer t
   :config
   (global-company-mode t)
-  :diminish company-mode "CMP"
+  (add-to-list 'company-backends 'company-restclient)
+  :diminish company-mode "Cmp"
   )
 
 (use-package esup
@@ -1079,6 +1080,26 @@
   :after (:all sql)
   )
 
+;; =========================================================================
+;; REST
+;; =========================================================================
+(use-package restclient
+  ;; An interactive HTTP client for Emacs
+  :init
+  :ensure t
+  :defer t
+  :config
+  :after (:all json-mode)
+  )
+
+(use-package company-restclient
+  ;; company-mode completion back-end for restclient-mode
+  :init
+  :ensure t
+  :defer t
+  :config
+  :after (:all restclient)
+  )
 
 
 ;; =========================================================================
