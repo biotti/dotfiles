@@ -339,10 +339,11 @@
 
 (use-package org-bullets
   :init
+  ;; (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  :hook (org-mode . org-bullets-mode)
   :ensure t
   :defer t
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   :after (:all org)
   )
 
@@ -678,18 +679,9 @@
 
 (use-package flycheck
   :init
-  ;; (progn
-  ;;   ;; Enable flycheck mode as long as we're not in TRAMP
-  ;;   (add-hook 'prog-mode-hook
-  ;;             (lambda () (if (not (is-current-file-tramp)) (flycheck-mode 1))))
-  ;;   )
-  ;; Disattivo la modalita' globale di flycheck perche'
-  ;; spesso interferisce con i buffers dove non porta
-  ;; nessun vantaggio
-  ;; Meglio abilitare la modalita' caso (modo) per caso
-  ;; (global-flycheck-mode)
+  :hook (prog-mode . flycheck-mode)
   :ensure t
-  ;; :defer t
+  :defer t
   )
 
 (use-package indent-guide
@@ -703,12 +695,15 @@
   ;; Project navigation
   :init
   ;; (projectile-global-mode t)
-  (projectile-mode)
+  ;; Attivo projectile soltanto per i "programmi"
+  :hook (prog-mode . projectile-mode)
   :ensure t
   :defer t
   :config
   (progn
-    (projectile-global-mode t)
+    ;; L'attivazione di projectile in modalita' globale
+    ;; e' disattivata in favore di quella impostata in :hook
+    ;; (projectile-global-mode t)
     (setq projectile-mode-line
 	      '(:eval (if (file-remote-p default-directory)
 		              " Prj[*remote*]"
@@ -769,11 +764,12 @@
 (use-package yasnippet
   ;; Yet another snippet extension for Emacs
   :init
+  :hook (prog-mode . yas-minor-mode)
   :ensure t
   ;;:defer 2
   :defer t
   :config
-  (yas-global-mode t)
+  ;; (yas-global-mode t)
   )
 
 (use-package yasnippet-snippets
@@ -800,12 +796,13 @@
   :defer t
   :interpreter ("emacs" . emacs-lisp-mode)
   :diminish emacs-lisp-mode "El"
-  :config
+  :init
   (add-hook 'emacs-lisp-mode-hook (lambda()
-                               (company-mode)
-                               (yas-minor-mode)
-                               (flycheck-mode)
-                               ))
+                                    (company-mode)
+                                    (yas-minor-mode)
+                                    ))
+  :after (:all yasnippet company)
+  :config
   )
 
 (use-package el-autoyas
@@ -833,12 +830,12 @@
 ;; =========================================================================
 (use-package powershell
   :init
+  (add-hook 'powershell-mode-hook 'work-style)
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
   ;; :mode ("\\.ps[dm]?1\\'" . powershell-mode)
   :config
-  (add-hook 'powershell-mode-hook 'work-style)
   )
 
 ;; =========================================================================
@@ -846,6 +843,10 @@
 ;; =========================================================================
 (use-package elpy
   :init
+  (add-hook 'elpy-mode-hook (lambda()
+                              (company-mode)
+                              (yas-minor-mode)
+                              ))
   (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
@@ -854,14 +855,6 @@
   ;; (elpy-enable)
   (setq elpy-rpc-backend "jedi")
   ;; (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  ;; (add-hook 'elpy-mode-hook 'flycheck-mode)
-  ;; Non serve qui perche' che' nel config di py-autopep8 ?????
-  ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-  (add-hook 'elpy-mode-hook (lambda()
-                              (company-mode)
-                              (yas-minor-mode)
-                              (flycheck-mode)
-                              ))
   (cond ((eq system-type 'windows-nt)
          ;; Windows-specific code goes here.
          (setq python-shell-completion-native-enable nil)
@@ -871,10 +864,10 @@
 (use-package py-autopep8
   ;; Autopep8
   :init
+  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   :ensure t
   :defer t
   :config
-  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   )
 
 (use-package company-jedi
@@ -905,30 +898,30 @@
   ;; https://johnsogg.github.io/emacs-golang
   ;;
   :init
+  :hook ((before-save-hook . gofmt-before-save)
+         (go-mode-hook . (lambda ()
+                           (set (make-local-variable 'company-backends) '(company-go))
+                           (company-mode)
+                           (yas-minor-mode)
+                           (go-set-project)
+                           (go-eldoc-setup)
+                           (flycheck-gometalinter-setup)
+                           (if (not (string-match "go" compile-command))
+                               (if (eq system-type 'windows-nt)
+                                   (setq compile-command "go build -v & go test -v & go vet & gometalinter -t --enable-gc & errcheck")
+                                 (setq compile-command "go build -v && go test -v && go vet && gometalinter -t --enable-gc && errcheck")
+                                 )
+                             (set (make-local-variable 'compile-command)
+                                  "go build -v && go test -v && go vet && gometalinter && errcheck"))
+                           )
+                       )
+         )
   :ensure t
   :defer t
   :after (:all flycheck-gometalinter company-mode)
   :config
   (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
-  (add-hook 'before-save-hook 'gofmt-before-save)
   (setq-default gofmt-command "goimports")
-  (add-hook 'go-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)
-                            (yas-minor-mode)
-                            (flycheck-mode)
-                            (go-set-project)
-                            (go-eldoc-setup)
-                            (flycheck-gometalinter-setup)
-                            (if (not (string-match "go" compile-command))
-                                (if (eq system-type 'windows-nt)
-                                    (setq compile-command "go build -v & go test -v & go vet & gometalinter -t --enable-gc & errcheck")
-                                  (setq compile-command "go build -v && go test -v && go vet && gometalinter -t --enable-gc && errcheck")
-                                  )
-                              (set (make-local-variable 'compile-command)
-                                   "go build -v && go test -v && go vet && gometalinter && errcheck"))
-                            )
-            )
   )
 
 (use-package company-go
@@ -1020,7 +1013,7 @@
   ;; Flycheck checker for golang using gometalinter
   :init
   :ensure t
-  ;; :Defer t
+  :defer t
   :config
   (progn
     (flycheck-gometalinter-setup))
@@ -1069,9 +1062,8 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :config
-  (add-hook 'markdown-mode-hook (lambda()
-                             (flycheck-mode)
-                             ))
+  :after (:all flycheck)
+  :diminish markdown-mode "MDown"
   )
 
 ;; =========================================================================
@@ -1083,9 +1075,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook 'json-mode-hook (lambda()
-                         (flycheck-mode)
-                         ))
+  :after (:all flycheck)
   )
 
 ;; =========================================================================
