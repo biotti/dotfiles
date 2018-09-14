@@ -58,12 +58,6 @@
 ;; Set default coding system to UTF-8
 (prefer-coding-system 'utf-8)
 
-;; =========================================================================
-;; Custom
-;; =========================================================================
-(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
-(load custom-file 'noerror)
-
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
 (if (>= emacs-major-version 25)
     (remove-hook 'find-file-hooks 'vc-refresh-state)
@@ -1272,6 +1266,12 @@
  ;;  (set-frame-font "courier-10")
  ;;  (add-to-list 'default-frame-alist '(font . "courier-10")))
  )
+
+;; =========================================================================
+;; Custom
+;; =========================================================================
+(setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
+(load custom-file 'noerror)
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; -------------------------------------------------------------------------------------------------
