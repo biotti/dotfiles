@@ -33,6 +33,19 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
+;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
+;; -------------------------------------------------------------------------------------------------
+;; Garbage collection, valori di default;
+;; gc-cons-threshold  -> 800000
+;; gc-cons-percentage -> 0.1
+;; Li reimposto in coda al file
+;; -----------------
+(setq gc-cons-threshold (* 64 1024 1024))
+(setq gc-cons-percentage 0.5)
+;; -----------------
+;; ???? (run-with-idle-timer 5 t #'garbage-collect)
+;; (setq garbage-collection-messages t)
+
 ;; https://blog.d46.us/advanced-emacs-startup/
 (add-hook 'emacs-startup-hook
           (lambda ()
@@ -50,19 +63,6 @@
 ;; =========================================================================
 (setq custom-file (locate-user-emacs-file "custom-set-settings.el"))
 (load custom-file 'noerror)
-
-;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
-;; -------------------------------------------------------------------------------------------------
-;; Garbage collection, valori di default;
-;; gc-cons-threshold  -> 800000
-;; gc-cons-percentage -> 0.1
-;; Li reimposto in coda al file
-;; -----------------
-(setq gc-cons-threshold (* 64 1024 1024))
-(setq gc-cons-percentage 0.5)
-;; -----------------
-;; ???? (run-with-idle-timer 5 t #'garbage-collect)
-;; (setq garbage-collection-messages t)
 
 ;; Disattivo temporaneamente l'hook (lo riattivo in coda al file)
 (if (>= emacs-major-version 25)
