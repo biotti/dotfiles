@@ -696,7 +696,8 @@
   :init
   ;; (projectile-global-mode t)
   ;; Attivo projectile soltanto per i "programmi"
-  :hook (prog-mode . projectile-mode)
+  ;; Non lo voglio piu'!!!!!
+  ;; :hook (prog-mode . projectile-mode)
   :ensure t
   :defer t
   :config
