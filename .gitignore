@@ -66,6 +66,7 @@ Session.vim
 # ------------------------------------------------------------------------
 # Project gitignore settings
 # ------------------------------------------------------------------------
+emacs/.emacs.d/amx-items
 emacs/.emacs.d/.recentf
 emacs/.emacs.d/recentf
 emacs/.emacs.d/.smex-items
