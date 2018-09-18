@@ -34,26 +34,39 @@
 ;; system-configuration-features
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
+;; https://www.reddit.com/r/emacs/comments/7t4kxw/how_can_i_improve_startup_time_despite_many/
+;; -------------------------------------------------------------------------------------------------
+;; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
 ;; -------------------------------------------------------------------------------------------------
 ;; Garbage collection, valori di default;
 ;; gc-cons-threshold  -> 800000
 ;; gc-cons-percentage -> 0.1
 ;; Li reimposto in coda al file
 ;; -----------------
-(setq gc-cons-threshold (* 64 1024 1024))
-(setq gc-cons-percentage 0.5)
+;; 536870912 = 512MB
+(setq gc-cons-threshold 536870912)
+(setq gc-cons-percentage 0.6)
 ;; -----------------
 ;; ???? (run-with-idle-timer 5 t #'garbage-collect)
 ;; (setq garbage-collection-messages t)
 
-;; https://blog.d46.us/advanced-emacs-startup/
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "Emacs ready in %s with %d garbage collections."
+;; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
+(defvar my/init-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(defun my/init-startup-hook ()
+  "Funzione richiamata dall'hook emacs-startup-hook."
+  (interactive)
+  (message "Emacs ready in %s with %d garbage collections."
                      (format "%.2f seconds"
                              (float-time
                               (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+                     gcs-done)
+  ;; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
+  (setq file-name-handler-alist my/init-file-name-handler-alist))
+
+;; https://blog.d46.us/advanced-emacs-startup/
+(add-hook 'emacs-startup-hook 'my/init-startup-hook)
 
 ;; Set default coding system to UTF-8
 (prefer-coding-system 'utf-8)
@@ -68,6 +81,12 @@
 
 ;; Setup package.el
 (require 'package)
+;; https://github.com/sondr3/dotfiles/blob/master/emacs.org
+;; Then we ll make sure we always load newer files if they are available,
+;; even if there s a byte compiled version and disable automatic requiring
+;; of packages on start as it ll be handled by use-package.
+(setq load-prefer-newer t)
+;; (setq package-enable-at-startup nil)
 
 ;; =========================================================================
 ;; Manage package repositories
@@ -98,13 +117,6 @@
 ;;        ("gnu"          . 5)
 ;;        ("melpa"        . 0)))
 
-;; https://github.com/sondr3/dotfiles/blob/master/emacs.org
-;; Then we ll make sure we always load newer files if they are available,
-;; even if there s a byte compiled version and disable automatic requiring
-;; of packages on start as it ll be handled by use-package.
-(setq load-prefer-newer t)
-;; (setq package-enable-at-startup nil)
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -114,10 +126,10 @@
 ;; =========================================================================
 ;; use-package custom setup
 ;; =========================================================================
-;; (setq use-package-debug t)
-;; (setq use-package-verbose t)
+ (setq use-package-debug t)
+ (setq use-package-verbose t)
 ;; (setq use-package-enable-imenu-support t)
-;; (setq use-package-minimum-reported-time 0.0001)
+ (setq use-package-minimum-reported-time 0.0001)
 ;; =========================================================================
 ;; Bootstrap `use-package'
 ;; =========================================================================
@@ -126,30 +138,34 @@
 ;;       package upgrade (use-package.el may be empty!!!)
 ;; Utile da leggere: http://irreal.org/blog/?p=6442
 (unless (package-installed-p 'use-package)
-  (message "%s" "Refreshing package database...")
+  (message "Refreshing package database...")
   (package-refresh-contents)
-  (message "done.")
-  (package-install 'use-package))
+  (message "Done refreshing. Installing use-package")
+  (package-install 'use-package)
+  (message "Done installing.")
+  )
 
 ;; Da testare: sembra non essere necessario
 ;; https://cestlaz.github.io/posts/using-emacs-1-setup/
 ;; Per questo commento la eval-when-compile
-;; (eval-when-compile
-;;   (require 'use-package))
+(eval-when-compile
+  (require 'use-package))
 
 ;; Non servono???? (sono dipendenze di use-package???)
 ;; (require 'diminish)
 ;; (require 'bindkey)
 
-
-
 ;; =========================================================================
 ;; Benchmark-init
 ;; Se voglio fare benchmarking devo caricarlo prima posssibile
+;; per quanto, necessariamente, dopo l'installazione di use-package
 ;; =========================================================================
 (use-package benchmark-init
   :init
   :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
   )
 
 ;; =========================================================================
@@ -192,13 +208,13 @@
 ;; =========================================================================
 ;; EMACS enhancements
 ;; =========================================================================
-(use-package try
-  :init
-  :ensure t
-  ;; Do not defer
-  ;; defer t
-  :config
-  )
+;; (use-package try
+;;   :init
+;;   :ensure t
+;;   ;; Do not defer
+;;   ;; defer t
+;;   :config
+;;   )
 
 (use-package company
   ;; A modular text completion framework
@@ -206,7 +222,7 @@
   :ensure t
   :defer t
   :config
-  (global-company-mode t)
+  ;; (global-company-mode t)
   (add-to-list 'company-backends 'company-restclient)
   :diminish company-mode "Cmp"
   )
@@ -289,6 +305,16 @@
     )
   )
 
+(use-package swiper
+  :init
+  :ensure t
+  :demand t
+  :after (:all ivy)
+  :bind ("\C-s" . swiper)
+  :config
+  ;; (global-set-key "\C-s" 'swiper)
+  )
+
 (use-package counsel
   :init
   :ensure t
@@ -296,8 +322,8 @@
   :diminish counsel-mode
   :after (:all ivy swiper)
   :bind (("<f2> u" . counsel-unicode-char)
-         ("C-c g" . counsel-git)
-         ("C-c j" . counsel-git-grep))
+         ("C-c g"  . counsel-git)
+         ("C-c j"  . counsel-git-grep))
   :config
   (progn
     (counsel-mode t)
@@ -309,16 +335,6 @@
     ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     )
-  )
-
-(use-package swiper
-  :init
-  :ensure t
-  :demand t
-  :after (:all ivy)
-  :bind ("\C-s" . swiper)
-  :config
-  ;; (global-set-key "\C-s" 'swiper)
   )
 
 (use-package org
@@ -333,7 +349,6 @@
 
 (use-package org-bullets
   :init
-  ;; (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   :hook (org-mode . org-bullets-mode)
   :ensure t
   :defer t
@@ -341,35 +356,46 @@
   :after (:all org)
   )
 
-(use-package recentf
-  ;; Turn on recent file mode so that you can more easily switch to
-  ;; recently edited files when you first start emacs
-  ;; - emacs internal -
-  :init
-  :ensure t
-  :config
-  (setq recentf-save-file (concat user-emacs-directory ".recentf"))
-  (setq recentf-exclude '(".ido.last"))
-  (setq recentf-max-menu-items 40)
-  (recentf-mode 1)
-  )
+;; (use-package recentf
+;;   ;; Turn on recent file mode so that you can more easily switch to
+;;   ;; recently edited files when you first start emacs
+;;   ;; - emacs internal -
+;;   :init
+;;   :ensure t
+;;   :config
+;;   (setq recentf-save-file (concat user-emacs-directory ".recentf"))
+;;   (setq recentf-exclude '(".ido.last"))
+;;   (setq recentf-max-menu-items 40)
+;;   (recentf-mode 1)
+;;   )
 
-(use-package smex
-  ;; Enhances M-x too allow easier execution of commands. Provides
-  ;; a filterable list of possible commands in the minibuffer
-  ;; http://www.emacswiki.org/emacs/Smex
+;; (use-package smex
+;;   ;; Enhances M-x too allow easier execution of commands. Provides
+;;   ;; a filterable list of possible commands in the minibuffer
+;;   ;; http://www.emacswiki.org/emacs/Smex
+;;   :init
+;;   ;; (smex-initialize)
+;;   :ensure t
+;;   ;; Using IVY counsel-M-x
+;;   ;; :bind
+;;   ;; ("M-x" . smex)
+;;   ;; ("M-X" . smex-major-mode-commands)
+;;   ;; ;; This is your old M-x.
+;;   ;; ("C-c C-c M-x" . execute-extended-command)
+;;   :config
+;;   (smex-initialize)
+;;   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
+;;   )
+
+(use-package amx
+  ;; Alternative M-x with extra features.
   :init
-  ;; (smex-initialize)
   :ensure t
-  ;; Using IVY counsel-M-x
-  ;; :bind
-  ;; ("M-x" . smex)
-  ;; ("M-X" . smex-major-mode-commands)
-  ;; ;; This is your old M-x.
-  ;; ("C-c C-c M-x" . execute-extended-command)
+  :defer t
+  :after (:all counsel)
+  ;; :bind (("M-X" . amx-major-mode-commands))
   :config
-  (smex-initialize)
-  (setq smex-save-file (concat user-emacs-directory ".smex-items"))
+  (amx-mode t)
   )
 
 (use-package tramp
@@ -741,11 +767,13 @@
 
 (use-package smartparens
   :ensure t
+  :defer t
   :diminish smartparens-mode
+  :init
+  (require 'smartparens-config)
   :config
   (progn
-    (require 'smartparens-config)
-    (smartparens-global-mode 1)
+    ;; (smartparens-global-mode 1)
     (show-smartparens-global-mode 1))
   )
 
@@ -792,10 +820,12 @@
   :interpreter ("emacs" . emacs-lisp-mode)
   :diminish emacs-lisp-mode "El"
   :init
-  (add-hook 'emacs-lisp-mode-hook (lambda()
-                                    (company-mode)
-                                    (yas-minor-mode)
-                                    ))
+  (defun my/emacs-lisp-mode-hook ()
+    "Funzione richiamata dall'hook emacs-lisp-mode-hook."
+    (interactive)
+    (company-mode)
+    (yas-minor-mode))
+  (add-hook 'emacs-lisp-mode-hook 'my/emacs-lisp-mode-hook)
   :after (:all yasnippet company)
   :config
   )
@@ -838,10 +868,12 @@
 ;; =========================================================================
 (use-package elpy
   :init
-  (add-hook 'elpy-mode-hook (lambda()
-                              (company-mode)
-                              (yas-minor-mode)
-                              ))
+  (defun my/elpy-mode-hook ()
+    "Funzione richiamata dall'hook elpy-mode-hook."
+    (interactive)
+    (company-mode)
+    (yas-minor-mode))
+  (add-hook 'elpy-mode-hook 'my/elpy-mode-hook)
   (with-eval-after-load 'python (elpy-enable))
   :ensure t
   :defer t
@@ -893,9 +925,10 @@
   ;; https://johnsogg.github.io/emacs-golang
   ;;
   :init
-  :hook ((before-save-hook . gofmt-before-save)
-         (go-mode-hook . (lambda ()
-                           (set (make-local-variable 'company-backends) '(company-go))
+  (defun my/go-mode-hook ()
+    "Funzione richiamata dall'hook go-lisp-mode-hook."
+    (interactive)
+    (set (make-local-variable 'company-backends) '(company-go))
                            (company-mode)
                            (yas-minor-mode)
                            (go-set-project)
@@ -907,10 +940,9 @@
                                  (setq compile-command "go build -v && go test -v && go vet && gometalinter -t --enable-gc && errcheck")
                                  )
                              (set (make-local-variable 'compile-command)
-                                  "go build -v && go test -v && go vet && gometalinter && errcheck"))
-                           )
-                       )
-         )
+                                  "go build -v && go test -v && go vet && gometalinter && errcheck")))
+  :hook ((before-save-hook . gofmt-before-save)
+         (go-mode-hook . my/go-mode-hook))
   :ensure t
   :defer t
   :after (:all flycheck-gometalinter company-mode)
@@ -1280,8 +1312,14 @@
     (add-hook 'find-file-hooks 'vc-refresh-state)
   (add-hook 'find-file-hooks 'vc-find-file-hook))
 
-;; Reimposto i valori di default per il garbage collector
-(setq gc-cons-threshold 800000)
+;; Reimposto i valori (quasi) di default per il garbage collector
+;; il default di gc-cons-threshold e' in realta' 800000
+;; (setq gc-cons-threshold 800000)
+;; -------------------------------------------------------------------------------------------------
+;; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
+;; -------------------------------------------------------------------------------------------------
+;; 16777216 = 16MB
+(setq gc-cons-threshold 16777216)
 (setq gc-cons-percentage 0.1)
 
 ;; ***************************************************************************
