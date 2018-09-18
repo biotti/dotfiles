@@ -227,12 +227,6 @@
   :diminish company-mode "Cmp"
   )
 
-(use-package esup
-  ;; Emacs Start Up Profiler https://github.com/jschaf/esup
-  :init
-  :ensure t
-  )
-
 (use-package ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
