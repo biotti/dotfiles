@@ -824,14 +824,6 @@
   :config
   )
 
-(use-package el-autoyas
-  ;; Automatically create Emacs-Lisp Yasnippets
-  :init
-  :ensure t
-  :defer t
-  :after (:all yasnippet)
-  )
-
 ;; =========================================================================
 ;; Development: C#
 ;; =========================================================================
