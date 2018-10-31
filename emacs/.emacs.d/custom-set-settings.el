@@ -1,5 +1,3 @@
-;; Custom
-;; Custom variables
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -7,31 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (smartparens company-restclient restclient counsel-projectile counsel-tramp counsel use-package go-mode flycheck highlight-indentation ivy company ibuffer-projectile winum which-key undo-tree swap-buffers sql-indent smex rainbow-delimiters py-autopep8 project-explorer origami org-bullets markdown-mode magit json-mode indent-guide ido-completing-read+ golint go-snippets go-rename go-guru go-errcheck go-eldoc gitignore-mode gitconfig-mode flycheck-gometalinter fill-column-indicator esup elpy diminish csv-mode csharp-mode company-quickhelp company-jedi company-go benchmark-init))))
-
-;; -----------------------------------------------------------------------------
-;; Custom: faces
-;; ATTENZIONE
-;; Quando si imposta un nuovo tema ricordarsi di:
-;; M-x customize-group <ret>
-;; faces <ret>
-;; Basic Faces <ret>
-;; Default face <ret>
-;; qui togliere la spunta da:
-;; Foreground e Background
-;; Quindi salvare per future esecuzioni
-;; -----------------------------------------------------------------------------
+    (company-restclient restclient sql-indent json-mode markdown-mode csv-mode flycheck-gometalinter go-snippets go-errcheck go-guru golint go-eldoc go-rename company-go go-mode company-jedi py-autopep8 elpy powershell csharp-mode yasnippet-snippets yasnippet rainbow-delimiters smartparens project-explorer counsel-projectile ibuffer-projectile projectile indent-guide flycheck company-quickhelp gitignore-mode gitconfig-mode magit highlight-indentation origami try fill-column-indicator undo-tree which-key winum swap-buffers switch-window counsel-tramp amx org-bullets org-plus-contrib counsel swiper ivy company spacemacs-theme diminish benchmark-init use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
- 
-;; ***************************************************************************
-;; Local Variables:
-;; mode: lisp
-;; indent-tabs-mode: nil
-;; tab-width: 4
-;; End:
-;; ***************************************************************************
