@@ -16,6 +16,9 @@ cd $SCRIPT_DIR
 
 git submodule update --init --recursive
 
+echo Prima di proseguire accertarsi che la versione di AWK installata sia GAWK
+echo altrimenti interrompere
+
 $SCRIPT_DIR/install.sh $@
 
 cd $OLD_DIR
