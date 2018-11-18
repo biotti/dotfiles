@@ -648,7 +648,8 @@
   ;; ido-completing-read+ specifically avoids interfering with these.
   ;; If you use any of the following packages, you need to enable ido for
   ;; each of them separately.
-  (setq magit-completing-read-function 'magit-ido-completing-read) 
+  ;; (setq magit-completing-read-function 'magit-ido-completing-read)
+  (setq magit-completing-read-function 'ivy-completing-read)
   (setenv "GIT_ASKPASS" "git-gui--askpass"))
 
 (use-package 
