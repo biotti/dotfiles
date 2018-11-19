@@ -816,7 +816,7 @@
 
 (use-package
   elisp-format
-  :ensrure t
+  :ensure t
   :defer t
   )
 
