@@ -335,7 +335,7 @@
 (use-package 
   org 
   :init
-  ;;:ensure t
+  (setq org-export-backends '(ascii beamer html icalendar latex odt org))
   :ensure 
   org-plus-contrib 
   :defer t 
