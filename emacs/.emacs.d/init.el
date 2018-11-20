@@ -125,7 +125,7 @@
 ;; =========================================================================
 ;; use-package custom setup
 ;; =========================================================================
-(setq use-package-debug t) 
+(setq use-package-debug t)
 (setq use-package-verbose t)
 ;; (setq use-package-enable-imenu-support t)
 (setq use-package-minimum-reported-time 0.0001)
@@ -159,8 +159,7 @@
 ;; per quanto, necessariamente, dopo l'installazione di use-package
 ;; =========================================================================
 (use-package 
-  benchmark-init 
-
+  benchmark-init
   :init 
   :ensure t 
   :config
@@ -173,8 +172,7 @@
 ;; esplicitamente se si usa il :diminish
 ;; =========================================================================
 (use-package 
-  diminish 
-
+  diminish
   :init 
   :ensure t)
 
@@ -285,8 +283,7 @@
 
 ;; Testing Ivy, Swiper & Counsel
 (use-package 
-  ivy 
-
+  ivy
   :init 
   :ensure t 
   :demand t 
@@ -300,8 +297,7 @@
                  ))
 
 (use-package 
-  swiper 
-
+  swiper
   :init 
   :ensure t 
   :demand t 
@@ -312,8 +308,7 @@
   )
 
 (use-package 
-  counsel 
-
+  counsel
   :init 
   :ensure t 
   :demand t 
@@ -334,17 +329,28 @@
 
 (use-package 
   org 
-  :init
-  (setq org-export-backends '(ascii beamer html icalendar latex odt org))
-  :ensure 
-  org-plus-contrib 
+  :init (setq org-export-backends '(ascii beamer html icalendar latex odt org)) 
+  :ensure org-plus-contrib 
   :defer t 
   :config (add-to-list 'org-latex-packages-alist '("" "tabularx" nil)) 
-  (add-to-list 'org-latex-packages-alist '("" "tabu" nil)))
+  (add-to-list 'org-latex-packages-alist '("" "tabu" nil)) 
+  (use-package 
+    ox-reveal 
+
+    :init 
+    :ensure t 
+    :config (setq org-reveal-root (concat "file:///" (expand-file-name (concat user-emacs-directory
+                                                                               "reveal.js")))) 
+    (setq org-reveal-mathjax t)))
 
 (use-package 
-  org-bullets 
+  htmlize
+  :init 
+  :ensure t 
+  :defer t)
 
+(use-package 
+  org-bullets
   :init 
   :hook (org-mode . org-bullets-mode) 
   :ensure t 
@@ -649,20 +655,18 @@
   ;; If you use any of the following packages, you need to enable ido for
   ;; each of them separately.
   ;; (setq magit-completing-read-function 'magit-ido-completing-read)
-  (setq magit-completing-read-function 'ivy-completing-read)
+  (setq magit-completing-read-function 'ivy-completing-read) 
   (setenv "GIT_ASKPASS" "git-gui--askpass"))
 
 (use-package 
-  gitconfig-mode 
-
+  gitconfig-mode
   :init 
   :ensure t 
   :defer t 
   :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'"))
 
 (use-package 
-  gitignore-mode 
-
+  gitignore-mode
   :init 
   :ensure t 
   :defer t 
@@ -681,8 +685,7 @@
   :config (company-quickhelp-mode t))
 
 (use-package 
-  flycheck 
-
+  flycheck
   :init 
   :hook (prog-mode . flycheck-mode) 
   :ensure t 
@@ -814,11 +817,10 @@
                company) 
   :config)
 
-(use-package
-  elisp-format
-  :ensure t
-  :defer t
-  )
+(use-package 
+  elisp-format 
+  :ensure t 
+  :defer t)
 
 ;; =========================================================================
 ;; Development: C#
