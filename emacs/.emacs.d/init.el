@@ -850,24 +850,29 @@
 ;; =========================================================================
 ;; Develpment: Python
 ;; =========================================================================
+(use-package python
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'python (elpy-enable))
+  :config
+  )
 (use-package 
   elpy 
-  :init (defun my/elpy-mode-hook () 
-          "Funzione richiamata dall'hook elpy-mode-hook." 
-          (interactive) 
+  :init
+  (defun my/elpy-mode-hook () 
+          "Funzione richiamata dall'hook elpy-mode-hook."
+          (interactive)
           (company-mode) 
           (yas-minor-mode)) 
   (add-hook 'elpy-mode-hook 'my/elpy-mode-hook) 
-  (with-eval-after-load 'python (elpy-enable)) 
   :ensure t 
   :defer t 
   :after (:all company 
                highlight-indentation
                yasnippet) 
   :config
-  ;; (elpy-enable)
   (setq elpy-rpc-backend "jedi")
-  ;; (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (cond ((eq system-type 'windows-nt)
          ;; Windows-specific code goes here.
          (setq python-shell-completion-native-enable nil))))
