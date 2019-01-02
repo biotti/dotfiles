@@ -93,7 +93,7 @@
 ;; =========================================================================
 ;;
 ;; Org (org-mode)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 ;;
 ;; MELPA - Stable
 ;;(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -328,9 +328,10 @@
                  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
 
 (use-package 
-  org 
+  org
+  :pin org
   :init (setq org-export-backends '(ascii beamer html icalendar latex odt org)) 
-  :ensure org-plus-contrib 
+  ;; :ensure org-plus-contrib 
   :defer t 
   :config (add-to-list 'org-latex-packages-alist '("" "tabularx" nil)) 
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil)) 
