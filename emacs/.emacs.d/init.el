@@ -1169,7 +1169,11 @@ errcheck")
 (setq transient-mark-mode t) ;; Transient mark mode: mostra il testo selezionato come selezionato
 
 (delete-selection-mode t)    ;; Attiva delete-selection-mode
-(set-scroll-bar-mode 'right) ;; Scrollbars - right
+
+;; Solo se e' attivo un window-system
+(if window-system
+    (set-scroll-bar-mode 'right) ;; Scrollbars - right
+  )
 (global-hl-line-mode 1)      ;; Highlight current line
 (setq custom-safe-themes t) ;; Treat all themes as safe (warning: security issue!!!!)
 
