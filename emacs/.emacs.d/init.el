@@ -335,14 +335,17 @@
   :defer t 
   :config (add-to-list 'org-latex-packages-alist '("" "tabularx" nil)) 
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil)) 
-  (use-package 
-    ox-reveal 
+  )
 
+(use-package 
+    ox-reveal 
     :init 
     :ensure t 
     :config (setq org-reveal-root (concat "file:///" (expand-file-name (concat user-emacs-directory
-                                                                               "reveal.js")))) 
-    (setq org-reveal-mathjax t)))
+                                                                               "reveal.js"))))
+    (setq org-reveal-mathjax t)
+    :after (:all org)
+    )
 
 (use-package 
   htmlize
