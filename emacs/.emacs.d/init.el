@@ -422,7 +422,7 @@
   :init 
   :ensure t 
   :defer t 
-  :after (all: counsel tramp) 
+  :after (:all counsel tramp) 
   :config)
 
 (use-package 
@@ -1141,7 +1141,9 @@ errcheck")
   :ensure t 
   :defer t 
   :config 
-  :after (:all restclient))
+  :after (:all company
+               restclient)
+  )
 
 
 ;; =========================================================================
