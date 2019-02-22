@@ -1,17 +1,12 @@
+[core]
+    editor = vi
 [alias]
-	graph = log --decorate --oneline --graph
-	whatsnew = !git log ..origin/`git rev-parse --abbrev-ref HEAD`
-[color]
-	ui = true
-[help]
-	autocorrect = 1
+    graph = log --decorate --oneline --graph
+    whatsnew = !git log ..origin/`git rev-parse --abbrev-ref HEAD`
 [include]
-	path = ~/.gitconfig_user
-	path = ~/.gitconfig_include
+    path = ~/.gitconfig_user
+    path = ~/.gitconfig_include
 [init]
-	templatedir = ~/.git_template
-[filter "lfs"]
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
+    templatedir = ~/.git_template
+
+# vim: set ft=gitconfig :

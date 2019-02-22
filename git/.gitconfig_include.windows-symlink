@@ -1,45 +1,29 @@
 [core]
     autocrlf = true
-    whitespace = cr-at-eol
+    # whitespace = cr-at-eol
     # editor = gvim
     # editor = \"C:/Program Files (x86)/GitExtensions/GitExtensions.exe\" fileeditor
 [diff]
     tool = kdiff3
     guitool = kdiff3
-    # ----
-    # tool = p4merge
-    # guitool = p4merge
-    # ----
-    # tool = diffmerge
-    # guitool = diffmerge
-    # ----
-    # tool = meld
-    # guitool = meld
 [difftool]
     prompt = false
 [difftool "kdiff3"]
-    path = C:/Program Files/KDiff3/kdiff3.exe
+    path = \"C:/Program Files/KDiff3/kdiff3.exe\"
 [difftool "p4merge"]
-    path = C:/Program Files/Perforce/p4merge.exe
+    path = \"C:/Program Files/Perforce/p4merge.exe\"
 [difftool "diffmerge"]
-    path = C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe
-[difftool "meld"]
-    path = C:/Program Files (x86)/Meld/meld.exe
+    path = \"C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe\"
 [merge]
     tool = kdiff3
-    # tool = p4merge
-    # tool = diffmerge
-    # tool = meld
 [mergetool]
     keepBackup = false
+    prompt = false
 [mergetool "kdiff3"]
-    path = C:/Program Files/KDiff3/kdiff3.exe
+    path = \"C:/Program Files/KDiff3/kdiff3.exe\"
 [mergetool "p4merge"]
-    trustExitCode = true
-    path = C:/Program Files/Perforce/p4merge.exe
+    path = \"C:/Program Files/Perforce/p4merge.exe\"
 [mergetool "diffmerge"]
-    path = C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe
-[mergetool "meld"]
-    path = C:/Program Files (x86)/Meld/meld.exe
+    path = \"C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe\"
 
 # vim: set ft=gitconfig :
