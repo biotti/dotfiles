@@ -77,6 +77,7 @@ emacs/.emacs.d/auto-save-list/
 emacs/.emacs.d/elpa/
 emacs/.emacs.d/eshell/
 emacs/.emacs.d/server/
+emacs/.emacs.d/games/
 # Devo usare /...../* (notare l'asterisco terminale) altrimenti non posso 
 # scludere dal .gitignore le sottodirectory
  vim/.vim/bundle/*
