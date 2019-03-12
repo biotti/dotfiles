@@ -339,11 +339,21 @@
 
 (use-package 
     ox-reveal 
-    :init 
+    :init
+    ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+    ;; adottato una nuova metodica per org-structure-template-alist
+    (setq org-reveal-note-key-char nil)
     :ensure t 
-    :config (setq org-reveal-root (concat "file:///" (expand-file-name (concat user-emacs-directory
-                                                                               "reveal.js"))))
-    (setq org-reveal-mathjax t)
+    :config
+    (setq org-reveal-root (concat "file:///"
+                                  (expand-file-name (concat user-emacs-directory
+                                                            "reveal.js"))))
+    ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
+    ;; (setq org-reveal-mathjax t)
+    ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+    ;; adottato una nuova metodica per org-structure-template-alist
+    (add-to-list 'org-structure-template-alist
+                   '("n" . "notes"))
     :after (:all org)
     )
 
