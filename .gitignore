@@ -78,6 +78,8 @@ emacs/.emacs.d/elpa/
 emacs/.emacs.d/eshell/
 emacs/.emacs.d/server/
 emacs/.emacs.d/games/
+emacs/.emacs.d/transient/
+emacs/.emacs.d/emms/
 # Devo usare /...../* (notare l'asterisco terminale) altrimenti non posso 
 # scludere dal .gitignore le sottodirectory
  vim/.vim/bundle/*
