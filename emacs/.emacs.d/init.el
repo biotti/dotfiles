@@ -1155,6 +1155,54 @@ errcheck")
                restclient)
   )
 
+;; =========================================================================
+;; EMMS: Solo su sistemi GNU/Linux, su Windows ci sono problemi
+;; =========================================================================
+(cond ((eq system-type 'gnu/linux)
+       (use-package emms
+         ;;
+         ;; sudo apt-get install mpg321
+         ;; sudo apt-get install vorbis-tools
+         ;; sudo apt-get install mplayer
+         ;; sudo apt-get install mpv
+         ;; sudo apt-get install vlc
+         :ensure t
+         :config
+         (progn
+           (emms-standard)
+           (emms-default-players)
+           (setq emms-playlist-buffer-name "Music-EMMS")
+           (setq emms-source-file-default-directory "~/Music/"))
+         ;;** EMMS
+         ;; Autoload the id3-browser and bind it to F7.
+         ;; You can change this to your favorite EMMS interface.
+         (autoload 'emms-smart-browse "emms-browser.el" "Browse with EMMS" t)
+         (global-set-key [(f7)] 'emms-smart-browse)
+         
+         (with-eval-after-load 'emms
+           (emms-standard) ;; or (emms-devel) if you want all features
+           (setq emms-source-file-default-directory "~/music"
+                 emms-info-asynchronously t
+                 emms-show-format "♪ %s")
+           
+           ;; Might want to check `emms-info-functions',
+           ;; `emms-info-libtag-program-name',
+           ;; `emms-source-file-directory-tree-function'
+           ;; as well.
+           
+           ;; Determine which player to use.
+           ;; If you don't have strong preferences or don't have
+           ;; exotic files from the past (wma) `emms-default-players`
+           ;; is probably all you need.
+           (if (executable-find "mplayer")
+               (setq emms-player-list '(emms-player-mplayer))
+             (emms-default-players))
+           
+           ;; For libre.fm see `emms-librefm-scrobbler-username' and
+           ;; `emms-librefm-scrobbler-password'.
+           ;; Future versions will use .authoinfo.gpg.
+           )
+         )))
 
 ;; =========================================================================
 ;; Customization (outside of "custom")
