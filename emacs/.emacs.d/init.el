@@ -1,3 +1,31 @@
+;; Nota bene per gli errori gpg;
+;; M-x package-install RET gnu-elpa-keyring-update RET
+;; This package updates the GPG keys used by the ELPA package manager
+;; (a.k.a `package.el') to verify authenticity of packages downloaded
+;; from the GNU ELPA archive.
+;; 
+;; Those keys have a limited validity in time (for example, the first key was
+;; valid until Sep 2019 only), so you need to install and keep this package up
+;; to date to make sure signature verification does not spuriously fail when
+;; installing packages.
+;; 
+;; If your keys are already too old, causing signature verification errors when
+;; installing packages, then in order to install this package you can do the
+;; following:
+;; 
+;; - Fetch the new key manually, e.g. with something like:
+;; 
+;;       gpg --homedir ~/.emacs.d/elpa/gnupg --receive-keys 066DAFCB81E42C40
+;; 
+;; - Modify the expiration date of the old key, e.g. with something like:
+;; 
+;;       gpg --homedir ~/.emacs.d/elpa/gnupg \
+;;           --quick-set-expire 474F05837FBDEF9B 1y
+;; 
+;; - temporarily disable signature verification (see variable
+;;   `package-check-signature').
+;; 
+
 ;;
 ;; Da verificare:
 ;; https://sam217pa.github.io/2016/08/30/how-to-make-your-own-spacemacs/
@@ -93,7 +121,7 @@
 ;; =========================================================================
 ;;
 ;; Org (org-mode)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 ;;
 ;; MELPA - Stable
 ;;(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -326,6 +354,13 @@
                  ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
                  ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
                  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
+
+(use-package
+  counse-css
+  :init
+  :ensure t
+  :defer t
+  )
 
 (use-package 
   org
@@ -824,7 +859,8 @@
   :init (defun my/emacs-lisp-mode-hook () 
           "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
           (interactive) 
-          (company-mode) 
+          (company-mode)
+          (company-web)
           (yas-minor-mode)) 
   (add-hook 'emacs-lisp-mode-hook 'my/emacs-lisp-mode-hook) 
   :after (:all yasnippet 
@@ -1066,6 +1102,30 @@ errcheck")
   :after (:all flycheck
                go-mode))
 
+
+;; =========================================================================
+;; web development
+;; =========================================================================
+(use-package
+  web-mode
+  :init (defun my/web-mode-hook () 
+          "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
+          (interactive) 
+          (company-mode) 
+          (yas-minor-mode)) 
+  (add-hook 'web-mode-hook 'my/web-mode-hook) 
+  :after (:all yasnippet 
+               company) 
+  :ensure t
+  :defer t
+  )
+
+(use-package
+  j2s-mode
+  :init
+  :ensure t
+  :defer t
+  )
 
 
 ;; =========================================================================
