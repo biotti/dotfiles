@@ -9,9 +9,11 @@
 [difftool]
     prompt = false
 [difftool "kdiff3"]
-    path = \"C:/Program Files/KDiff3/kdiff3.exe\"
+    path = C:/Program Files/KDiff3/kdiff3.exe
+    cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$LOCAL\" \"$REMOTE\"
 [difftool "p4merge"]
-    path = \"C:/Program Files/Perforce/p4merge.exe\"
+    path = C:/Program Files/Perforce/p4merge.exe
+    cmd = \"C:/Program Files/Perforce/p4merge.exe\" \"$LOCAL\" \"$REMOTE\"
 [difftool "diffmerge"]
     path = \"C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe\"
 [merge]
@@ -20,9 +22,11 @@
     keepBackup = false
     prompt = false
 [mergetool "kdiff3"]
-    path = \"C:/Program Files/KDiff3/kdiff3.exe\"
+    path = C:/Program Files/KDiff3/kdiff3.exe
+    cmd = \"C:/Program Files/KDiff3/kdiff3.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
 [mergetool "p4merge"]
-    path = \"C:/Program Files/Perforce/p4merge.exe\"
+    path = C:/Program Files/Perforce/p4merge.exe
+    cmd = \"C:/Program Files/Perforce/p4merge.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
 [mergetool "diffmerge"]
     path = \"C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe\"
 [winUpdater]
