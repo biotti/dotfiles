@@ -1,3 +1,31 @@
+;; Nota bene per gli errori gpg;
+;; M-x package-install RET gnu-elpa-keyring-update RET
+;; This package updates the GPG keys used by the ELPA package manager
+;; (a.k.a `package.el') to verify authenticity of packages downloaded
+;; from the GNU ELPA archive.
+;; 
+;; Those keys have a limited validity in time (for example, the first key was
+;; valid until Sep 2019 only), so you need to install and keep this package up
+;; to date to make sure signature verification does not spuriously fail when
+;; installing packages.
+;; 
+;; If your keys are already too old, causing signature verification errors when
+;; installing packages, then in order to install this package you can do the
+;; following:
+;; 
+;; - Fetch the new key manually, e.g. with something like:
+;; 
+;;       gpg --homedir ~/.emacs.d/elpa/gnupg --receive-keys 066DAFCB81E42C40
+;; 
+;; - Modify the expiration date of the old key, e.g. with something like:
+;; 
+;;       gpg --homedir ~/.emacs.d/elpa/gnupg \
+;;           --quick-set-expire 474F05837FBDEF9B 1y
+;; 
+;; - temporarily disable signature verification (see variable
+;;   `package-check-signature').
+;; 
+
 ;;
 ;; Da verificare:
 ;; https://sam217pa.github.io/2016/08/30/how-to-make-your-own-spacemacs/
@@ -165,7 +193,7 @@
 ;; =========================================================================
 ;;
 ;; Org (org-mode)
-(add-to-list 'package-archives '("org-elpa" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("org-elpa" . "https://orgmode.org/elpa/") t)
 ;;
 ;; MELPA - Stable
 ;;(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -398,6 +426,13 @@
                  ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
                  ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
                  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
+
+(use-package
+  counsel-css
+  :init
+  :ensure t
+  :defer t
+  )
 
 (use-package 
   org
@@ -904,7 +939,8 @@
   :init (defun my/emacs-lisp-mode-hook () 
           "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
           (interactive) 
-          (company-mode) 
+          (company-mode)
+          (company-web)
           (yas-minor-mode)) 
   (add-hook 'emacs-lisp-mode-hook 'my/emacs-lisp-mode-hook) 
   :after (:all yasnippet 
@@ -1147,6 +1183,30 @@ errcheck")
                go-mode))
 
 
+;; =========================================================================
+;; web development
+;; =========================================================================
+(use-package
+  web-mode
+  :init (defun my/web-mode-hook () 
+          "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
+          (interactive) 
+          (company-mode) 
+          (yas-minor-mode)) 
+  (add-hook 'web-mode-hook 'my/web-mode-hook) 
+  :after (:all yasnippet 
+               company) 
+  :ensure t
+  :defer t
+  )
+
+(use-package
+  j2s-mode
+  :init
+  :ensure t
+  :defer t
+  )
+
 
 ;; =========================================================================
 ;; CSV
@@ -1235,6 +1295,54 @@ errcheck")
                restclient)
   )
 
+;; =========================================================================
+;; EMMS: Solo su sistemi GNU/Linux, su Windows ci sono problemi
+;; =========================================================================
+(cond ((eq system-type 'gnu/linux)
+       (use-package emms
+         ;;
+         ;; sudo apt-get install mpg321
+         ;; sudo apt-get install vorbis-tools
+         ;; sudo apt-get install mplayer
+         ;; sudo apt-get install mpv
+         ;; sudo apt-get install vlc
+         :ensure t
+         :config
+         (progn
+           (emms-standard)
+           (emms-default-players)
+           (setq emms-playlist-buffer-name "Music-EMMS")
+           (setq emms-source-file-default-directory "~/Music/"))
+         ;;** EMMS
+         ;; Autoload the id3-browser and bind it to F7.
+         ;; You can change this to your favorite EMMS interface.
+         (autoload 'emms-smart-browse "emms-browser.el" "Browse with EMMS" t)
+         (global-set-key [(f7)] 'emms-smart-browse)
+         
+         (with-eval-after-load 'emms
+           (emms-standard) ;; or (emms-devel) if you want all features
+           (setq emms-source-file-default-directory "~/music"
+                 emms-info-asynchronously t
+                 emms-show-format "♪ %s")
+           
+           ;; Might want to check `emms-info-functions',
+           ;; `emms-info-libtag-program-name',
+           ;; `emms-source-file-directory-tree-function'
+           ;; as well.
+           
+           ;; Determine which player to use.
+           ;; If you don't have strong preferences or don't have
+           ;; exotic files from the past (wma) `emms-default-players`
+           ;; is probably all you need.
+           (if (executable-find "mplayer")
+               (setq emms-player-list '(emms-player-mplayer))
+             (emms-default-players))
+           
+           ;; For libre.fm see `emms-librefm-scrobbler-username' and
+           ;; `emms-librefm-scrobbler-password'.
+           ;; Future versions will use .authoinfo.gpg.
+           )
+         )))
 
 ;; =========================================================================
 ;; Customization (outside of "custom")
