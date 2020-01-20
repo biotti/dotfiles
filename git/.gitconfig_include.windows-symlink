@@ -25,5 +25,7 @@
     path = \"C:/Program Files/Perforce/p4merge.exe\"
 [mergetool "diffmerge"]
     path = \"C:/Program Files/SourceGear/Common/DiffMerge/sgdm.exe\"
+[winUpdater]
+    recentlySeenVersion = 2.23.0.windows.1
 
 # vim: set ft=gitconfig :

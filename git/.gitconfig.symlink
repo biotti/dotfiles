@@ -1,5 +1,6 @@
 [core]
     editor = vi
+    quotepath = false
 [alias]
     graph = log --decorate --oneline --graph
     whatsnew = !git log ..origin/`git rev-parse --abbrev-ref HEAD`
@@ -8,5 +9,11 @@
     path = ~/.gitconfig_include
 [init]
     templatedir = ~/.git_template
+[pull]
+    rebase = false
+[fetch]
+    prune = false
+[rebase]
+    autoStash = false
 
 # vim: set ft=gitconfig :
