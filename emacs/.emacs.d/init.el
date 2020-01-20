@@ -33,6 +33,78 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
+;; Emacs Server
+(require 'server)
+(setq server-log t)
+(unless server-process
+  ;; N.B.: (server-running-p) non funziona, usare server-process
+  (progn
+    (interactive)
+    (message "server-start")
+    (server-start)))
+
+;; =========================================================================
+;; Font setup
+;; =========================================================================
+;; from https://www.reddit.com/r/emacs/comments/1xe7vr/check_if_font_is_available_before_setting/
+;; Test char and monospace:
+;; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
+;; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
+;;
+;; https://www.reddit.com/r/emacs/comments/6i55x3/emacs_serverclient_doesnt_respect_setfaceattribute/
+;; If you run emacs as server in the background (--daemon or script),
+;; it will not create any frame. Because of that, any frame settings wont
+;; take any effect.
+;; If interested, check 'after-make-frame-functions' hook
+;; https://stackoverflow.com/questions/3984730/emacs-gui-with-emacs-daemon-not-loading-fonts-correctly
+
+;; (cond ((find-font (font-spec :name "DejaVu Sans Mono")) 
+;;        (set-frame-font "DejaVu Sans Mono-10" t t) 
+;;        (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))) 
+;;       ((find-font (font-spec :name "Consolas")) 
+;;        (set-frame-font "Consolas-10" t t) 
+;;        (add-to-list 'default-frame-alist '(font . "Consolas-10"))) 
+;;       ((find-font (font-spec :name "Inconsolata")) 
+;;        (set-frame-font "Inconsolata-10" t t) 
+;;        (add-to-list 'default-frame-alist '(font . "Incosolata-10")))
+;;       ;; ((find-font (font-spec :name "Lucida Console"))
+;;       ;;  (set-frame-font "Lucida Console-10")
+;;       ;;  (add-to-list 'default-frame-alist '(font . "Lucida Console-10")))
+;;       ((find-font (font-spec :name "Courier New")) 
+;;        (set-frame-font "Courier New-10" t t) 
+;;        (add-to-list 'default-frame-alist '(font . "Courier New-10")))
+;;       ;; ((find-font (font-spec :name "courier"))
+;;       ;;  (set-frame-font "courier-10")
+;;       ;;  (add-to-list 'default-frame-alist '(font . "courier-10")))
+;;       )
+
+(require 'frame)
+(add-to-list 'initial-frame-alist
+      (cond
+       ((find-font (font-spec :name "DejaVu Sans mono"))
+        '(font . "DejaVu Sans Mono-10"))
+       ((find-font (font-spec :name "Consolas"))
+        '(font . "Consolas-10"))
+       ((find-font (font-spec :name "Inconsolata"))
+        '(font . "Inconsolata-10"))
+       ((find-font (font-spec :name "Courier New"))
+        '(font . "Courier New-10"))
+       )
+      )
+
+(add-to-list 'default-frame-alist
+      (cond
+       ((find-font (font-spec :name "DejaVu Sans mono"))
+        '(font . "DejaVu Sans Mono-10"))
+       ((find-font (font-spec :name "Consolas"))
+        '(font . "Consolas-10"))
+       ((find-font (font-spec :name "Inconsolata"))
+        '(font . "Inconsolata-10"))
+       ((find-font (font-spec :name "Courier New"))
+        '(font . "Courier New-10"))
+       )
+      )
+
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; https://www.reddit.com/r/emacs/comments/7t4kxw/how_can_i_improve_startup_time_despite_many/
 ;; -------------------------------------------------------------------------------------------------
@@ -93,7 +165,7 @@
 ;; =========================================================================
 ;;
 ;; Org (org-mode)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("org-elpa" . "http://orgmode.org/elpa/") t)
 ;;
 ;; MELPA - Stable
 ;;(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -329,9 +401,10 @@
 
 (use-package 
   org
-  :pin org
+  :ensure org-plus-contrib 
+  ;; :ensure t
+  :pin org-elpa
   :init (setq org-export-backends '(ascii beamer html icalendar latex odt org)) 
-  ;; :ensure org-plus-contrib 
   :defer t 
   :config (add-to-list 'org-latex-packages-alist '("" "tabularx" nil)) 
   (add-to-list 'org-latex-packages-alist '("" "tabu" nil)) 
@@ -365,8 +438,15 @@
 
 (use-package 
   org-bullets
-  :init 
-  :hook (org-mode . org-bullets-mode) 
+  ;; Ricordarsi che nel caso si voglia stampare in postscript
+  ;; un file org e' necessario disattivare l'org-bullet-mode
+  ;; altrimenti la stampa che si ottinene presenta degli
+  ;; asterischi (tipo standard org) e dei punti interrogativi (?)
+  ;; dovuti ai problemi di rendering dei bullets
+  :init
+  ;; Per quanto sopra disattivo l'hook. Se voglio usare i bullets
+  ;; lo faro' a mano tramite comando
+  ;; :hook (org-mode . org-bullets-mode) 
   :ensure t 
   :defer t 
   :config 
@@ -894,7 +974,7 @@
 (use-package 
   py-autopep8
   ;; Autopep8
-  :init (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save) 
+  ;; :init (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save) 
   :ensure t 
   :defer t 
   :config)
@@ -1255,18 +1335,28 @@ errcheck")
 ;; =========================================================================
 ;; Printing
 ;; =========================================================================
+(require 'ps-print)
 (setq ps-paper-type 'a4)
 ;; (setq ps-print-color-p 'black-white)
 (setq doc-view-continuous t)
 (cond ((eq system-type 'windows-nt)
        ;; Windows-specific code goes here.
-       (setq ps-lpr-command "C:/Program Files/gs/gs9.16/bin/gswin64c.exe") 
-       (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-IC:/Program Files/gs/gs9.16/lib"
-                               "-sFONTPATH=C:/Windows/Fonts" "-sDEVICE=mswinpr2"
-                               "-sOutputICCProfile=default_cmyk.icc" "-dBitsPerPixel=24"
-                               "-dEmbedAllFonts=true")) 
-       (setq doc-view-ghostscript-program "C:/Program Files/gs/gs9.16/bin/gswin64c.exe") 
-       (setq ps-printer-name t)) 
+       (setq ps-lpr-command "C:/Program Files/gs/gs9.50/bin/gswin64c.exe") 
+       (setq ps-lpr-switches '("-q"
+                               "-dNOPAUSE"
+                               "-dBATCH"
+                               "-dNoCancel"
+                               "-sDEVICE=mswinpr2"
+                               ;; "-IC:/Program Files/gs/gs9.50/lib"
+                               ;; "-sFONTPATH=C:/Windows/Fonts"
+                               ;; "-sOutputICCProfile=default_cmyk.icc"
+                               ;; "-dBitsPerPixel=24"
+                               ;; "-dEmbedAllFonts=true"
+                               )) 
+       (setq doc-view-ghostscript-program "C:/Program Files/gs/gs9.50/bin/gswin64c.exe")
+       (setq ps-printer-name t)
+       (setq ps-printer-name-option nil)
+       ) 
       ((eq system-type 'gnu/linux)
        ;; Linux-specific code goes here.
        ))
@@ -1274,43 +1364,8 @@ errcheck")
 ;; Start Emacs fullscreen mode
 ;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
-;; Emacs Server
-;; (require 'server)
-;; (unless (server-running-p)
-;;   (server-start))
 
-;; =========================================================================
-;; Font setup
-;; =========================================================================
-;; from https://www.reddit.com/r/emacs/comments/1xe7vr/check_if_font_is_available_before_setting/
-;; Test char and monospace:
-;; 0123456789abcdefghijklmnopqrstuvwxyz [] () :;,. !@#$^&*
-;; 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ {} <> "'`  ~-_/|\?
-;;
-;; https://www.reddit.com/r/emacs/comments/6i55x3/emacs_serverclient_doesnt_respect_setfaceattribute/
-;; If you run emacs as server in the background (--daemon or script),
-;; it will not create any frame. Because of that, any frame settings wont
-;; take any effect.
-;; If interested, check 'after-make-frame-functions' hook
-(cond ((find-font (font-spec :name "DejaVu Sans Mono")) 
-       (set-frame-font "DejaVu Sans Mono-10" t t) 
-       (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))) 
-      ((find-font (font-spec :name "Consolas")) 
-       (set-frame-font "Consolas-10" t t) 
-       (add-to-list 'default-frame-alist '(font . "Consolas-10"))) 
-      ((find-font (font-spec :name "Inconsolata")) 
-       (set-frame-font "Inconsolata-10" t t) 
-       (add-to-list 'default-frame-alist '(font . "Incosolata-10")))
-      ;; ((find-font (font-spec :name "Lucida Console"))
-      ;;  (set-frame-font "Lucida Console-10")
-      ;;  (add-to-list 'default-frame-alist '(font . "Lucida Console-10")))
-      ((find-font (font-spec :name "Courier New")) 
-       (set-frame-font "Courier New-10" t t) 
-       (add-to-list 'default-frame-alist '(font . "Courier New-10")))
-      ;; ((find-font (font-spec :name "courier"))
-      ;;  (set-frame-font "courier-10")
-      ;;  (add-to-list 'default-frame-alist '(font . "courier-10")))
-      )
+                                        
 
 ;; =========================================================================
 ;; Custom
