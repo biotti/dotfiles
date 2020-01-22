@@ -441,6 +441,8 @@
   :init
   :ensure t
   :defer t
+  :after (:all counsel)
+  )
 
 (use-package
   counsel-etags
