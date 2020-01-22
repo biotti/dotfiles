@@ -328,6 +328,15 @@
   "Cmp")
 
 (use-package 
+  company-web
+  :init 
+  :ensure t 
+  :defer t
+  :after (:all company)
+  :config
+  )
+
+(use-package 
   ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
