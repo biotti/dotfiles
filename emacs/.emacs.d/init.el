@@ -1224,6 +1224,9 @@ errcheck")
   :init
   :ensure t
   :defer t
+  :mode ("\\.js\\'" . js2-mode)
+  :config
+  (setq js2-highlight-level 3)
   )
 
 
