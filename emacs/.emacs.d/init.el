@@ -958,7 +958,6 @@
           "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
           (interactive) 
           (company-mode)
-          (company-web)
           (yas-minor-mode)) 
   (add-hook 'emacs-lisp-mode-hook 'my/emacs-lisp-mode-hook) 
   :after (:all yasnippet 
