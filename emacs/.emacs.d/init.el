@@ -1208,11 +1208,13 @@ errcheck")
   :init (defun my/web-mode-hook () 
           "Funzione richiamata dall'hook emacs-lisp-mode-hook." 
           (interactive) 
-          (company-mode) 
+          (company-mode)
+          (company-web)
           (yas-minor-mode)) 
   (add-hook 'web-mode-hook 'my/web-mode-hook) 
   :after (:all yasnippet 
-               company) 
+               company
+               company-web) 
   :ensure t
   :defer t
   )
