@@ -1220,7 +1220,7 @@ errcheck")
   )
 
 (use-package
-  j2s-mode
+  js2-mode
   :init
   :ensure t
   :defer t
