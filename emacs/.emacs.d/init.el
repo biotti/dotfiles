@@ -108,30 +108,28 @@
 
 (require 'frame)
 (add-to-list 'initial-frame-alist
-      (cond
-       ((find-font (font-spec :name "DejaVu Sans mono"))
-        '(font . "DejaVu Sans Mono-10"))
-       ((find-font (font-spec :name "Consolas"))
-        '(font . "Consolas-10"))
-       ((find-font (font-spec :name "Inconsolata"))
-        '(font . "Inconsolata-10"))
-       ((find-font (font-spec :name "Courier New"))
-        '(font . "Courier New-10"))
-       )
-      )
+             (cond ((find-font (font-spec :name "DejaVu Sans mono"))
+                    '(font . "DejaVu Sans Mono-10"))
+                   ((find-font (font-spec :name "Consolas"))
+                    '(font . "Consolas-10"))
+                   ((find-font (font-spec :name "Inconsolata"))
+                    '(font . "Inconsolata-10"))
+                   ((find-font (font-spec :name "Courier New"))
+                    '(font . "Courier New-10"))
+                   )
+             )
 
 (add-to-list 'default-frame-alist
-      (cond
-       ((find-font (font-spec :name "DejaVu Sans mono"))
-        '(font . "DejaVu Sans Mono-10"))
-       ((find-font (font-spec :name "Consolas"))
-        '(font . "Consolas-10"))
-       ((find-font (font-spec :name "Inconsolata"))
-        '(font . "Inconsolata-10"))
-       ((find-font (font-spec :name "Courier New"))
-        '(font . "Courier New-10"))
-       )
-      )
+             (cond ((find-font (font-spec :name "DejaVu Sans mono"))
+                    '(font . "DejaVu Sans Mono-10"))
+                   ((find-font (font-spec :name "Consolas"))
+                    '(font . "Consolas-10"))
+                   ((find-font (font-spec :name "Inconsolata"))
+                    '(font . "Inconsolata-10"))
+                   ((find-font (font-spec :name "Courier New"))
+                    '(font . "Courier New-10"))
+                   )
+             )
 
 ;; https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/
 ;; https://www.reddit.com/r/emacs/comments/7t4kxw/how_can_i_improve_startup_time_despite_many/
@@ -157,10 +155,11 @@
 (defun my/init-startup-hook ()
   "Funzione richiamata dall'hook emacs-startup-hook."
   (interactive)
-  (message "Emacs ready in %s with %d garbage collections." (format "%.2f seconds" (float-time
-                                                                                    (time-subtract
-                                                                                     after-init-time
-                                                                                     before-init-time)))
+  (message "Emacs ready in %s with %d garbage collections."
+           (format "%.2f seconds" (float-time
+                                   (time-subtract
+                                    after-init-time
+                                    before-init-time)))
            gcs-done)
   ;; https://github.com/hlissner/doom-emacs/wiki/FAQ#how-is-dooms-startup-so-fast
   (setq file-name-handler-alist my/init-file-name-handler-alist))
@@ -181,12 +180,6 @@
 
 ;; Setup package.el
 (require 'package)
-;; https://github.com/sondr3/dotfiles/blob/master/emacs.org
-;; Then we ll make sure we always load newer files if they are available,
-;; even if there s a byte compiled version and disable automatic requiring
-;; of packages on start as it ll be handled by use-package.
-(setq load-prefer-newer t)
-;; (setq package-enable-at-startup nil)
 
 ;; =========================================================================
 ;; Manage package repositories
@@ -216,11 +209,20 @@
 ;;        ("gnu"          . 5)
 ;;        ("melpa"        . 0)))
 
+;; (setq package-enable-at-startup nil)
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+
+;; https://github.com/sondr3/dotfiles/blob/master/emacs.org
+;; Then we ll make sure we always load newer files if they are available,
+;; even if there s a byte compiled version and disable automatic requiring
+;; of packages on start as it ll be handled by use-package.
+(setq load-prefer-newer t)
+
 
 ;; =========================================================================
 ;; use-package custom setup
@@ -236,12 +238,25 @@
 ;;       if there are error processing .emacs file after a
 ;;       package upgrade (use-package.el may be empty!!!)
 ;; Utile da leggere: http://irreal.org/blog/?p=6442
-(unless (package-installed-p 'use-package)
-  (message "Refreshing package database...")
-  (package-refresh-contents)
-  (message "Done refreshing. Installing use-package")
-  (package-install 'use-package)
-  (message "Done installing."))
+;; (unless (package-installed-p 'use-package)
+;;   (message "use-package not present in package-installed-p")
+;;   (message "Refreshing package database...")
+;;   (package-refresh-contents)
+;;   (message "Done refreshing. Installing use-package")
+;;   (package-install 'use-package)
+;;   (message "Done installing."))
+
+(if (package-installed-p 'use-package)
+    (message "Checking use-package: found")
+  (progn
+    (message "Checking use-package: not found in package-installed-p")
+    ;; (message "Refreshing package database...")
+    ;; (package-refresh-contents)
+    ;; (message "Done refreshing. Installing use-package")
+    (message "Installing use-package")
+    (package-install 'use-package)
+    (message "Done installing."))
+  )
 
 ;; Da testare: sembra non essere necessario
 ;; https://cestlaz.github.io/posts/using-emacs-1-setup/
@@ -259,11 +274,11 @@
 ;; per quanto, necessariamente, dopo l'installazione di use-package
 ;; =========================================================================
 (use-package benchmark-init
-  :init
   :ensure t
   :config
   ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  )
 
 ;; =========================================================================
 ;; Diminish
@@ -272,16 +287,24 @@
 ;; =========================================================================
 (use-package diminish
   :init
-  :ensure t)
+  :ensure t
+  )
 
 (use-package beacon
   :ensure t
   :diminish beacon-mode
   :config
-  (beacon-mode 1)
-  (setq beacon-blink-when-focused t)
-  (setq beacon-size 60)
+  (progn (beacon-mode 1)
+         (setq beacon-blink-when-focused t)
+         (setq beacon-size 60))
   )
+
+(use-package all-the-icons
+  :ensure t
+  :demand t
+  ;;:init (require 'all-the-icons)
+  )
+
 
 ;; Color Themes (use (load-theme xxx) at the end
 ;; =========================================================================
@@ -291,79 +314,110 @@
   ;; Port of vim's mustang theme
   :if (display-graphic-p)
   :ensure spacemacs-theme
-  ;;:defer t
+  :defer t
   ;; :config
   ;; (load-theme 'spacemacs-dark t)
   )
 
 (use-package cloud-theme
   :ensure t
+  :defer t
   )
 
 (use-package moe-theme
   :ensure t
+  :defer t
   )
 
 (use-package zenburn-theme
   :ensure t
+  :defer t
   )
 
 (use-package monokai-theme
   :ensure t
+  :defer t
   )
 
 (use-package gruvbox-theme
   :ensure t
+  :defer t
   )
 
 (use-package ample-theme
   :ensure t
+  :defer t
   )
 
 (use-package ample-zen-theme
   :ensure t
+  :defer t
   )
 
 (use-package alect-themes
   :ensure t
+  :defer t
   )
 
 (use-package faff-theme
   :ensure t
+  :defer t
+  )
+
+(use-package darktooth-theme
+  :ensure t
+  :defer t
+  )
+
+(use-package soothe-theme
+  :ensure t
+  :defer t
   )
 
 (use-package doom-themes
   :ensure t
-  :demand t
+  ;; :demand t
+  :defer t
   :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
-
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
+  (progn
+    ;; Global settings (defaults)
+    ;; if nil, bold is universally disabled
+    (setq doom-themes-enable-bold t)
+    ;; if nil, italics is universally disabled
+    (setq doom-themes-enable-italic t) 
   
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
+    ;;(load-theme 'doom-one t)
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
   
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
+    ;; or for treemacs users
+    ;; use the colorful treemacs theme
+    (setq doom-themes-treemacs-theme "doom-colors")
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
   )
 
 ;; (load-theme 'gruvbox-light-soft t)
 ;;(load-theme 'spacemacs-dark t)
+(load-theme 'doom-one t)
 
 (use-package doom-modeline
   :ensure t
-  :demand t
   :hook (after-init . doom-modeline-mode)
   )
 
-
+(use-package minions
+  :ensure t
+  :hook (after-init . minions-mode)
+  :config
+  (progn
+    (setq doom-modeline-minor-modes t)
+    ;; (minions-mode 1)
+    )
+  )
 
 ;; =========================================================================
 ;; Color theme setup
@@ -380,46 +434,46 @@
 ;; =========================================================================
 ;; EMACS enhancements
 ;; =========================================================================
-;; (use-package try
-;;   :init
-;;   :ensure t
-;;   ;; Do not defer
-;;   ;; defer t
-;;   :config
-;;   )
-
-(use-package all-the-icons
-  :ensure t
-  :defer t
-  )
-
 (use-package company
   ;; A modular text completion framework
-  :init
   :ensure t
   :defer t
+  :hook (after-init . global-company-mode)
   :config
-  ;; (global-company-mode t)
-  (add-to-list 'company-backends 'company-restclient)
-  :diminish company-mode
-  "Cmp")
+  (progn
+    ;; (global-company-mode t)
+    ;; (add-to-list 'company-backends 'company-restclient)
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3))
+  :diminish company-mode "Cmp"
+  )
 
 (use-package company-web
-  :init
   :ensure t
   :defer t
   :after (:all company)
   :config
+  (progn
+    (add-to-list 'company-backends 'company-web-html)
+    (add-to-list 'company-backends 'company-web-jade)
+    (add-to-list 'company-backends 'company-web-slim))
+  )
+
+(use-package company-quickhelp
+  ;; Popup documentation for completion candidates
+  :ensure t
+  :defer t
+  :hook (after-init . company-quickhelp-mode)
   )
 
 (use-package ibuffer
   ;; Shows a list of buffers
   ;; https://www.emacswiki.org/emacs/IbufferMode
   ;; - emacs internal -
-  :init
   :ensure t
   :defer t
-  :bind ("C-x C-b" . ibuffer))
+  :bind ("C-x C-b" . ibuffer)
+  )
 
 ;; Disattivo IDO per provare?????
 ;; (use-package ido
@@ -465,72 +519,79 @@
 ;;   (ido-ubiquitous-mode 1)
 ;;   )
 
-;; Testing Ivy, Swiper & Counsel
-(use-package ivy
-  :init
+;; Hydra
+(use-package hydra
   :ensure t
   :demand t
+  )
+
+;; Testing Ivy, Swiper & Counsel
+(use-package ivy
+  :ensure t
+  :defer t
+  :hook (after-init . ivy-mode)
   :diminish ivy-mode
   :bind ("C-c C-r" . ivy-resume)
-  :config (progn (ivy-mode t)
-                 (setq ivy-use-virtual-buffers t)
-                 (setq enable-recursive-minibuffers t)
-                 ;;(global-set-key (kbd "C-c C-r") 'ivy-resume)
-                 ;; (global-set-key (kbd "<f6>") 'ivy-resume)
-                 ))
+  :config
+  (progn
+    (ivy-mode t)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;;(global-set-key (kbd "C-c C-r") 'ivy-resume)
+    ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+    )
+  )
 
 (use-package ivy-rich
   :ensure t
-  :demand t
+  ;;:defer t
+  ;; :hook (after-init . ivy-rich-mode 1)
   :after (:all ivy)
-  :config
-  (ivy-rich-mode 1)
+  :config (ivy-rich-mode 1)
   )
 
 (use-package all-the-icons-ivy
   :ensure t
-  :demand t
-  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
+  ;;:demand t
+  :defer t
+  :hook (after-init . all-the-icons-ivy-setup)
+  ;;:init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
   )
 
 (use-package swiper
-  :init
   :ensure t
   :demand t
   :after (:all ivy)
   :bind ("\C-s" . swiper)
-  :config
-  ;; (global-set-key "\C-s" 'swiper)
   )
 
 (use-package counsel
-  :init
   :ensure t
   :demand t
   :diminish counsel-mode
-  :after (:all ivy
-               swiper)
+  :after (:all ivy swiper)
   :bind (("<f2> u" . counsel-unicode-char)
          ("C-c g"  . counsel-git)
          ("C-c j"  . counsel-git-grep))
-  :config (progn (counsel-mode t)
-                 ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-                 ;; (global-set-key (kbd "C-c g") 'counsel-git)
-                 ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-                 ;; ;; (global-set-key (kbd "C-c k") 'counsel-ag)
-                 ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-                 ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-                 (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
+  :config
+  (progn
+    (counsel-mode t)
+    ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    ;; (global-set-key (kbd "C-c g") 'counsel-git)
+    ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    ;; ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+    ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+    ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+  )
 
 (use-package counsel-css
-  :init
   :ensure t
   :defer t
   :after (:all counsel)
   )
 
 (use-package counsel-etags
-  :init
   :ensure t
   :defer t
   :after (:all counsel)
@@ -540,12 +601,13 @@
 
 (use-package org
   :ensure org-plus-contrib
-  ;; :ensure t
   :pin org-elpa
   :init (setq org-export-backends '(ascii beamer html icalendar latex odt org))
   :defer t
-  :config (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
-  (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
+  :config
+  (progn
+    (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
+    (add-to-list 'org-latex-packages-alist '("" "tabu" nil)))
   )
 
 (use-package ox-reveal
@@ -555,22 +617,24 @@
     (setq org-reveal-note-key-char nil)
     :ensure t
     :config
-    (setq org-reveal-root (concat "file:///"
-                                  (expand-file-name (concat user-emacs-directory
-                                                            "reveal.js"))))
-    ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
-    ;; (setq org-reveal-mathjax t)
-    ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
-    ;; adottato una nuova metodica per org-structure-template-alist
-    (add-to-list 'org-structure-template-alist
-                   '("n" . "notes"))
+    (progn
+      (setq org-reveal-root
+            (concat "file:///"
+                    (expand-file-name
+                     (concat user-emacs-directory
+                             "reveal.js"))))
+      ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
+      ;; (setq org-reveal-mathjax t)
+      ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+      ;; adottato una nuova metodica per org-structure-template-alist
+      (add-to-list 'org-structure-template-alist '("n" . "notes")))
     :after (:all org)
     )
 
 (use-package htmlize
-  :init
   :ensure t
-  :defer t)
+  :defer t
+  )
 
 (use-package org-bullets
   ;; Ricordarsi che nel caso si voglia stampare in postscript
@@ -578,14 +642,13 @@
   ;; altrimenti la stampa che si ottinene presenta degli
   ;; asterischi (tipo standard org) e dei punti interrogativi (?)
   ;; dovuti ai problemi di rendering dei bullets
-  :init
   ;; Per quanto sopra disattivo l'hook. Se voglio usare i bullets
   ;; lo faro' a mano tramite comando
   ;; :hook (org-mode . org-bullets-mode)
   :ensure t
   :defer t
-  :config
-  :after (:all org))
+  :after (:all org)
+  )
 
 ;; (use-package recentf
 ;;   ;; Turn on recent file mode so that you can more easily switch to
@@ -600,52 +663,33 @@
 ;;   (recentf-mode 1)
 ;;   )
 
-;; (use-package smex
-;;   ;; Enhances M-x too allow easier execution of commands. Provides
-;;   ;; a filterable list of possible commands in the minibuffer
-;;   ;; http://www.emacswiki.org/emacs/Smex
-;;   :init
-;;   ;; (smex-initialize)
-;;   :ensure t
-;;   ;; Using IVY counsel-M-x
-;;   ;; :bind
-;;   ;; ("M-x" . smex)
-;;   ;; ("M-X" . smex-major-mode-commands)
-;;   ;; ;; This is your old M-x.
-;;   ;; ("C-c C-c M-x" . execute-extended-command)
-;;   :config
-;;   (smex-initialize)
-;;   (setq smex-save-file (concat user-emacs-directory ".smex-items"))
-;;   )
-
 (use-package amx
   ;; Alternative M-x with extra features.
-  :init
   :ensure t
   :defer t
   :after (:all counsel)
   ;; :bind (("M-X" . amx-major-mode-commands))
-  :config (amx-mode t))
+  :config (amx-mode t)
+  )
 
 (use-package tramp
   ;; - emacs internal -
-  :init
-  :ensure t
   :defer t
-  :config (cond ((eq system-type 'windows-nt)
-                 ;; Windows-specific code goes here.
-                 (setq tramp-default-method "pscp"))
-                ((eq system-type 'gnu/linux)
-                 ;; Linux-specific code goes here
-                 (setq tramp-default-method "ssh"))))
+  :config
+  (cond ((eq system-type 'windows-nt)
+         ;; Windows-specific code goes here.
+         (setq tramp-default-method "pscp"))
+        ((eq system-type 'gnu/linux)
+         ;; Linux-specific code goes here
+         (setq tramp-default-method "ssh")))
+  )
 
 (use-package counsel-tramp
   ;; Tramp ivy interface for ssh, docker, vagrant
-  :init
   :ensure t
   :defer t
   :after (:all counsel tramp)
-  :config)
+  )
 
 (use-package uniquify
   ;; When several buffers visit identically-named files,
@@ -657,17 +701,23 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Uniquify.html
   ;; - emacs internal -
   :disabled t
-  :init
-  :ensure t
   :defer t
-  :config (setq uniquify-buffer-name-style 'forward))
+  :config (setq uniquify-buffer-name-style 'forward)
+  )
 
 (use-package whitespace
   ;; - emacs internal -
-  :init
-  :ensure t
   :commands (whitespace-mode)
-  :config (setq whitespace-style '(face tabs spaces newline empty trailing tab-mark newline-mark)))
+  :config
+  (setq whitespace-style '(face
+                           tabs
+                           spaces
+                           newline
+                           empty
+                           trailing
+                           tab-mark
+                           newline-mark))
+  )
 
 (use-package switch-window
   ;; A *visual* way to choose a window to switch to
@@ -677,33 +727,33 @@
   ;; (global-set-key (kbd "C-x 2") 'switch-window-then-split-below)
   ;; (global-set-key (kbd "C-x 3") 'switch-window-then-split-right)
   ;; (global-set-key (kbd "C-x 0") 'switch-window-then-delete)
-  :ensure
-  t
+  :ensure t
   :defer t
   :bind (("C-x o" . switch-window)
          ("C-x 1" . switch-window-then-maximize)
          ("C-x 2" . switch-window-then-split-below)
          ("C-x 3" . switch-window-then-split-right)
          ("C-x 0" . switch-window-then-delete))
-  :config)
+  )
 
 (use-package swap-buffers
   ;; A *visual* way to choose a window to switch to
-  :init
   :ensure t
-  :defer t)
+  :defer t
+  )
 
 (use-package winum
   ;; https://github.com/deb0ch/emacs-winum
-  :init
   :ensure t
   ;; NON USARE DEFER!
   ;;:defer t
   :config
-  ;; Per l'uso con spaceline
-  ;; https://github.com/TheBB/spaceline#winum
-  ;;(setq winum-auto-setup-mode-line nil)
-  (winum-mode))
+  (progn
+    ;; Per l'uso con spaceline
+    ;; https://github.com/TheBB/spaceline#winum
+    ;;(setq winum-auto-setup-mode-line nil)
+    (winum-mode))
+  )
 
 ;; (use-package buffer-move
 ;;   ;; easily swap buffers
@@ -721,11 +771,11 @@
 
 (use-package which-key
   ;; Display available keybindings in popup
-  :init
   :ensure t
   ;; Non si deve differire altrimenti non parte
   ;;:defer t
-  :config (which-key-mode t))
+  :config (which-key-mode t)
+  )
 
 ;; Non piu' presente su melpa 2018-04-11
 ;; (use-package cursor-chg
@@ -740,34 +790,38 @@
 
 (use-package undo-tree
   ;; Treat undo history as a tree
-  :init
   :ensure t
   :defer t
-  :diminish undo-tree-mode
-  "Ut"
-  :config (progn (global-undo-tree-mode)
-                 (setq undo-tree-visualizer-timestamps t)
-                 (setq undo-tree-visualizer-diff t)))
+  :diminish undo-tree-mode "Ut"
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t))
+  )
 
 (use-package fill-column-indicator
   ;; Graphically indicate the fill column
-  :init
   :ensure t
   :defer t
-  :config (setq fci-handle-truncate-lines nil)
-  (setq fci-rule-width 1))
+  :config
+  (progn
+    (setq fci-handle-truncate-lines nil)
+    (setq fci-rule-width 1))
+  )
 
 (use-package try
   ;; Try out Emacs packages.
+  ;; -- do not defer --
   :ensure t
+  :defer t
   )
 
 (use-package origami
   ;; Flexible text folding
-  :init
   :ensure t
   :defer t
-  :config)
+  )
 
 ;; Sperimentazione modeline migliorate:
 ;; -> powerline
@@ -842,10 +896,9 @@
 
 (use-package highlight-indentation
   ;; https://github.com/antonj/Highlight-Indentation-for-Emacs
-  :init
   :ensure t
   :defer t
-  :config)
+  )
 
 ;; =========================================================================
 ;; GIT
@@ -856,31 +909,43 @@
   ;; Disable built-in VC for Git when using magit
   ;; (setq vc-handled-backends (delq 'Git vc-handled-backends))
   ;; (global-set-key (kbd "C-x g") 'magit-status)
-  :bind
-  ("C-x g" . magit-status)
+  :bind ("C-x g" . magit-status)
   :ensure t
   :defer t
   :config
-  ;; (magit-diff-use-overlays nil)
-  ;; some packages already provide their own interfaces to ido, so
-  ;; ido-completing-read+ specifically avoids interfering with these.
-  ;; If you use any of the following packages, you need to enable ido for
-  ;; each of them separately.
-  ;; (setq magit-completing-read-function 'magit-ido-completing-read)
-  (setq magit-completing-read-function 'ivy-completing-read)
-  (setenv "GIT_ASKPASS" "git-gui--askpass"))
+  (progn
+    ;; (magit-diff-use-overlays nil)
+    ;; some packages already provide their own interfaces to ido, so
+    ;; ido-completing-read+ specifically avoids interfering with these.
+    ;; If you use any of the following packages, you need to enable ido for
+    ;; each of them separately.
+    ;; (setq magit-completing-read-function 'magit-ido-completing-read)
+    (setq magit-completing-read-function 'ivy-completing-read)
+    (setenv "GIT_ASKPASS" "git-gui--askpass"))
+  )
+
+(use-package forge
+  :ensure t
+  :defer t
+  :after (:all magit markdown-mode)
+  )
 
 (use-package gitconfig-mode
-  :init
   :ensure t
   :defer t
-  :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'"))
+  :mode ("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'")
+  )
 
 (use-package gitignore-mode
-  :init
   :ensure t
   :defer t
-  :mode ("/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'"))
+  :mode ("/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'")
+  )
+
+(use-package git-timemachine
+  :ensure t
+  :defer t
+  )
 
 ;; =========================================================================
 ;; Development: generic
@@ -892,25 +957,27 @@
   :diminish eldoc-mode
   )
 
-(use-package company-quickhelp
-  ;; Popup documentation for completion candidates
-  :init
-  :ensure t
-  :defer t
-  :after (:all company)
-  :config (company-quickhelp-mode t))
+
 
 (use-package flycheck
-  :init
-  :hook (prog-mode . flycheck-mode)
   :ensure t
-  :defer t)
+  :defer t
+  :hook (prog-mode . flycheck-mode)
+  )
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :defer t
+  ;;:defines flycheck-pos-tip-timeout
+  :hook (flycheck-mode . flycheck-pos-tip-mode)
+  :config (setq flycheck-pos-tip-timeout 30)
+  )
 
 (use-package indent-guide
   ;; Show vertical lines to guide indentation
-  :init
   :defer t
-  :ensure t)
+  :ensure t
+  )
 
 (use-package projectile
   ;; Project navigation
@@ -919,38 +986,37 @@
   ;; Attivo projectile soltanto per i "programmi"
   ;; Non lo voglio piu'!!!!!
   ;; :hook (prog-mode . projectile-mode)
-  :ensure
-  t
+  :ensure t
   :defer t
-  :config (progn
-            ;; L'attivazione di projectile in modalita' globale
-            ;; e' disattivata in favore di quella impostata in :hook
-            ;; (projectile-global-mode t)
-            (setq projectile-mode-line
-                  '(:eval (if (file-remote-p default-directory) " Prj[*remote*]" (format " Prj[%s]"
-                                                                                         (projectile-project-name)))))))
+  :config
+  (progn
+    ;; L'attivazione di projectile in modalita' globale
+    ;; e' disattivata in favore di quella impostata in :hook
+    ;; (projectile-global-mode t)
+    (setq projectile-mode-line
+          '(:eval (if (file-remote-p default-directory)
+                      " Prj[*remote*]" (format " Prj[%s]" (projectile-project-name))))))
+  )
 
 (use-package ibuffer-projectile
   ;;Group ibuffer's list by projectile root
-  :init
   :ensure t
   :defer t
-  :after (:all ibuffer
-               projectile))
+  :after (:all ibuffer projectile)
+  )
 
 (use-package counsel-projectile
   ;; Ivy integration for Projectile
-  :init
   :ensure t
   :defer t
-  :after (:all counsel
-               projectile))
+  :after (:all counsel projectile)
+  )
 
 (use-package project-explorer
   ;; A project explorer sidebar
-  :init
   :ensure t
-  :defer t)
+  :defer t
+  )
 
 ;; (use-package paren
 ;;   :init
@@ -962,24 +1028,33 @@
 ;;     (show-paren-mode t))
 ;;   )
 
-(use-package smartparens
-  :ensure t
+(use-package smartparens-config
+  :ensure smartparens
   :defer t
   :diminish smartparens-mode
-  :init (require 'smartparens-config)
-  :config (progn
-            ;; (smartparens-global-mode 1)
-            (show-smartparens-global-mode 1)))
+  ;; :init (add-hook 'minibuffer-setup-hook #'turn-on-smartparens-strict-mode)
+  :hook (;;(minibuffer-setup . turn-on-smartparens-strict-mode)
+         (prog-mode . smartparens-mode))
+  :config
+  (progn
+    ;; (show-smartparens-global-mode t)
+    ;; (smartparens-global-mode t)
+    (setq sp-show-pair-from-inside nil)
+    ;;(require 'smartparens-config)
+    (sp-use-smartparens-bindings)
+    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil))
+  )
+
 
 (use-package rainbow-delimiters
   ;; Colorful parentesis matching
-  :init
   :ensure t
-  :defer t)
+  :defer t
+  :hook (prog-mode . rainbow-delimiters-mode)
+  )
 
 (use-package yasnippet
   ;; Yet another snippet extension for Emacs
-  :init
   :hook (prog-mode . yas-minor-mode)
   :ensure t
   ;;:defer 2
@@ -990,10 +1065,10 @@
 
 (use-package yasnippet-snippets
   ;; Collection of yasnippet snippets
-  :init
   :ensure t
   :defer t
-  :after (:all yasnippet))
+  :after (:all yasnippet)
+  )
 
 (use-package aggressive-indent
   :ensure t
@@ -1018,28 +1093,27 @@
 (use-package emacs-lisp-mode
   :defer t
   :interpreter ("emacs" . emacs-lisp-mode)
-  :diminish emacs-lisp-mode
-  "El"
+  :diminish emacs-lisp-mode "El"
   :init (defun my/emacs-lisp-mode-hook ()
           "Funzione richiamata dall'hook emacs-lisp-mode-hook."
           (interactive)
           (company-mode)
           (yas-minor-mode))
   (add-hook 'emacs-lisp-mode-hook 'my/emacs-lisp-mode-hook)
-  :after (:all yasnippet
-               company)
-  :config)
+  :after (:all yasnippet company)
+  )
 
 (use-package elisp-format
+  :disabled t
   :ensure t
-  :defer t)
+  :defer t
+  )
 
 ;; =========================================================================
 ;; Development: C#
 ;; =========================================================================
 (use-package csharp-mode
   ;; C# mode
-  :init
   :ensure t
   :defer t
   ;; Non e' necessario impostare :mode
@@ -1055,7 +1129,7 @@
   :defer t
   ;; Non e' necessario impostare :mode
   ;; :mode ("\\.ps[dm]?1\\'" . powershell-mode)
-  :config)
+  )
 
 ;; =========================================================================
 ;; Develpment: Python
@@ -1065,8 +1139,8 @@
   :defer t
   :init
   (with-eval-after-load 'python (elpy-enable))
-  :config
   )
+
 (use-package elpy
   :init
   (defun my/elpy-mode-hook ()
@@ -1081,25 +1155,26 @@
                highlight-indentation
                yasnippet)
   :config
-  (setq elpy-rpc-backend "jedi")
-  (cond ((eq system-type 'windows-nt)
-         ;; Windows-specific code goes here.
-         (setq python-shell-completion-native-enable nil))))
+  (progn
+    (setq elpy-rpc-backend "jedi")
+    (cond ((eq system-type 'windows-nt)
+           ;; Windows-specific code goes here.
+           (setq python-shell-completion-native-enable nil))))
+  )
 
 (use-package py-autopep8
   ;; Autopep8
   ;; :init (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
   :ensure t
   :defer t
-  :config)
+  )
 
 (use-package company-jedi
   ;; company-mode completion back-end for Python JEDI
-  :init
   :ensure t
   :defer t
-  :after (:all company
-               elpy))
+  :after (:all company elpy)
+  )
 
 
 ;; =========================================================================
@@ -1142,10 +1217,12 @@
          (go-mode-hook . my/go-mode-hook))
   :ensure t
   :defer t
-  :after (:all flycheck-gometalinter
-               company-mode)
-  :config (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
-  (setq-default gofmt-command "goimports"))
+  :after (:all flycheck-gometalinter company-mode)
+  :config
+  (progn
+    (add-to-list 'load-path (concat (getenv "GOPATH") "/bin"))
+    (setq-default gofmt-command "goimports"))
+  )
 
 (use-package company-go
   ;; company-mode backend for Go (using gocode)
@@ -1157,9 +1234,8 @@
   :init (with-eval-after-load 'company (add-to-list 'company-backends 'company-go))
   :ensure t
   :defer t
-  :after (:all company
-               go-mode)
-  :config)
+  :after (:all company go-mode)
+  )
 
 
 (use-package go-rename
@@ -1169,7 +1245,7 @@
   :ensure t
   :defer t
   :after (:all go-mode)
-  :config)
+  )
 
 (use-package go-eldoc
   ;; eldoc for go-mode
@@ -1182,7 +1258,8 @@
   :ensure t
   :defer t
   :after (:all go-mode)
-  :config (go-eldoc-setup))
+  :config (go-eldoc-setup)
+  )
 
 
 (use-package golint
@@ -1415,6 +1492,7 @@
   :ensure t
   :defer t
   :config
+  (add-to-list 'company-backends 'company-restclient)
   :after (:all company
                restclient)
   )
