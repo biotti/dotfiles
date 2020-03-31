@@ -61,15 +61,18 @@
 ;; system-configuration-options
 ;; system-configuration-features
 
-;;   ;; Emacs Server
-;;   (require 'server)
-;;   (setq server-log t)
-;;   (unless server-process
-;;     ;; N.B.: (server-running-p) non funziona, usare server-process
-;;     (progn
-;;       (interactive)
-;;       (message "server-start")
-;;       (server-start)))
+
+;;
+;; Emacs Server
+;;
+(require 'server)
+(setq server-log t)
+(unless server-process
+  ;; N.B.: (server-running-p) non funziona, usare server-process
+  (progn
+    ;;(interactive)
+    (message "server-start")
+    (server-start)))
 
 ;; =========================================================================
 ;; Font setup
@@ -106,7 +109,9 @@
 ;;       ;;  (add-to-list 'default-frame-alist '(font . "courier-10")))
 ;;       )
 
-(require 'frame)
+
+;; non sono sicuro che (require frame) sia necessario
+;;(require 'frame)
 (add-to-list 'initial-frame-alist
              (cond ((find-font (font-spec :name "DejaVu Sans mono"))
                     '(font . "DejaVu Sans Mono-10"))
@@ -119,6 +124,7 @@
                    )
              )
 
+(message "DEBUG - add-to-list 'default-frame-alist")
 (add-to-list 'default-frame-alist
              (cond ((find-font (font-spec :name "DejaVu Sans mono"))
                     '(font . "DejaVu Sans Mono-10"))
@@ -197,8 +203,18 @@
 ;; MELPA - Unstable
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+  ;; and `package-pinned-packages`. Most users will not need or want to do this.
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  )
 ;;
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
@@ -250,9 +266,9 @@
     (message "Checking use-package: found")
   (progn
     (message "Checking use-package: not found in package-installed-p")
-    ;; (message "Refreshing package database...")
-    ;; (package-refresh-contents)
-    ;; (message "Done refreshing. Installing use-package")
+    (message "Refreshing package database...")
+    (package-refresh-contents)
+    (message "Done refreshing. Installing use-package")
     (message "Installing use-package")
     (package-install 'use-package)
     (message "Done installing."))
@@ -277,7 +293,8 @@
   :ensure t
   :config
   ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  ;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
+  :hook ((after-init) . benchmark-init/deactivate)
   )
 
 ;; =========================================================================
@@ -402,16 +419,18 @@
 
 ;; (load-theme 'gruvbox-light-soft t)
 ;;(load-theme 'spacemacs-dark t)
+(require 'doom-themes)
 (load-theme 'doom-one t)
 
 (use-package doom-modeline
   :ensure t
-  :hook (after-init . doom-modeline-mode)
+  :hook ((after-init) . doom-modeline-mode)
+  :init (message "DEBUG - use-package  doom-modeline")
   )
 
 (use-package minions
   :ensure t
-  :hook (after-init . minions-mode)
+  :hook ((after-init) . minions-mode)
   :config
   (progn
     (setq doom-modeline-minor-modes t)
@@ -438,7 +457,7 @@
   ;; A modular text completion framework
   :ensure t
   :defer t
-  :hook (after-init . global-company-mode)
+  :hook ((after-init) . global-company-mode)
   :config
   (progn
     ;; (global-company-mode t)
@@ -463,7 +482,7 @@
   ;; Popup documentation for completion candidates
   :ensure t
   :defer t
-  :hook (after-init . company-quickhelp-mode)
+  :hook ((after-init) . company-quickhelp-mode)
   )
 
 (use-package ibuffer
@@ -528,8 +547,8 @@
 ;; Testing Ivy, Swiper & Counsel
 (use-package ivy
   :ensure t
-  :defer t
-  :hook (after-init . ivy-mode)
+  :demand t
+  :hook ((after-init) . ivy-mode)
   :diminish ivy-mode
   :bind ("C-c C-r" . ivy-resume)
   :config
@@ -540,22 +559,6 @@
     ;;(global-set-key (kbd "C-c C-r") 'ivy-resume)
     ;; (global-set-key (kbd "<f6>") 'ivy-resume)
     )
-  )
-
-(use-package ivy-rich
-  :ensure t
-  ;;:defer t
-  ;; :hook (after-init . ivy-rich-mode 1)
-  :after (:all ivy)
-  :config (ivy-rich-mode 1)
-  )
-
-(use-package all-the-icons-ivy
-  :ensure t
-  ;;:demand t
-  :defer t
-  :hook (after-init . all-the-icons-ivy-setup)
-  ;;:init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
   )
 
 (use-package swiper
@@ -585,6 +588,12 @@
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
   )
 
+(use-package avy
+  :ensure t
+  :demand t
+  :after (:all swiper)
+  )
+
 (use-package counsel-css
   :ensure t
   :defer t
@@ -597,10 +606,33 @@
   :after (:all counsel)
   )
 
+(use-package ivy-rich
+  :ensure t
+  ;;:defer t
+  ;; :hook ((after-init) . ivy-rich-mode 1)
+  :after (:all ivy counsel)
+  ;;:config (ivy-rich-mode 1)
+  :init (ivy-rich-mode 1)
+  )
 
+;; (use-package all-the-icons-ivy
+;;   :ensure t
+;;   ;;:demand t
+;;   :defer t
+;;   :hook ((after-init) . all-the-icons-ivy-setup)
+;;   ;;:init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
+;;   )
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :defer t
+  ;;:hook ((after-init) . (all-the-icons-ivy-rich-mode 1))
+  :init (all-the-icons-ivy-rich-mode 1)
+  )
 
 (use-package org
-  :ensure org-plus-contrib
+  ;;:ensure org-plus-contrib
+  :ensure t
   :pin org-elpa
   :init (setq org-export-backends '(ascii beamer html icalendar latex odt org))
   :defer t
@@ -610,15 +642,36 @@
     (add-to-list 'org-latex-packages-alist '("" "tabu" nil)))
   )
 
-(use-package ox-reveal
+;; (use-package ox-reveal
+;;     :init
+;;     ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+;;     ;; adottato una nuova metodica per org-structure-template-alist
+;;     (setq org-reveal-note-key-char nil)
+;;     :ensure t
+;;     :config
+;;     (progn
+;;       (setq org-reveal-root
+;;             (concat "file:///"
+;;                     (expand-file-name
+;;                      (concat user-emacs-directory
+;;                              "reveal.js"))))
+;;       ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
+;;       ;; (setq org-reveal-mathjax t)
+;;       ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+;;       ;; adottato una nuova metodica per org-structure-template-alist
+;;       (add-to-list 'org-structure-template-alist '("n" . "notes")))
+;;     :after (:all org)
+;;     )
+
+(use-package org-re-reveal
     :init
     ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
     ;; adottato una nuova metodica per org-structure-template-alist
-    (setq org-reveal-note-key-char nil)
+    (setq org-re-reveal-note-key-char nil)
     :ensure t
     :config
     (progn
-      (setq org-reveal-root
+      (setq org-re-reveal-root
             (concat "file:///"
                     (expand-file-name
                      (concat user-emacs-directory
@@ -672,24 +725,24 @@
   :config (amx-mode t)
   )
 
-(use-package tramp
-  ;; - emacs internal -
-  :defer t
-  :config
-  (cond ((eq system-type 'windows-nt)
-         ;; Windows-specific code goes here.
-         (setq tramp-default-method "pscp"))
-        ((eq system-type 'gnu/linux)
-         ;; Linux-specific code goes here
-         (setq tramp-default-method "ssh")))
-  )
+;; (use-package tramp
+;;   ;; - emacs internal -
+;;   :defer t
+;;   :config
+;;   (cond ((eq system-type 'windows-nt)
+;;          ;; Windows-specific code goes here.
+;;          (setq tramp-default-method "pscp"))
+;;         ((eq system-type 'gnu/linux)
+;;          ;; Linux-specific code goes here
+;;          (setq tramp-default-method "ssh")))
+;;   )
 
-(use-package counsel-tramp
-  ;; Tramp ivy interface for ssh, docker, vagrant
-  :ensure t
-  :defer t
-  :after (:all counsel tramp)
-  )
+;; (use-package counsel-tramp
+;;   ;; Tramp ivy interface for ssh, docker, vagrant
+;;   :ensure t
+;;   :defer t
+;;   :after (:all counsel tramp)
+;;   )
 
 (use-package uniquify
   ;; When several buffers visit identically-named files,
@@ -950,6 +1003,10 @@
 ;; =========================================================================
 ;; Development: generic
 ;; =========================================================================
+(use-package eglot
+  :ensure t
+  :demand t)
+
 (use-package eldoc
   ;; - emacs internal -
   :ensure t
@@ -1119,6 +1176,30 @@
   ;; Non e' necessario impostare :mode
   ;; :mode "\\.cs\\"
   )
+
+;; =========================================================================
+;; Development: VB.NET
+;; =========================================================================
+(use-package vbnet-mode
+  ;; VB.NET mode - Caricato localmente con clonazione del repository di
+  ;; Dino Chiesa
+  :load-path "vendor/dpchiesa-elisp"
+  :mode "\\.\\(vb\\)$"
+  :defer t
+  )
+
+;; =========================================================================
+;; Development: VBScript
+;; =========================================================================
+(use-package vbs-mode
+  ;; VB.NET mode - Caricato localmente con clonazione del repository di
+  ;; Dino Chiesa
+  :load-path "vendor/dpchiesa-elisp"
+  ;; Non e' necessario impostare :mode
+  ;; :mode "\\.cs\\"
+  :defer t
+  )
+
 
 ;; =========================================================================
 ;; Development: Powershell
@@ -1326,6 +1407,47 @@
   :after (:all flycheck
                go-mode))
 
+;; =========================================================================
+;; rust
+;; =========================================================================
+(use-package flycheck-rust
+  :ensure t
+  :defer t)
+
+(use-package rust-mode
+  :ensure t
+  :defer t
+  :hook ((rust-mode . (lambda () (setq indent-tabs-mode nil)))
+         (rust-mode . eglot-ensure)
+         (rust-mode . flycheck-rust-setup)
+         )
+  :config (setq rust-format-on-save t)
+  )
+
+
+
+(when (executable-find "racer")
+  (use-package racer
+    :hook (racer-mode . eldoc-mode)
+    :init (defun org-babel-edit-prep:rust (&optional _babel-info)
+            "Run racer mode for Org Babel."
+            (racer-mode 1))
+    )
+  )
+(use-package toml-mode
+  :ensure t
+  :defer t
+  )
+
+(when (executable-find "cargo")
+  (use-package cargo
+    :ensure t
+    :defer t
+    :hook ((rust-mode . cargo-minor-mode)
+           (toml-mode . cargo-minor-mode)
+           )
+    )
+  )
 
 ;; =========================================================================
 ;; web development
