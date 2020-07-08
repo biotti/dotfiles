@@ -565,7 +565,13 @@ There are two things you can do about this warning:
   :ensure t
   :demand t
   :after (:all ivy)
-  :bind ("\C-s" . swiper)
+  ;;:bind ("\C-s" . swiper)
+  ;; Provo swiper-isearch al posto di swiper "vanilla" perche'
+  ;; consente in qualche modo di fare spostarsi su piu' occorrenze
+  ;; del testo cercato sulla stessa riga (swieper "vani8lla" ragiona
+  ;; sempre e soltanto in termini di "riga intera")
+  ;; Da verificare se e' meglio o peggio
+  :bind ("\C-s" . swiper-isearch)
   )
 
 (use-package counsel
@@ -664,25 +670,27 @@ There are two things you can do about this warning:
 ;;     )
 
 (use-package org-re-reveal
-    :init
+  :init
+  ;; Temporaneamente disabilitato
+  :disabled
+  ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
+  ;; adottato una nuova metodica per org-structure-template-alist
+  (setq org-re-reveal-note-key-char nil)
+  :ensure t
+  :config
+  (progn
+    (setq org-re-reveal-root
+          (concat "file:///"
+                  (expand-file-name
+                   (concat user-emacs-directory
+                           "reveal.js"))))
+    ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
+    ;; (setq org-reveal-mathjax t)
     ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
     ;; adottato una nuova metodica per org-structure-template-alist
-    (setq org-re-reveal-note-key-char nil)
-    :ensure t
-    :config
-    (progn
-      (setq org-re-reveal-root
-            (concat "file:///"
-                    (expand-file-name
-                     (concat user-emacs-directory
-                             "reveal.js"))))
-      ;; Obsoleto: org-reveal attiva mathjax quando rileva contenuto latex
-      ;; (setq org-reveal-mathjax t)
-      ;; WorkAround per evitare problemi con Org successivo a 9.2 che ha
-      ;; adottato una nuova metodica per org-structure-template-alist
-      (add-to-list 'org-structure-template-alist '("n" . "notes")))
-    :after (:all org)
-    )
+    (add-to-list 'org-structure-template-alist '("n" . "notes")))
+  :after (:all org)
+  )
 
 (use-package htmlize
   :ensure t
