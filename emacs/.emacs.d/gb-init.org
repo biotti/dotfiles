@@ -1,0 +1,3092 @@
+#+Title: File di configurazione di GNU Emacs
+#+AUTHOR: Geraldo Biotti
+#+EMAIL: wont.tell@example.com
+#+STARTUP: showeverything
+#+PROPERTY: header-args:conf :comments link :tangle-mode (identity #o444)
+
+* Configurazione di Emacs con literate programming
+
+** Cosa e' il paradigma "literate programming"
+
+   Inserire qui la spiegazione di cosa e' il paradigma di literate programming,
+   quali benefici porta nella gestione dei files di configurazione di Emacs
+   e come funzione con Emacs
+
+** I files di inizializzazione "standard" di Emacs
+   
+   Il funzionamento dei files di inizializzazione e' spiegato nel manuale
+   di Emacs alla voce [[info:emacs#Init File][Init File]].  All'avvio Emacs cerca secondo un certo
+   ordine di priorita' e carica il primo che trova tra questi (vedi: [[info:emacs#Find Init][Find Init]]).
+   Tralasciando gli altri, a noi interessano quelli che si trovano nella
+   directory =~/.emacs.d=.
+   I files di inizializzazione di Emacs *non* sono scritti secondo il paradigma
+   di literate programming, ma sono lasciati in emacs-lisp in modo da poter
+   gestire altri files creati secondo quel paradigma in modo piu' semplice
+   e comprensibile.
+
+   Qui di seguito viene riportato, a solo titolo di esempio, il contenuto
+   dei files di inizializzazione standard.  Nel sorgente di questo file
+   il contenuto viene racchiuso tra =#+begin_src emacs-lisp :tangle no= e =#+end_src#=,
+   da notare che si usa il parametro =:tangle no= perche' altrimenti l'operazione
+   =org-babel-load-file= presente in =init.el= andrebbe a fare il [[info:org#Working with Source Code][tangle]]
+   di questi blocchi di codice con il risultato di avere un file .el che richiama
+   all'infinito l'operazione di [[info:org#Working with Source Code][tangle]] e generando un errore in avvio.
+   
+*** Il file "early init.el" (Emacs 27+)
+
+    A partire dalla versione 27 di Emacs esiste un nuovo file di inizializzazione
+    che, come spiegato nella [[info:emacs#Early Init File][pagina del manuale di Emacs per Early Init File]], se
+    presente, viene caricato prima di [[info:emacs#Init File][init.el]] e prima che siano stati
+    inizializzati sia il sistema di gestione dei package che la GUI.
+    Fare riferimento alla [[info:emacs#Early Init File][pagina del manuale di Emacs per Early Init File]],
+    per la spiegazione sull'uso corretto.
+
+    Il contenuto viene qui suddiviso in porzioni per spiegarne la logica.
+
+**** Commenti iniziali
+
+     Contiene la parte di commento iniziale del file
+
+     Da notare che l'impostazione del major mode deve avvenire qui nella
+     prima linea e non nella sezione "local variables" in coda, altrimenti si genera
+     un errore nel [[info:org#Working with Source Code][tangling]].
+
+     #+begin_src emacs-lisp :tangle no
+       ;;; early-init.el --- File di configurazione "early-init" di GNU Emacs -*- mode: lisp; lexical-binding: t; -*-
+
+       ;; Author: Geraldo Biotti <wont.tell@example.com>
+       ;; Created: 20200731
+       ;; Keywords: init, early-init, .emacs.d, startup
+       ;; Compatiblity: emacs-version >= 27
+
+       ;; This file is not part of GNU Emacs.
+
+       ;; This program is free software: you can redistribute it and/or modify
+       ;; it under the terms of the GNU General Public License as published by
+       ;; the Free Software Foundation, either version 3 of the License, or (at
+       ;; your option) any later version.
+
+       ;; This program is distributed in the hope that it will be useful, but
+       ;; WITHOUT ANY WARRANTY; without even the implied warranty of
+       ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+       ;; General Public License for more details.
+
+       ;; You should have received a copy of the GNU General Public License
+       ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+
+       ;;; Commentary:
+
+       ;; Questo file contiene le impostazioni di GNU Emacs che vengono eseguite
+       ;; durante la fase di Early Init.
+       ;;
+       ;; La fase di Early Init e' stata introdotta con GNU Emacs versione 27
+       ;;
+       ;; Per maggiori informazioni fare riferimento al manuale di GNU Emacs
+       ;; versione 27 o successiva: 49.4.6 - The Early Init File
+
+       ;;; Code:
+     #+end_src
+
+**** Salvo il contenuto delle variabili cha vado a modificare
+
+     Per prima cosa creo delle variabili di appoggio dove vado a salvare i
+     valori standard del di Emacs prima della modifica.
+     Questo mi consente di riportare le impostazioni allo standard dopo
+     il termine della procedura di inizializzazione con un apposito codice
+     da definire in =after-init-hook=
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Imposto l'ora di avvio di Emacs
+       ;; Servira' alla fine per determinare quanto tempo e' trascorso
+       (defconst gb/emacs/emacs-startup-time (current-time))
+
+       ;; Imposto le varibili di appoggio usate per ripristinare
+       ;; le impostazioni di default procedura di inizializzazione
+       (defvar gb/emacs/gc-cons-threshold-original gc-cons-threshold
+         "Valore originale di gc-cons-threshold prima della
+       modifica.  Salvato per ripristinarlo alla fine della
+       procedura di inizializzazione")
+
+       (defvar gb/emacs/gc-cons-percentage-original gc-cons-percentage
+         "Valore originale di gc-cons-percentage prima della
+       modifica.  Salvato per ripristinarlo alla fine della
+       procedura di inizializzazione")
+
+       (defvar gb/emacs/file-name-handler-alist-original file-name-handler-alist
+         "Valore originale di file-name-handler-alist prima della
+       modifica.  Salvato per ripristinarlo alla fine della
+       procedura di inizializzazione")
+     #+end_src
+
+**** Impostazione del Garbage Collector (gc)
+
+     L'impostazione di default e' alquanto conservativa. Con i moderni pc
+     la disponibilita' di RAM e' decisamente ampia e questo consente la
+     possibilita' di "spendere" un po' di RAM in "oggetti" non piu' usati
+     senza creare disagi.  Impostando il GC in modo che in fase di init
+     entri in funzione molto di rado si ha un buon incremento di prestazioni.
+
+     Imposto quindi il GC in modo che non entri praticamente mai in funzione:
+     - gc-cons-threshold :: Indica il numero di bytes che devono essere
+       consumanti tra un intervento di GC e l'altro.  Impostandolo a
+       1073741824 (1 GByte) ho la ragionevole certezza che non entri in funzione.
+     - gc-cons-percentage :: Indica la porzione di heap che deve essere
+       allocata dall'ultima GC perche' il garbage collector entri nuovamente
+       in funzione
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Imposta la soglia del garbage collector
+       ;; Da reimpostare poi ai valori corretti con apposito
+       ;; codice richiamato in after-init-hook
+       (setq gc-cons-threshold (* 1024 (* 1024 1024))  ; 1 GByte
+             gc-cons-percentage 0.6)
+     #+end_src
+
+**** Imposto file-name-handler-alist
+
+     Come riportato nelle FAQ di [[https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#unset-file-name-handler-alist-temporarily][Doom Emacs]], Emacs consulta questa variabile
+     ogni volta che deve leggere un file o una libreria.  Impostarla a ~nil~
+     migliora le prestazioni di avvio.  Occorre pero' *ricordarsi di ripristinarla*
+     quando la procedura di inizializzazione e' terminata (sempre con
+     apposito hook).
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Imposta file-name-handler-alist
+       ;; Da reimpostare poi ai valori corretti con apposito
+       ;; codice richiamato in after-init-hook
+       (setq file-name-handler-alist nil)
+     #+end_src
+
+**** Reimposto i default alla fine dell'init
+
+     Alla fine dell'init vado a reimpostare con i valori originali le
+     variabili che ho modificato in precedenza.  Per questo uso
+     =after-init-hook=
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Aggiungo ad after-init-hook il codice necessario
+       ;; per reimpostare i valori di default nelle variabili
+       ;; usate qui sopra e fare una garbage-collect finale.
+       ;; Si usa una depth 90 (vedi docstring di di "add-hook")
+       (add-hook 'after-init-hook
+                 '(lambda ()
+                    ;; Non imposto piu' 'gc-cons-threshold' al suo valore originale ma, come
+                    ;; riportato in molti siti ad un valore molto piu' alto.
+                    ;; Si veda, ad esempio qui: https://emacs-lsp.github.io/lsp-mode/page/performance/
+                    ;; (consultato 31/08/2020)
+                    ;; (setq gc-cons-threshold       gb/emacs/gc-cons-threshold-original)
+                    ;; 100 Mb = (* 1024 (* 1024 100)))
+                    (setq gc-cons-threshold       (* 1024 (* 1024 100)))
+                    ;; Sempre https://emacs-lsp.github.io/lsp-mode/page/performance/
+                    ;; raccomanda di impostare 'read-process-output-max' ad un valore di 1Mb
+                    ;; (numero massimo di bytes letti in un singolo chunk dai subprocess)
+                    (setq read-process-output-max (* 1024 1024))
+                    (setq gc-cons-percentage      gb/emacs/gc-cons-percentage-original)
+                    (setq file-name-handler-alist gb/emacs/file-name-handler-alist-original)
+                    (garbage-collect)
+                    (defvar gb/emacs/elapsed (float-time
+                                              (time-subtract (current-time) gb/emacs/emacs-startup-time))
+                      )
+                    (message (emacs-init-time))
+                    (message "Loading done in %.3fs seconds and %d garbage collections [after-init]"
+                             gb/emacs/elapsed
+                             gcs-done)
+                    )
+                 90
+                 )
+     #+end_src
+     
+**** Imposta il package manager
+
+     In questa configurazione di Emacs sara' utilizzato il pacchetto
+     =use-package=, che consente una gestione "particolare" dei packages.
+     Per ottimizzare l'esecuzione si deve impostare il package manager
+     (=package=) di Emacs in modo che venga "caricato", ma non "attivato".
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Non rende disponibili i package all'avvio di Emacs
+       ;; da usare qui e non in init.el
+       (setq package-enable-at-startup nil)
+     #+end_src
+
+**** Attivo package-quickstart (Emacs 27+)
+
+     Quando questa variabile e' =t= attiva la preelaborazione dei package
+     rendendo piu' veloce l'avvio.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Per GNU Emacs versione 27 e successive
+       (when (not (version< emacs-version "27"))
+         (progn
+           ;; Consente il caricamento dalla cache dei package
+           (setq package-quickstart t)
+           )
+         )
+     #+end_src
+
+**** Impedisce il ridimensionamento del frame
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Non ridimnensiona il frame in questo momento
+       (setq frame-inhibit-implied-resize t)
+     #+end_src
+
+**** Impostazioni per MS-Windows
+
+     Emacs e' multipiattaforma, ma capita spesso che le configurazioni di
+     default e il codice creato da terze parti si basino sull'assunto di
+     funzionare su una piattaforma di Unix-like utilizzandone alcuni
+     comandi eseguibili.  E' facile in MS-Windows ottenere questi eseguibili,
+     si veda sia [[info:emacs#Microsoft Windows][MS-Windows]] che  [[info:efaq-w32#Other useful ports][porting di strumenti unix-like in windows]].
+     
+     #+begin_src emacs-lisp :tangle no
+       ;; Su Windows, assumendo di aver installato Scoop, ne metto il pathi
+       ;; in testa, altrimenti vengono prima trovati gli eseguibili nelle
+       ;; directory di sistema.  Questo crea confusione, ad esempio concat
+       ;; "find" che esiste sia in ambiente Linux che in Windows, ovviamente
+       ;; con sintassi completamente diverse.  Generalmente mi apsetto che
+       ;; le funzionalita' siano quelle del mondo Linux e non quelle del
+       ;; mondo Windows per cui faccio in modo che vengano lette per prima.
+       ;; Da notare che Scoop aggiunge le sue directory al Path, ma queste
+       ;; sono di tipo utente e vengono aggiunte al path dopo quelle di
+       ;; sistema.  Si avra' un "doppione" nel path, ma va bene.
+       (when (eq system-type 'windows-nt)
+         (defvar gb/emacs/scoop-shim-path
+           (concat (expand-file-name "~/scoop/shims")
+                       path-separator)
+           "Percorso per 'scoop/shims' da aggiungere in testa al PATH."
+           )
+         (add-to-list 'exec-path "c:/Users/Geraldo/scoop/shims")
+         ;; (setenv "PATH" (concat gb/emacs/scoop-shim-path
+         ;;                        (getenv "PATH")))
+         )
+     #+end_src
+
+**** Commenti finali
+
+     Contiene la parte di commento finale e l'impostazione delle variabili
+     locali del file
+
+     Da notare che l'impostazione del major mode *NON* deve avvenire qui
+     nella sezione "local variables", ma nella prima linea con la classica
+     notazione =-*- mode: lisp; -*-=, altrimenti si genera un errore nel tangling.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; ===========================================================================
+       ;; Local Variables:
+       ;; coding: utf-8-unix
+       ;; indent-tabs-mode: nil
+       ;; tab-width: 4
+       ;; End:
+       ;; ===========================================================================
+
+       ;;; early-init.el ends here
+     #+end_src
+
+*** Il file "init.el"
+    
+    Il file [[info:emacs#Init File][init.el]] contiene tutte le impostazioni di Emacs.
+    Deve essere organizzato per poter gestire le differenze che sono state introdotte
+    con Emacs 27.
+    Sono quindi presenti delle funzioni che vengono richiamate ripettivamente per le
+    versioni precedentei alla 27 e per la 27+.
+    Visto che certe impostazioni potrebbero creare problemi per versioni antecedenti
+    alla 26.1 se ci troviamo in questa situazione viene emesso un warning (che va
+    a finire nell'apposito buffer)
+
+    Il contenuto viene qui suddiviso in porzioni per spiegarne la logica.
+
+**** Commenti iniziali
+
+     Contiene la parte di commento iniziale del file
+
+     Da notare che l'impostazione del major mode deve avvenire qui nella
+     prima linea e non nella sezione "local variables" in coda, altrimenti si genera
+     un errore nel tangling.
+
+     #+begin_src emacs-lisp :tangle no
+       ;;; init.el --- File di configurazione di GNU Emacs -*- mode: lisp; lexical-binding: t; -*-
+
+       ;; Author: Geraldo Biotti <wont.tell@example.com>
+       ;; Created: 20200731
+       ;; Keywords: init, early-init, .emacs.d, startup
+       ;; Compatiblity: emacs-version >= 27
+
+       ;; This file is not part of GNU Emacs.
+
+       ;; This program is free software: you can redistribute it and/or modify
+       ;; it under the terms of the GNU General Public License as published by
+       ;; the Free Software Foundation, either version 3 of the License, or (at
+       ;; your option) any later version.
+
+       ;; This program is distributed in the hope that it will be useful, but
+       ;; WITHOUT ANY WARRANTY; without even the implied warranty of
+       ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+       ;; General Public License for more details.
+
+       ;; You should have received a copy of the GNU General Public License
+       ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+
+       ;;; Commentary:
+
+       ;; Questo file contiene le impostazioni di GNU Emacs che vengono eseguite
+       ;; durante la fase di Init.
+       ;; La fase di Init viene eseguita successivamente a quella di Early Init
+       ;;
+       ;; Per maggiori informazioni fare riferimento al manuale di GNU Emacs:
+       ;; 49.4 The Emacs Initialization File
+
+       ;;; Code:
+     #+end_src
+
+**** Verifica versione Emacs
+
+     Verifico che la versione di Emacs sia almeno la 26.1. Se non lo e'
+     emetto un warning.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Se la versione e' inferiore alla 26.1 emetto un warning
+       (when (version< emacs-version "26.1")
+         (warn "E' necessario che GNU Emacs sia in versione 26.1 o successiva!"))
+     #+end_src
+
+**** Dichiaro la funzione di impostazione di package
+
+     Questa funzione viene richiamata dalle due funzioni che usate a seconda
+     della versione di Emacs.  Carica =package= che verra' utilizzato dopo
+     e aggiunge alla lista dei repository da dove scaricare i packages anche
+     /Melpa/.  Infine inizializza =package=, ma solo se non e' gia' stato
+     inizializzato.
+
+     #+begin_src emacs-lisp :tangle no
+       (defun gb/emacs/package-setup ()
+         "Function che imposta 'package'"
+         ;; Carico il modulo di gestione dei packages
+         (require 'package)
+         ;; Carica sempre il file piu' recente tra '.el' e '.elc'
+         (setq load-prefer-newer t)
+         ;; Aggiungo all'elenco dei repositories da cui scaricare i packages
+         ;; la versione "unstable" di Melpa
+         (add-to-list 'package-archives
+                      '("melpa" . "https://melpa.org/packages/"))
+         ;; Genera dei warnings con i package-install 
+         (unless (bound-and-true-p package--initialized)
+           (package-initialize))
+         )
+     #+end_src
+
+**** Dichiaro la funzioone di impostazione per le vecchie versioni di Emacs
+     
+     Le versioni di Emacs antecedenti alla 27 non gestiscono =early-init.el=.
+     Per questo, se esiste, devo caricarlo quanto prima.  Dopo aver caricato
+     =early-init.el= provvedo a chiamare la funzione che imposta =package=
+
+     #+begin_src emacs-lisp :tangle no
+       (defun gb/emacs/init-old-emacs-version ()
+         "Function eseguita per il setup di init.el quando si sta usando Emacs
+         in versione precedente alla 27"
+         ;; Early-init e' gestito automaticamente dalla versione 27 in poi
+         ;; Se esiste early-init.el lo carico
+         (let ((gb/emacs/early-init-file (expand-file-name "early-init.el" user-emacs-directory)))
+           (when (file-exists-p gb/emacs/early-init-file)
+             (require 'early-init gb/emacs/early-init-file)))
+         (gb/emacs/package-setup)
+         )
+     #+end_src
+
+**** Dichiaro la funzione di impostazione per le nuove versioni di Emacs
+     
+     Le versioni di Emacs successive alla 27 gestiscono automaticamente
+     =early-init.el=.  Mi limito quindi a richiamare la funzione che
+     imposta =package=
+    
+     #+begin_src emacs-lisp :tangle no
+       (defun gb/emacs/init-new-emacs-version ()
+         "Function eseguita per il setup di init.el quando si sta usando Emacs
+         in versione 27+"
+         ;; Avvio package
+         (gb/emacs/package-setup)
+         )
+     #+end_src
+
+**** Eseguo impostazioni di base
+     
+     La versione 27 di Emacs ha introdotto il concetto di =early-init.el=.
+     Devo quindi prevedere una gestione per le versioni precedenti che
+     faccia in modo di andare a caricarlo se presente.  Questa cosa
+     deve avvenire quanto prima all'interno del file =init.el=
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Eseguo le impostazioni in base alla versione di GNU Emacs
+       (if (version< emacs-version "27")
+           (gb/emacs/init-old-emacs-version)
+         (gb/emacs/init-new-emacs-version))
+     #+end_src
+
+**** Carico il package "delight"
+     
+     =delight= e' un package che, se presente, viene usato
+     da =use-package=. Se non viene installato prima di
+     =use-package= risultera' erroneamente come dipendenza
+     nella lista dei package installati.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Delight e' un package che viene usato da use-package
+       ;; mi accerto che sia installato, se non lo e' lo installo
+       ;; N.B.: Se non si vuole averlo come dipendenza e' bene
+       ;; installarlo prima di use-package
+       (unless (package-installed-p 'delight)
+         (unless package-archive-contents
+           (package-refresh-contents))
+         (package-install 'delight))
+     #+end_src
+
+**** Carico il package "diminish"
+     
+     =diminish= e' un package che, se presente, viene usato
+     da =use-package=. Se non viene installato prima di
+     =use-package= risultera' erroneamente come dipendenza
+     nella lista dei package installati.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Diminish e' un package che viene usato da use-package
+       ;; mi accerto che sia installato, se non lo e' lo installo
+       ;; N.B.: Se non si vuole averlo come dipendenza e' bene
+       ;; installarlo prima di use-package
+       (unless (package-installed-p 'diminish)
+         (unless package-archive-contents
+           (package-refresh-contents))
+         (package-install 'diminish))
+     #+end_src
+
+**** Use-package
+     
+     =use-package= e' un package che consente una gestione
+     migliorata rispetto a =package=
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Mi accerto che use-package sia installato
+       ;; se non lo e' lo installo
+       (unless (package-installed-p 'use-package)
+         (unless package-archive-contents
+           (package-refresh-contents))
+         (package-install 'use-package))
+     #+end_src
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Carico use-package
+       (eval-when-compile
+         (require 'use-package))
+     #+end_src
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Configuro use-package prima di caricarlo
+       (eval-and-compile
+         (if init-file-debug
+             (setq use-package-verbose t
+                   use-package-expand-minimally nil
+                   use-package-compute-statistics t
+                   debug-on-error t) ; True
+           (setq use-package-verbose nil
+                 use-package-expand-minimally t) ; False
+             )
+         (setq use-package-enable-imenu-support t
+               ;; Quanto segue e' MOLTO IMPORTANTE:
+               ;; Usare sempre gli hook con il loro nome completo
+               ;; al posto del nome abbreviato:
+               ;; after-init --> after-init-hook
+               ;; Questo migliora la gestione della documentazione
+               ;; a riconoscere il contesto (vedi, ad esempio 'describe-symbol)
+               use-package-hook-name-suffix nil)
+         )
+     #+end_src
+
+**** Configuro vc
+     
+     Configuro =vc= in modo che gestisca i link simbolici.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; Configuro vc (package gestione "version cotrol"
+       (use-package vc
+         :config
+         ;; Questo perche' i miei "dotfiles" usano i link simbolici
+         (setq vc-follow-symlinks t)
+         )
+     #+end_src
+
+**** Org & Babel: gb-init.org
+     
+     In Emacs il paradigma di literate programming si appoggia a =org-mode=.
+     _Org_ e' un package (built-in) estremamente potente che, tra le altre cose,
+     consente l'esecuzione di /codice sorgente/ all'interno di un dile di
+     testo.  Questa operazione avviene tramite la sua funzionalita' _Babel_.
+     Usando queste funzionalita' si va quindi a caricare =org-mode= e a leggere
+     il file di "inizializzazione" scritto in "literate programming" facendo
+     produrre a Babel il corrispondente file =emacs-lisp= che viene infine
+     caricato come se fosse una "libreria" di =init.el=
+
+     Il file che viene letto, convertito in emacs-lisp e caricato si chiama
+     *=gb-init.el=*
+    
+     #+begin_src emacs-lisp :tangle no
+       ;; Carico org
+       (use-package org)
+
+       ;; Qui avviene la magia.
+       ;; Carico la configurazione dal file "org"
+       ;; Cerco pero' di ottimizzare un mimino la cosa:
+       ;; se il file "el" generato da org-babel e' piu' recente
+       ;; del file "org" allora carico "el" altrimenti passo
+       ;; all'uso di org-babel
+       (progn (defvar gb/emacs/gb-init "gb-init")
+       (defvar gb/emacs/conf-filename (expand-file-name gb/emacs/gb-init user-emacs-directory))
+       (defvar gb/emacs/el-conf-filename (concat gb/emacs/conf-filename ".el"))
+       (defvar gb/emacs/org-conf-filename (concat gb/emacs/conf-filename ".org"))
+       (if (file-exists-p gb/emacs/el-conf-filename)
+	       (if (file-newer-than-file-p gb/emacs/org-conf-filename gb/emacs/el-conf-filename)
+               (progn (message "%s e' piu' recente di %s, ricreo e carico il .el"
+                               gb/emacs/org-conf-filename
+                               gb/emacs/el-conf-filename)
+		              (org-babel-load-file gb/emacs/org-conf-filename))
+	         (progn (message "%s e' meno recente di %s, carico il .el senza ricrearlo"
+                             gb/emacs/org-conf-filename
+                             gb/emacs/el-conf-filename)
+		            (load-file gb/emacs/el-conf-filename)))
+	     (progn (message "Creo e carico %s"  gb/emacs/el-conf-filename)
+		        (org-babel-load-file gb/emacs/org-conf-filename))
+	     )
+       )
+     #+end_src
+
+**** Custom
+     
+     E' la parte di =init.el= che contiene le impostazioni gestite direttamente
+     dall'interfacia di configurazione di Emacs ([[info:emacs#Easy customization][Easy customization]]).
+
+     _E' importante che venga mantenuta all'interno del file =init.el=_ perche'
+     altrimenti non verrebbe aggiornato correttaemtne il contenuto della variabile
+     =package-selected-packages= e i vari package installati tramite =use-package=
+     risulterebbero sempre come dipendenze.
+
+     Da notare che qui la =custom-set-variables= e' vuota in cosndierazione che,
+     trattandosi di un esempio di base, non ci dovrebbero gia' essere impostazioni.
+
+     Naturalmente, con l'uso di Emacs questa parte sara' valorizzata dallo
+     stesso Emacs ad esempio nell'elenco dei packages installati.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; NON RIMUOVERE CUSTOM DA QUI
+       ;; ---------------------------
+       ;; Si potrebbe cedere alla tentazione di avere un init.el piu' "pulito"
+       ;; spostando custom-set-variables e custom-set-faces in un file separato,
+       ;; ma questo porta spesso a comportamenti altalenanti: se si installa un
+       ;; package con use-package e la sua opzione :ensure, capita che il package
+       ;; venga installato, ma la variabile package-selected-packages non venga
+       ;; aggiornata correttamente portanto il package installato ad uno stato
+       ;; di "dependency" in list-packages con invito alla rimozione qualora questo
+       ;; non fosse effettivamente utilizzato anche come dipendenza da qualche altro
+       ;; package
+       (custom-set-variables
+        ;; custom-set-variables was added by Custom.
+        ;; If you edit it by hand, you could mess it up, so be careful.
+        ;; Your init file should contain only one such instance.
+        ;; If there is more than one, they won't work right.
+        )
+       (custom-set-faces
+        ;; custom-set-faces was added by Custom.
+        ;; If you edit it by hand, you could mess it up, so be careful.
+        ;; Your init file should contain only one such instance.
+        ;; If there is more than one, they won't work right.
+        )
+     #+end_src
+
+**** Commenti finali
+     
+     Contiene la parte di commento finale e l'impostazione delle variabili
+     locali del file
+
+     Da notare che l'impostazione del major mode *NON* deve avvenire qui
+     nella sezione "local variables", ma nella prima linea con la classica
+     notazione =-*- mode: lisp; -*-=, altrimenti si genera un errore nel tangling.
+
+     #+begin_src emacs-lisp :tangle no
+       ;; ===========================================================================
+       ;; Local Variables:
+       ;; coding: utf-8-unix
+       ;; indent-tabs-mode: nil
+       ;; tab-width: 4
+       ;; End:
+       ;; ===========================================================================
+
+       ;;; init.el ends here
+     #+end_src
+
+** Il file di inizializazione "literate programmming"
+
+   Qui inizia la vera e propria configurazione di Emacs secondo il paradigma
+   di "literate programming".
+
+   Ogni parte di questo file definita in spezzoni di codice viene poi unificata
+   in un singolo file transcodificato in emacs-lisp da Babel.
+
+*** Intestazione del file
+
+   Da notare che l'impostazione del major mode deve avvenire qui nella
+   prima linea e non nella sezione "local variables" in coda, altrimenti si genera
+   un errore nel tangling.
+
+   #+begin_src emacs-lisp
+     ;;; gb-init.el --- Emacs tangled config -*- mode: emacs-lisp; lexical-binding: t; -*-
+
+     ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; ATTENZIONE: NON MODIFICARE QUESTO FILE!
+     ;; File generato automaticamente
+     ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+     ;; Copyright (C) 2020 Geraldo Biotti
+
+     ;; Compatiblity: emacs-version >= 27
+
+     ;; This file is not part of GNU Emacs.
+
+     ;; This program is free software: you can redistribute it and/or modify
+     ;; it under the terms of the GNU General Public License as published by
+     ;; the Free Software Foundation, either version 3 of the License, or (at
+     ;; your option) any later version.
+
+     ;; This program is distributed in the hope that it will be useful, but
+     ;; WITHOUT ANY WARRANTY; without even the implied warranty of
+     ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     ;; General Public License for more details.
+
+     ;; You should have received a copy of the GNU General Public License
+     ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+
+     ;;; Commentary:
+
+     ;; Questo file viene generato automaticamente a partire dal
+     ;; suo file sorgente scritto in org-mode usando la tecnica
+     ;; del "literate-programming"
+     ;; Non modificare questo file.  Ogni modifica a questo file
+     ;; e' destinata ad essere persa e sovrascritta alla prossima
+     ;; generazione dal file sorgente.
+
+     ;;              ATTENZIONE: NON MODIFICARE QUESTO FILE!
+
+     ;;; Code:
+   #+end_src
+
+*** Impostazioni di Emacs
+
+**** Helper functions
+
+     Funzioni che vengono utilizzate per semplificare le opreazioni.
+
+***** Funzioni relative al file di configurazione "literate"
+
+      Qui si trovano funzioni che si riferiscono alla gestione del
+      file di configurazione "literate programming" (org)
+
+****** gb/emacs/config-visit()
+
+       Apre questo file di configurazione in literate programming
+
+       Da notare che uso la variabile =gb/emacs/org-conf-filename=
+       precedentemente definita in =init.el=
+
+       #+begin_src emacs-lisp
+         (defun gb/emacs/config-visit ()
+           "Visita il file di configurazione 'literate programming'.
+         Da notare che il file deve essere impostato nella variabile
+         'gb/emacs/org-conf-filename' che deve essere definita in 'init.el'"
+           (interactive)
+           (find-file gb/emacs/org-conf-filename)
+           )
+       #+end_src
+
+****** gb/emacs/config-reload()
+
+       #+begin_src emacs-lisp
+         (defun gb/emacs/config-reload ()
+           "Effettual il reload del file di configurazione.
+         Esegue quindi nuovamente quelle operazioni sul file di configurazione
+         'literate programming' che sono state eseguite in 'int.el' all'avvio di Emacs.
+         Da notare che il file deve essere impostato nella variabile
+         'gb/emacs/org-conf-filename' che deve essere definita in 'init.el'
+         Assume che 'org' sia gia' stato caricato."
+           (interactive)
+           (org-babel-load-file gb/emacs/org-conf-filename)
+           )
+       #+end_src
+
+**** Imposto il font di default
+
+     All'avvio Emacs utilizza un font di default che cambia a senconda
+     del sistema operativo in uso.
+
+     In MS Windows usa il Courier New che, pur se storicamente valido,
+     lascia oggi a desiderare se confrontato con i moderni font non
+     proporzionali (a spaziatura fissa) usati dagli sviluppatori.
+
+     Per questo, quando sto eseguendo Emacs in MS Windows, imposto sia
+     il font di default che quello corrente sceliendo, fra i font
+     eventualmente esistenti in base a questo ordine:
+     1. DejaVu Sans mono - 10 punti
+     2. Consolas         - 10 punti
+     3. Inconsolata      - 10 punti
+
+     Impostando sia il font di default che quello corrente si evita il
+     brutto effetto di mostrare prima il font standard di Emacs (Courier
+     New) per poi, ad un certo punto, veder cambiare il tutto con il
+     nuovo font.
+
+     Nel caso nessuno dei fonts desiderati sia presente nel sistema
+     si resta con le impostazioni di default che prevedono Courier
+     New.
+
+     *N.B.*: Valutare l'uso di =window-system-default-frame-alist=.
+
+     #+begin_src emacs-lisp
+       (when (eq system-type 'windows-nt)
+         (cond ((find-font (font-spec :name "DejaVu Sans mono"))
+                (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))
+                (set-face-attribute 'default nil :font "DejaVu Sans Mono-10"))
+               ((find-font (font-spec :name "Consolas"))
+                (add-to-list 'default-frame-alist '(font . "Consolas-10"))
+                (set-face-attribute 'default nil :font "Consolas-10"))
+               ((find-font (font-spec :name "Inconsolata"))
+                (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
+                (set-face-attribute 'default nil :font "Inconsolata-10"))
+               )
+         )
+     #+end_src
+
+**** Gestisce la startup screen
+
+     Il buffer "\ast{}About GNU Emacs\{}" e' la startup screen standard
+     di Emacs e contiene alcuni link utili, soprattutto nei primi tempi
+     che si usa questo editor.  Ma dopo un po' di tempo diventa inutile
+     e la sua visualizzazione all'avvio puo' essere tranquillamente
+     disattivata.  Per gestirne l'attivazione o la disattivazione si
+     imposta la variabile ~inhibit-startup-screen~
+
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+
+     | Valore argomento | Descrizione                |
+     |------------------+----------------------------|
+     | ~nil~            | Mostra la startup screen   |
+     | non ~nil~        | Nasconde la startup screen |
+
+     E' comunque richiamabile manualmente con ~M-x about-emacs~
+
+     #+begin_src emacs-lisp
+       (setq inhibit-startup-screen t)
+     #+end_src
+
+**** Gestisce la barra del menu (menu-bar)
+
+     Mantiene attiva all'avvio la menu-bar.  Per gestire la visualizzazione o
+     meno della menu-bar si usa il comando ~menu-bar-mode~ passandogli
+     un argomento.
+     
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+     
+     | Valore argomento | Descrizione                       |
+     |------------------+-----------------------------------|
+     | ~>0~             | Abilita (mostra) la menu-bar      |
+     | ~<=0~            | Disabilita (nasconde) la menu-bar |
+
+     La menu-bar e' comunque attivabile/disattivabile manualmente con il
+     comando ~M-x menu-bar-mode~
+
+     #+begin_src emacs-lisp
+       (menu-bar-mode -1)
+     #+end_src
+
+**** Gestisce la barra gli strumenti (tool-bar)
+
+     In modalitaì GUI mantiene attiva all'avvio la tool-bar.  Per gestire la
+     visualizzazione o meno della tool-bar si usa il comando
+     ~tool-bar-mode~ passandogli un argomento.
+     
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+     
+     | Valore argomento | Descrizione                       |
+     |------------------+-----------------------------------|
+     | ~>0~             | Abilita (mostra) la tool-bar      |
+     | ~<=0~            | Disabilita (nasconde) la tool-bar |
+     
+     La tool-bar e' comunque attivabile/disattivabile manualmente con il
+     comando ~M-x tool-bar-mode~
+
+     Come l'attivazione o disattivazione della tool-bar si va ad impostare
+     e' opportuno andare ad impostare anche la "forma estetica" di come i
+     puslanti andaranno ad apparire nella tool-bar stessa.
+     Questa impostazione e' importante soprattutto in ambito GNU/Linux con
+     KDE dove la toolbar verrebbe mostrata con le sole etichette e senza
+     le icone (mentre in Windows lo standard mostra soltanto le icone).
+     L'impostazione vale per GTK+ ma influisce anche su KDE dove
+     il rendering dei widget GTK viene "emulato".
+
+     Per fare questo si imposta la variabile =tool-bar-style= che puo'
+     assumere i seguenti valori:
+
+     | valore argomento | Descrizione                                       |
+     |------------------+---------------------------------------------------|
+     | image            | show images only                                  |
+     | text             | show text only                                    |
+     | both             | show both, text below image                       |
+     | both-horiz       | show text to the right of the image               |
+     | text-image-horiz | show text to the left of the image                |
+     | any other        | use system default or image if no system default. |
+
+     #+begin_src emacs-lisp
+       (tool-bar-mode -1)
+       (setq tool-bar-style 'image)
+     #+end_src
+
+**** Gestisce la scroll-bar verticale
+
+     Nasconde all'avvio la scroll-bar verticale.  Per gestire la
+     visualizzazione o meno della scroll-bar si usa il comando
+     ~toggle-scroll-bar-mode~ passandogli un argomento.
+     
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+
+     | Valore argomento   | Descrizione                                   |
+     |--------------------+-----------------------------------------------|
+     | ~>0~ oppure ~t~    | Abilita (mostra) la scroll-bar verticale      |
+     | ~<=0~ oppure ~nil~ | Disabilita (nasconde) la scroll-bar verticale |
+     
+     La menu-bar e' comunque attivabile/disattivabile manualmente con il
+     comando ~M-x toggle-scroll-bar~
+
+     #+begin_src emacs-lisp
+       (toggle-scroll-bar -1)
+     #+end_src
+
+**** Gestisce la file-dialog
+
+     Questa opzione entra in gioco in modalita' GUI quando, tramite menu-bar
+     o tool-bar, si esegue una operazione che richiede un file.  Se la
+     file-dialog e' abilitata viene mostrata una dialog box grafica secondo
+     le impostazioni del sistema operativo; se invece e' disabilitata si
+     opera nel minibuffer come quando, ad esempio, si visita un file con
+     ~C-x C-f~.  Per gestire questa impostazione si imposta la variabile
+     ~use-file-dialog~
+     
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+
+     | Valore argomento | Descrizione                        |
+     |------------------+------------------------------------|
+     | non ~nil~        | Abilita l'uso della file-dialog    |
+     | ~nil~            | Disabilita l'uso della file-dialog |
+     
+     #+begin_src emacs-lisp
+       (setq use-file-dialog nil)
+     #+end_src
+
+**** Gestisce le dialog-box per le conferme
+
+     Questa opzione gestisce l'uso o meno delle richieste di conferma
+     "grafiche" tramite l'uso di una dialog-box quando un "evento"
+     scatenato dal  mouse necessita di una conferma.  Si applica alle
+     richieste ~y-or-n-p~ e ~yes-or-no-p~.  Per fare questo si imposta
+     la variabile ~use-dialog-box~
+    
+     Sarebbe da valutare l'opportunita' di gestire questa impostazione
+     in =early-init.el=.
+
+     | Valore argomento | Descrizione                       |
+     |------------------+-----------------------------------|
+     | non ~nil~        | Abilita l'uso della dialog-box    |
+     | ~nil~            | Disabilita l'uso della dialog-box |
+     
+     #+begin_src emacs-lisp
+       (setq use-dialog-box nil)
+     #+end_src
+
+**** Imposta la gestione dei backup e degli auto-save
+
+     E' possibile disabilitare sia la creazione dei files di backup
+     che gli auto-saves.
+
+     Tutte e due queste variabili accettano:
+
+     | Valore argomento | Descrizione                |
+     |------------------+----------------------------|
+     | non ~nil~        | Attiva la funzionalita'    |
+     | ~nil~            | Disattiva la funzionalita' |
+
+     #+begin_src emacs-lisp
+       (setq make-backup-files t
+             auto-save-default t)
+     #+end_src
+
+**** Gestisce le combinazioni "fastidiose"
+
+     Alcune combinazioni di tasti presenti per impostazione predefinita sono
+     piuttosto infelici.
+     - ~C-z~: "sospende" il frame.  In ambiente GUI riduce semplicemente
+       ad icona, in ambiente terminale sospende il processo di Emacs
+       mettendolo in background e uscendo alla shell; il processo puo'
+       poi essere "ripreso".  _Non funziona in Microsoft Windows_.
+       La combinazione e' infelice perche' universalmente abbinata alla
+       funzionalita' di "undo" e per questo facilmente richiamabile
+       per errore.  Volendo puo' comunque essere richiamata tramite il
+       comando ~M-x suspend-frame~
+     - ~C-h h~: funzionalita' inutile che mostra le capacita' di rendering
+       dei font non latini di Emacs.  Volendo puo' essere richiamata
+       tramite il comando ~M-x view-hello-file~
+
+     Per gestire quest impostazioni si utilizza una funzionalita' messa
+     a disposizione da =use-package=.  La funzionalita' ~:bind~ consente
+     la gestione degli abbinamenti tra comandi e combinazioni di tasti.
+
+     E' possibile richimare =use-package= con un nome di package "speciale":
+     =emacs= che non e' un package vero e proprio, ma e' comunque gestito
+     correttamente (esempio trovato in rete: [[https://protesilaos.com/dotemacs/]]).
+
+     Oltretutto sembra possibile richiamare piu' volte =use-package= sullo stesso
+     package fornento integrazioni alle impostazioni.  Impostazioni che vengono
+     gestite nell'ordine che si presentano.
+     
+     #+begin_src emacs-lisp
+       (use-package emacs
+         :bind (("C-z" . nil)
+                ("C-h h" . nil))
+         )
+     #+end_src
+
+**** Gestisce le combinazioni di tasti per ibuffer
+     
+     =ibuffer= e' un'alternativa avanzata al =buffer-menu= e alla funzione
+     =list-buffers= e consente di gestire i buffers in una modalita'
+     simile a =dired=.
+
+     Vado a modificare l'abbinamento standard di Emacs per la combinazione
+     di tasti =C-x C-b= sostituendo la chiamata a =list-buffers= con
+     =ibuffer=.
+
+     #+begin_src emacs-lisp
+       ;; (use-package emacs
+       ;;  :bind ([remap list-buffers] . ibuffer)
+       ;;  )
+       (global-set-key [remap list-buffers] 'ibuffer)
+     #+end_src
+
+**** Gestisce le richieste Si/No
+
+     In Emacs le richieste che prevedono risposta Si/No sono di due tipi e
+     e gestite da due funzioni:
+     - =y-or-n-p= :: Richiesta Yes/No a cui e' possibile rispondere con un
+       solo tasto (Y/N).  Generalmente usata per richieste alle quali una
+       risposta poco attenta non provoca gravi consequenze
+     - =yes-or-no-p= :: Richiesta Yes/No che necessita di una maggiore attenzione
+       perche' una risposta errata potrebbe creare dei problemi maggiori,
+       per questo necessitano di una risposta esplicita.  Per queto e' necesario
+       risponere in modo completo.
+
+     E' possibile "accorciare" la riposta usando l'istruzione
+     =(fset 'yes-or-no-p 'y-or-n-p)=.  Al momento preferisco pero' non usare questa
+     scorciatoia.
+
+**** Imposta il sistema di encoding
+
+     Imposta il sistema di encoding predefinito a =utf-8= questo uniforma il
+     comportamento tra GNU/Linux e MS Windows.  Si potrebbero comunque verificare
+     disagi quando si andranno a modificare files gia' esistenti, creati con un
+     altro editor che, in MS Windows, hanno mantenuto l'impostazione di default
+     del sistema opreativo e' solitamente "Windows-1252" (almeno in Italia).
+     
+     [[https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs]]
+
+     #+begin_src emacs-lisp
+       (prefer-coding-system 'utf-8)
+       (set-default-coding-systems 'utf-8)
+       (set-terminal-coding-system 'utf-8)
+       (set-keyboard-coding-system 'utf-8)
+
+       ;; backwards compatibility as default-buffer-file-coding-system
+       ;; is deprecated in 23.2.
+       (if (boundp 'buffer-file-coding-system)
+           (setq-default buffer-file-coding-system 'utf-8)
+         (setq default-buffer-file-coding-system 'utf-8))
+
+       ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+       (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+       ;; Messages encoding system
+       (setq locale-coding-system 'utf-8)
+     #+end_src
+
+**** Mostra la "highlight line"
+
+     Lo faccio soltanto se sono nella GUI altrimenti e' troppo invasivo
+     dal punto di vista visuale.
+
+     #+begin_src emacs-lisp
+       (when (window-system)
+         (global-hl-line-mode 1))
+     #+end_src
+
+**** Disattiva il continuamento riga
+
+     L'impostazione di default di Emacs prevede che righe contenenti
+     testo piu' lungo della dimensione della window vengano
+     continuate nella riga successiva ed evidenziate con un apposito
+     simbolo.
+     Con questa impostazione si imposta il funzionamento piu' o meno
+     consolidato nel resto del mondo: la riga prosegue "uscendo"
+     dallo schermo.
+
+     E' possibile alternare questa impostazione anche una volta che
+     Emacs e' partito usando il comando =M-x toggle-truncate-line=
+
+     #+begin_src emacs-lisp
+       (setq-default truncate-lines t)
+     #+end_src
+
+**** Mostra la parentesi abbinata
+
+     #+begin_src emacs-lisp
+       (show-paren-mode 1)
+     #+end_src
+
+**** Scroll verticale "come te lo aspetteresti"
+
+     L'impostazione di default di Emacs per lo scroll verticale e' quella di
+     portare il cursore al centro della window quando questo esce dall'area
+     visibile. Questo causa uno spostamento "a balzi" che puo' essere fastidioso.
+
+     Questo e' uno dei metodi per impostare uno scroll verticale che incontri
+     le normali aspettative.
+
+     #+begin_src emacs-lisp
+       (setq scroll-conservatively most-positive-fixnum)
+     #+end_src
+
+**** Scroll orizzontale come te lo aspetteresti
+
+     L'impostazione di default porta il cursore al centro del buffer quando si
+     esegue uno scroll orizzontale e il cursore esce dallo schermo causando un
+     movimento "a balzi" che puo' essere fastidioso.
+
+     Con questa impostazione lo scroll orizzontale viene impostato per comportarsi
+     come normalmente avviene: un carattere per volta.
+
+     #+begin_src emacs-lisp
+       (setq hscroll-step 1)
+     #+end_src
+     
+**** Bell
+
+     Disattiva il "ding", per il momento mantengo attivo il "flashing" check
+     mostra visivamente l'equivalente del "ding". E' possibile disattivare anche
+     il flashing impostando =visbile-bell nil=. Il ding audio e' disattivato
+     usando come funzione associata una funzione inesistente "ignore".
+     
+     #+begin_src emacs-lisp
+       (setq visible-bell t
+             ring-bell-function 'ignore)
+     #+end_src
+
+**** Delete selection
+
+     Il comportamento normale di Emacs e' quello di inserire il testo dove e'
+     posizionato il cursore anche quando e' in corso una selezione del testo
+     (si e' selezionata auna "region"). Questo comportamento e' diverso da
+     quello usato dalla maggior parte delle applicazioni attuali dove la
+     digitando il testo questo va a sostituire quello selezionato.
+
+     #+begin_src emacs-lisp
+       (delete-selection-mode t)
+     #+end_src
+
+**** Tabulazioni
+
+     Gestione delle impostazioni relative alle tabulazioni.
+     In certi ambiti le impostazioni sono "arcaiche" o diverse da quelle che
+     normalmente ci si possono aspettare.
+
+     L'impostazione predefinita sara' di usare gli spazi al posto dei "tab".
+
+     #+begin_src emacs-lisp
+       (setq-default indent-tabs-mode nil)
+     #+end_src
+
+     Con la dimensione di una tabulazione espressa come 4 spazi.
+
+     #+begin_src emacs-lisp
+       (setq-default tab-width 4)
+     #+end_src
+
+     Creo quindi una "lista" di tabulazioni ogni 4 caratteri (un po' come
+     nelle vecchie macchine per scrivere o nei programmi tipo Word), iniziando
+     dal 4° carattere e ogni 4 caratteri fino al raggiungimento dei 200 caratteri.
+
+     #+begin_src emacs-lisp
+       (setq tab-stop-list 
+             (number-sequence 4 200 4))
+     #+end_src
+
+**** Impostazioni per la stampa
+
+     #+begin_src emacs-lisp
+       ;; Devo caricare il modulo di supporto per la stgampa
+       (require 'ps-print)
+       ;; Imposto il formato pagina a "A4"
+       (setq ps-paper-type 'a4)
+       ;; (setq ps-print-color-p 'black-white)
+       (setq doc-view-continuous t)
+       (cond ((eq system-type 'windows-nt)
+              ;; Windows-specific code goes here.
+              ;; ATTENZIONE
+              ;; Se si installa una versione diversa di GhostScript RICORDARSI
+              ;; di modificare qui i percorsi!!!!!
+              (setq ps-lpr-command "C:/Program Files/gs/gs9.50/bin/gswin64c.exe")
+              (setq ps-lpr-switches '("-q"
+                                      "-dNOPAUSE"
+                                      "-dBATCH"
+                                      "-dNoCancel"
+                                      "-sDEVICE=mswinpr2"
+                                      ;; "-IC:/Program Files/gs/gs9.50/lib"
+                                      ;; "-sFONTPATH=C:/Windows/Fonts"
+                                      ;; "-sOutputICCProfile=default_cmyk.icc"
+                                      ;; "-dBitsPerPixel=24"
+                                      ;; "-dEmbedAllFonts=true"
+                                      ))
+              (setq doc-view-ghostscript-program "C:/Program Files/gs/gs9.50/bin/gswin64c.exe")
+              (setq ps-printer-name t)
+              (setq ps-printer-name-option nil)
+              )
+             ((eq system-type 'gnu/linux)
+              ;; Linux-specific code goes here.
+              ))
+
+       ;; Start Emacs fullscreen mode
+       ;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
+     #+end_src
+
+*** Package aggiuntivi
+
+**** Async
+     
+     Consente l'uso di processi asincroni quando possibile.
+
+     #+begin_src emacs-lisp
+       (use-package async
+         :ensure t
+         :init
+         (dired-async-mode 1)
+         )
+     #+end_src
+
+**** All-the-icons
+
+     I package /all-the-icons/ installano font e immagini che possono essere
+     usati in abbinamento alle varie voci che Emacs mostra.  Ad esempio
+     mostrando una lista di files ecc.
+
+***** All-the-icons
+
+      =all-the-icons= e' un package che installa una quantita' di immagini
+      grafiche che possono essere usate per identificare meglio files e/o
+      contesti.  Il package necessita di una parte di configurazione
+      manuale (in MS Windows) per l'installazione dei fonts necessari.
+
+      Occorre leggere la documentazione sul sito del produttore:
+      [[https://github.com/domtronn/all-the-icons.el]]
+
+      Il package deve essere attivato immediatamente dopo l'installazione
+      altrimenti gli altri package che lo usano non lo troveranno attivo
+      e non mostreranno le icone.  Per questo si usa =:demand t=
+
+      Naturalmente ha senso usare questo package soltanto quando siamo
+      in ambiente grafico, per questo uso =:if (window-system)=
+
+      #+begin_src emacs-lisp
+        (use-package all-the-icons
+          :if (window-system)
+          :ensure t
+          :demand t
+          )
+      #+end_src
+
+***** All-the-icons-dired
+
+      Usa quanto fornito da =all-the-icons= nei buffer =dired=
+
+      Questo package viene caricato in modalita' differita (non viene
+      caricato al momento della lettura di =use-package=) quando viene
+      attivato.  L'attivazione avviene, tramite =dired-mode-hook=,
+      quando si apre un buffer =dired=.
+
+      #+begin_src emacs-lisp
+        (use-package all-the-icons-dired
+          :if (window-system)
+          :ensure t
+          :defer t
+          :after all-the-icons
+          :hook (dired-mode-hook . all-the-icons-dired-mode)
+          )
+      #+end_src
+
+***** All-the-icons-ibuffer
+
+      Mostra le icone di =all-the-icons= negli =ibuffer=
+
+      Questo package viene caricato in modalita' differita quando si
+      apre un buffer =ibuffer= (tramite =ibuffer-mode-hook=).
+
+      #+begin_src emacs-lisp
+        (use-package all-the-icons-ibuffer
+          :if (window-system)
+          :ensure t
+          :defer t
+          :hook (ibuffer-mode-hook . all-the-icons-ibuffer-mode)
+          :after all-the-icons
+          )
+      #+end_src
+
+**** Color themes
+     
+     Sono i temi di Emacs.  Ce ne sono veramente una quantita' enorme ed esistono
+     anche siti che ne consentono la ricerca con anteprima ([[https://emacsthemes.com/][emacsthemes]]).
+
+     Qui installo con =use-package= alcuni temi.  E' necessario che i temi vengano
+     installati con l'opzione =:defer t= altrimenti, dopo l'installazione vengono
+     anche attivati con lo sgradevole effetto del passaggio in serie da un tema
+     all'altro ciclando su tutti i temi scelti.
+
+     Naturalmente ha senso usare questi package soltanto quando siamo
+     in ambiente grafico, per questo uso =:if (window-system)= in ciascun blocco
+     =use-package=
+
+     Alla versione 27.1 con Emacs vengono distribuiti i seguenti temi:
+     - =adwaita-theme=
+     - =deeper-blue-theme=
+     - =dichromacy-theme=
+     - =leuven-theme=
+     - =light-blue-theme=
+     - =manoj-dark-theme=
+     - =misterioso-theme=
+     - =tango-dark-theme=
+     - =tango-theme=
+     - =tsdh-dark-theme=
+     - =tsdh-light-theme=
+     - =wheatgrass-theme=
+     - =whiteboard-theme=
+     - =wombat-theme=
+
+***** Installo i package dei temi aggiuntivi
+
+****** Doom
+
+       Questo package contiene una raccolta di color-themes usati dal
+       produttore di doom-emacs.
+
+       Molti di questi temi sono riproduzioni o adattamenti di temi
+       prodotti da altri.  Tra questi si possono trovare versioni di
+       /Gruvbox/, /Monokai/ ecc.
+
+       Qui ho utilizzato la configurazione di esempio mostrata sul sito
+       del produttore: [[https://github.com/hlissner/emacs-doom-themes]]
+       togliendo soltanto l'istruzione che attiva il tema:
+       =(load-theme 'doom-one t)=
+
+       #+begin_src emacs-lisp
+         (use-package doom-themes
+           :if (window-system)
+           :ensure t
+           :defer t
+           :config
+           ;; Global settings (defaults)
+           (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+                 doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+           ;; Enable flashing mode-line on errors
+           (doom-themes-visual-bell-config)
+
+           ;; Enable custom neotree theme (all-the-icons must be installed!)
+           ;; (doom-themes-neotree-config)
+           ;; or for treemacs users
+           (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+           (doom-themes-treemacs-config)
+
+           ;; Corrects (and improves) org-mode's native fontification.
+           (doom-themes-org-config)
+           )
+       #+end_src
+
+****** Spacemacs
+       
+       Tema standad per [[https://github.com/syl20bnr/spacemacs][Spacemacs]].
+
+       Dispone di due modalita':
+       - *Dark*: =spacemacs-dark=
+       - *Light*: =spacemacs-light=
+
+       #+begin_src emacs-lisp
+         (use-package spacemacs-theme
+           :if (window-system)         
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Material
+
+       Tema basato sui colori proposti dal [[http://www.google.com/design/spec/style/color.html#color-color-palette][Google Material Design]]
+
+       Dispone di due modalita':
+       - *Dark*: =material=
+       - *Light*: =material-light=
+
+       #+begin_src emacs-lisp
+         (use-package material-theme
+           :if (window-system)         
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Zenburn
+
+       Trasposizione per Emacs del popolare colorscheme di Vim.
+       Tema dark a basso contrasto.
+
+       #+begin_src emacs-lisp
+         (use-package zenburn-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Monokai
+
+       Trasposizione per Emacs del popolare tema Monokai di Textmate.
+
+       #+begin_src emacs-lisp
+         (use-package monokai-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Gruvbox
+
+       Trasposizione per Emacs del popolare colorscheme di Vim.
+
+       Dispone delle seguenti modalita':
+       - *Dark*
+         - *medium*: =gruvbox-dark-medium= (default)
+         - *soft*: =gruvbox-dark-soft=
+         - *hard*: =gruvbox-dark-hard=
+       - *Light*
+         - *medium*: =gruvbox-light-medium=
+         - *soft*: =gruvbox-light-soft=
+         - *hard*: =gruvbox-light-hard=
+
+       #+begin_src emacs-lisp
+         (use-package gruvbox-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Modus themes
+       
+       Temi creati da [[https://protesilaos.com/][Protesilaos Stavrou]]
+
+       Sono due temi di tipo [[https://www.w3.org/WAI/standards-guidelines/][WCAG AAA]].
+
+******* Modus operandi
+
+        Versione *light* del tema
+
+        #+begin_src emacs-lisp
+          (use-package modus-operandi-theme
+            :if (window-system)
+            :ensure t
+            :defer t
+            )
+        #+end_src
+
+******* Modus vivendi
+
+        Versione *dark* del tema
+
+        #+begin_src emacs-lisp
+          (use-package modus-vivendi-theme
+            :if (window-system)
+            :ensure t
+            :defer t
+            )
+        #+end_src
+
+****** Zerodark 
+
+       Un tema *dark* suggerito da [[https://github.com/daedreth/UncleDavesEmacs#a-nice-theme][Uncle Dave]].
+       
+       #+begin_src emacs-lisp
+         (use-package zerodark-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Atom one-dark
+
+       #+begin_src emacs-lisp
+         (use-package atom-one-dark-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Dracula
+
+       #+begin_src emacs-lisp
+         (use-package dracula-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Tomorrow
+
+       #+begin_src emacs-lisp
+         (use-package color-theme-sanityinc-tomorrow
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Solarized
+
+       #+begin_src emacs-lisp
+         (use-package solarized-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Moe
+
+       #+begin_src emacs-lisp
+         (use-package moe-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Seti
+
+       #+begin_src emacs-lisp
+         (use-package seti-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+
+****** Base16
+
+       #+begin_src emacs-lisp
+         (use-package base16-theme
+           :if (window-system)
+           :ensure t
+           :defer t
+           )
+       #+end_src
+       
+***** Attivo il tema che piu' mi piace in questo momento
+
+      Naturalmente andare a impostare il tema ha senso se sono in ambiente
+      grafico.
+
+      #+begin_src emacs-lisp
+        (when (display-graphic-p)
+          ;; (load-theme 'doom-one t)
+          ;; (load-theme 'modus-operandi t)
+          (load-theme 'modus-vivendi t)
+          ;; (load-theme 'spacemacs-dark t)
+          ;; (load-theme 'monokai t)
+          ;; (load-theme 'gruvbox t)
+          ;; (load-theme 'zenburn t)
+          ;; (load-theme 'zerodark t)
+          ;; (load-theme 'atom-one-dark-theme t)
+          ;; (load-theme 'atom-one-dark-theme t)
+          ;; (load-theme 'material t)
+          )
+      #+end_src
+
+**** Gestione della modeline
+
+     Nell'[[info:emacs#Screen][organizzazione dello schermo]] di Emacs la [[info:emacs#Mode Line][modeline]] e' quella parte del
+     [[info:emacs#Frames][frame]] di Emacs che si va a trovare nella parte inferiore di ogni [[info:emacs#Windows][window]] e,
+     come spiegato nel manuale di Emacs, "descrive cosa sta accadendo nel [[info:emacs#Buffers][buffer]]
+     corrente"
+
+***** Doom modeline
+
+      Esistono molti modi di "personalizzare" la modeline.  E' possibile farlo
+      direttamente nella configurazione di Emacs oppure e' possibile usare uno
+      dei tanti package disponibili.  Tra i vari package ho scelto =doom-modeline=
+      perhche' mi sembra un buon compromesso tra la veste grafica e la quantita'
+      di informazioni presentate.
+
+      *N.B:*: =doom-modeline= richiede, per funzionare correttamente che in precedenza
+      sia stato installato, configurato e caricato correttamente il package
+      =all-the-icons=.  E' inoltre /fortemente consigliato/ l'abbiamenteo ad uno
+      dei =doom-themes=
+
+      Le impostazioni di sono quelle suggerite dal produttore.
+
+      Naturalmente ha senso usare questo package soltanto quando siamo
+      in ambiente grafico, per questo uso =:if (window-system)=
+
+      #+begin_src emacs-lisp
+        (use-package doom-modeline
+          :if (window-system)
+          :ensure t
+          :after all-the-icons
+          ;;:init (doom-modeline-mode 1)
+          :hook (after-init-hook . doom-modeline-mode)
+          )
+      #+end_src
+
+***** Minions
+      
+      Questo package consente la gestione dei minor modes tramite un menu della tool-bar.
+      Riduce quindi il numero di voci "lighter" presenti nella toolbar e li raggruppa
+      in una sola voce.
+
+      Attivo =minions-mode= quando ho terminato l'inizializzazione tramite l'apposito
+      hook.
+
+      Imposto =toom-modeline-minor-modes= a =t= per mostrare i minor modes nella
+      =doom-modeline=
+
+      Naturalmente ha senso usare questo package soltanto quando siamo
+      in ambiente grafico, per questo uso =:if (window-system)=
+
+      #+begin_src emacs-lisp
+        (use-package minions
+          :if (window-system)
+          :ensure t
+          :hook (after-init-hook . minions-mode)
+          :custom (doom-modeline-minor-modes t)
+          )
+      #+end_src
+
+***** Mostra informazioni sulla riga e colonna e colonna corrente
+
+      Con queste impostazioni sia il numero di riga che il numero di colonna
+      vengono mostrati nella modeline.
+
+      #+begin_src emacs-lisp
+        (setq line-number-mode   t
+              column-number-mode t)
+      #+end_src
+
+      Queste impostazioni, invece, servono a mostrare il numero accanto ad ogni riga
+      del buffer.
+      
+      #+begin_src emacs-lisp
+        ;; Per adesso non mostro i numeri di riga sul lato della window
+        ;; (global-display-line-numbers-mode)
+      #+end_src
+
+**** Dashboard
+
+     #+begin_src emacs-lisp
+       (use-package dashboard
+         :ensure t
+         :config
+         (dashboard-setup-startup-hook)
+         ;; (setq dashboard-startup-banner "~/.emacs.d/img/Logog-b.png")
+         (setq dashboard-startup-banner          "~/.emacs.d/img/Logog-b.png"
+               ;; dashboard-startup-banner          "~/.emacs.d/img/Logob-w.png"
+               dashboard-set-heading-icons       t
+               dashboard-set-file-icons          t
+               dashboard-image-banner-max-height 250
+               dashboard-image-banner-max-width  250)
+         )
+     #+end_src
+
+**** Discoverability
+
+***** Which-key
+
+      Si tratta di un package che aiuta nella comprensione delle combinazione
+      dei tasti di Emacs.  Iniziando a digitare una qualsiasi combinazione
+      di tasti =C-=, =M-=, =S-= ecc. mostra in un buffer popup tutti i tasti
+      che possono essere scelti con una breve spiegazione.
+     
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+
+
+      #+begin_src emacs-lisp
+        (use-package which-key
+          :ensure t
+          :defer 5
+          :delight
+          :commands which-key-mode
+          :config
+          (which-key-mode)
+          )
+      #+end_src
+
+***** Hydra
+      
+      Consente la creazione di "popup" personalizzati che, alla pressione di
+      una combinazione di tasti, si attivano mostrando quali ulteriori tasti
+      possono essere utilizzati e a quale funzionalita' sono abbinati.
+
+      Mentre =which-key= mostra le combinazioni "standard", =hydra= consente
+      la crazioni di reaggruppamenti non standard.
+
+      #+begin_src emacs-lisp
+        (use-package hydra
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+**** Ivy / Counsel / Swiper
+
+***** Ivy
+
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+
+     #+begin_src emacs-lisp
+       (use-package ivy
+         :ensure t
+         :delight
+         ;; :hook (after-init-hook . ivy-mode)
+         :custom
+         (ivy-use-virtual-buffers t)
+         (enable-recursive-minibuffers t)
+         (ivy-count-format "%d/%d ")
+         :config
+         ;; Key bingings - Ivy based interface to stanard commands
+         ;; (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+         (global-set-key (kbd "C-c v") 'ivy-push-view)
+         (global-set-key (kbd "C-c V") 'ivy-pop-view)
+         ;; Key bindints - Ivy resume
+         (global-set-key (kbd "C-c C-r") 'ivy-resume)
+         (ivy-mode 1)
+         )
+     #+end_src
+
+***** Swiper
+
+     #+begin_src emacs-lisp
+       (use-package swiper
+         :ensure t
+         :after ivy
+         :config
+         ;; Key bindings - Ivy based interface to standard commands
+         (global-set-key (kbd "C-s") 'swiper-isearch)
+         )
+     #+end_src
+
+***** Counsel     
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+
+     #+begin_src emacs-lisp
+       (use-package counsel
+         :ensure t
+         :delight
+         :after (ivy swiper)
+         :config
+           (counsel-mode t)
+           ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+           ;; (global-set-key (kbd "C-c g") 'counsel-git)
+           ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+           ;; ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+           ;; ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+           ;; ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+           (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+           ;; Key bindings - Ivy/Counsel interface to standard commands
+           (global-set-key (kbd "M-x") 'counsel-M-x)
+           (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+           (global-set-key (kbd "M-y") 'counsel-yank-pop)
+           (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+           (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+           (global-set-key (kbd "<f1> l") 'counsel-find-library)
+           (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+           (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+           (global-set-key (kbd "<f2> j") 'counsel-set-variable)
+           (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+           ;; Key bindings - Ivy/Counsel interface to shell and system tools
+           (global-set-key (kbd "C-c c") 'counsel-compile)
+           (global-set-key (kbd "C-c g") 'counsel-git)
+           (global-set-key (kbd "C-c j") 'counsel-git-grep)
+           (global-set-key (kbd "C-c L") 'counsel-git-log)
+           (global-set-key (kbd "C-c k") 'counsel-rg)
+           (global-set-key (kbd "C-c m") 'counsel-linux-app)
+           (global-set-key (kbd "C-c n") 'counsel-fzf)
+           (global-set-key (kbd "C-x l") 'counsel-locate)
+           (global-set-key (kbd "C-c J") 'counsel-file-jump)
+           (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+           (global-set-key (kbd "C-c w") 'counsel-wmctrl)
+           ;; Key bindings - Counsel other commands
+           (global-set-key (kbd "C-c b") 'counsel-bookmark)
+           (global-set-key (kbd "C-c d") 'counsel-descbinds)
+           (global-set-key (kbd "C-c g") 'counsel-git)
+           (global-set-key (kbd "C-c o") 'counsel-outline)
+           (global-set-key (kbd "C-c t") 'counsel-load-theme)
+           (global-set-key (kbd "C-c F") 'counsel-org-file)
+         )
+     #+end_src
+
+****** Counsel-etags
+
+       _*Per il momento disabilitato, da valutare se serve veramente*_
+
+       #+begin_src emacs-lisp
+         (use-package counsel-etags
+           :disabled
+           :ensure t
+           :after counsel
+           ;; :bind (("C-]" . counsel-etags-find-tag-at-point))
+           :init
+           (add-hook 'prog-mode-hook
+                 (lambda ()
+                   (add-hook 'after-save-hook
+                             'counsel-etags-virtual-update-tags 'append 'local)))
+           :custom
+           (counsel-etags-update-interval 60)
+           :config
+           (push "build" counsel-etags-ignore-directories)
+           )
+       #+end_src
+
+****** Counsel-css
+
+       _*Per il momento disabilitato, da valutare se serve veramente*_
+
+       #+begin_src emacs-lisp
+         (use-package counsel-css
+           :disabled
+           :ensure t
+           :defer t
+           :after counsel
+           :hook (css-mode-hook . counsel-css-imenu-setup)
+           )
+       #+end_src
+
+***** Ivy-rich
+
+      #+begin_src emacs-lisp
+        (use-package ivy-rich
+          :ensure t
+          :after (ivy counsel)
+          ;; :init
+          ;; (ivy-rich-mode 1)
+          :config
+          (ivy-rich-mode 1)
+          )
+      #+end_src
+
+***** All-the-icons-ivy-rich
+
+      #+begin_src emacs-lisp
+        (use-package all-the-icons-ivy-rich
+          :if (window-system)
+          :ensure t
+          :after (ivy counsel ivy-rich all-the-icons)
+          ;; :init
+          ;; (all-the-icons-ivy-rich-mode 1)
+          :config
+          (all-the-icons-ivy-rich-mode 1)
+          )
+      #+end_src
+
+***** Ivy-Hydra
+
+      #+begin_src emacs-lisp
+        (use-package ivy-hydra
+          :ensure t
+          :defer t
+          :after (ivy hydra)
+          )
+      #+end_src
+
+**** Amx
+
+#+begin_src emacs-lisp
+  (use-package amx
+    :ensure t
+    :defer t
+    :after (:all counsel)
+    ;; :bind (("M-X" . amx-major-mode-commands))
+    :config (amx-mode t)
+    )
+#+end_src
+
+**** Org-mode
+
+     Org-mode e' gia' stato caricato in =init.el=, qui si vanno ad aggiungere
+     alcune impostazioni.
+
+     #+begin_src emacs-lisp
+       (use-package org
+         :defer t
+         :config
+         ;; Aggiungo exporter normalmente non abilitati
+         (add-to-list 'org-export-backends 'ascii)
+         (add-to-list 'org-export-backends 'beamer)
+         (add-to-list 'org-export-backends 'md)
+         (add-to-list 'org-export-backends 'org)
+         (progn (add-to-list 'org-latex-packages-alist '("" "tabularx" nil))
+                (add-to-list 'org-latex-packages-alist '("" "tabu" nil))
+                )
+         )
+     #+end_src
+
+***** Org-bullets
+
+      Miglioramento grafico dei simboli per gli header di org.
+      Normalmente sarebbero degli asterischi, qui si unsano dei simboli.
+
+      *N.B.*: ricordarsi che nel cosa si voglia  stampare un file org
+      e' necessario disattivare =org-bullets-mode= altrimenti la stampa
+      che si ottiene presenta degli asterischi (secondo lo standar org)
+      e dei punti interrogativi (?) dovuti a problemi di rendering dei
+      caratteri utilizzati per i bullets.
+
+      Questo package ha senso solo in ambiente grafico.
+
+      Imposto qui =org-hide-leading-stars= e non in org perche'
+      qui mi interessa non mostrare artefatti prima del simbolo
+      grafico.
+
+      #+begin_src emacs-lisp
+        (use-package org-bullets
+          :if (window-system)
+          :ensure t
+          :defer t
+          :hook (org-mode-hook . org-bullets-mode)
+          :after (org)
+          :custom 
+          (org-hide-leading-stars t)
+          )
+      #+end_src
+
+***** Org-superstar-mode
+
+      Il nuovo package che mira a sostituire =org-bullet=
+
+      Questo package ha senso solo in ambiente grafico.
+
+      Imposto qui =org-hide-leading-stars= e non in org perche'
+      qui mi interessa non mostrare artefatti prima del simbolo
+      grafico.
+
+      *DISATTIVO PERCHE' HA PERFORMACNES _PESSIME_ NELLA RICERCA!!!!*
+
+      #+begin_src emacs-lisp
+        (use-package org-superstar
+          :disabled
+          :if (window-system)
+          :ensure t
+          :defer t
+          :after org
+          :hook (org-mode-hook . org-superstar-mode)
+          :custom 
+          (org-hide-leading-stars t)
+          )
+
+      #+end_src
+
+***** Org-edna
+
+      #+begin_src emacs-lisp
+        (use-package org-edna
+          :ensure t
+          :defer t
+          :after org
+          :hook (org-mode-hook . org-edna-mode)
+          :config
+          (org-edna-load)
+          )
+      #+end_src
+
+**** htmlize
+
+     #+begin_src emacs-lisp
+       (use-package htmlize
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+**** Beacon
+
+     Mostra un artifatto grafico partendo dal punto in cui si trova il cursore
+     rendendone piu' visibile la posizione secondo la metafora del fascio di
+     luce di un faro (beacon = faro).
+
+     - beacon-mode :: E' la funzione che attiva o disattiva il beacon
+
+       | Valore argomento | Descrizione          |
+       |------------------+----------------------|
+       | ~>0~             | Abilita il beacon    |
+       | ~<=0~            | Disabilita il beacon |
+
+       Il beacon puo' essere attivato/disattivato manualmente con il
+       comando ~M-x beacon-mode~
+
+     - beacon-blink-when-focused :: E' la variabile che indica se il
+       beacon deve essere visualizzato anche quando Emacs riprende il
+       focus dopo che si e' passati ad un'altra finestra.
+
+       | Valore argomento | Descrizione          |
+       |------------------+----------------------|
+       | ~t~              | Mostra il beacon     |
+       | non ~t~          | Non mostra il beacon |
+
+     - beacon-size :: Imposta la lunghezza in caratteri del beacon.
+       La sua impostazione di default (40 caratteri) non rende particolarmente
+       visibile il beacon.  Si puo' pero' allungare cambiando l'impostazione
+       con un valore maggiore
+     
+     Purtroppo sembra che Beacon abbia dei problemi con di funzionamento
+     in modalita' non grafica (terminale).  Con il terminale il beacon
+     viene mostrato, ma non viene poi sempre rimosso.  Per questo lo
+     abilito soltanto in modalita' GUI usando =:if (window-system)=
+
+     Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+     il minor-mode.
+
+     #+begin_src emacs-lisp
+       (use-package beacon
+         :if (window-system)
+         :ensure t
+         :defer t
+         :delight
+         ;; :hook (after-init-hook . beacon-mode)
+         :custom
+         (beacon-blink-when-focused t)
+         (beacon-size 64)
+         :config
+         (beacon mode 1)
+         )
+     #+end_src
+
+**** System monitor
+
+     Un piccolo monitor di sistema.
+     
+     #+begin_src emacs-lisp
+       (use-package symon
+         :ensure t
+         :defer t
+         )
+     #+end_src
+     
+**** Try
+
+     _*NON USARE!*_
+
+     Try crea dei problemi enormi con Emacs 27+ perche' in questa versione
+     di emacs viene gestito il file =package-quickstart.el= dove vengono
+     memorizzati i dati di autoload di tutti i packages.  Peccato che vi
+     vengano memorizzati anche quelli che sono "temporanei" grazie alla
+     funzionalita' di =try= ma che non vengano rimossi alla chiusura di
+     Emacs.  Quindi quando si apre nuovamente Emacs si ottengono degli
+     errori di inizializzazione.
+
+     Per il momento non e' assolutamente da usare!  Se proprio si vuole
+     usare occorre ricordarsi di eliminare il file =package-quickstart.el=
+     (e' la cosa piu' semplice) che comunque verra' ricreato auotomaticamente
+     da Emacs al primo riavvio.
+
+     #+begin_src emacs-lisp
+       (use-package try
+         :disabled
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+**** Avy
+
+     #+begin_src emacs-lisp
+       (use-package avy
+         :ensure t
+         )
+     #+end_src
+
+**** Gestione windows e buffrs
+
+***** Ace-window
+
+      Vado a modificare l'abbinamento standard di Emacs per la combinazione
+      di tasti =C-x o= sostituendo la chiamata a =other-window= con
+      =ace-window=
+      
+      #+begin_src emacs-lisp
+        (use-package ace-window
+          :ensure t
+          :defer t
+          :after avy
+          :bind ([remap other-window] . ace-window)
+          )
+      #+end_src
+
+**** Autocompletamento
+
+     Emacs consente la scelta tra vari strumenti di autocompletamento.
+     Company quello che sembra ricevere maggiori apprezzamenti.
+
+***** Company
+      
+      Company consente l'uso di diversi backand aggiuntivi per l'autocompletamento.
+
+      Imposto il ritardo per attivare l'autocompletamento a 0 ms in modo da avere
+      una risposta immediata (per default richiede comunque 3 caratteri).
+
+      Attivo company-mode globalmente in modo che funzioni su qualsiasi buffer.
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+
+      #+begin_src emacs-lisp
+        (use-package company
+          :ensure t
+          :defer t
+          :delight
+          ;; :after yasnippet
+          :custom
+          (company-idle-delay 0.1)
+          (company-mimimum-prefix-length 3)
+          :hook (;;(prog-mode-hook . company-mode)
+                 (after-init-hook . global-company-mode))
+          )
+      #+end_src
+
+***** Company quickhelp
+
+      Un backend aggiuntivo per company.  Mostra la documentazione relativa
+      all'elemento selezionato.
+
+      #+begin_src emacs-lisp
+        (use-package company-quickhelp
+          :ensure t
+          :defer t
+          :after company
+          :custom
+          (company-quickhelp-delay 0.1)
+          :config
+          (company-quickhelp-mode 1)
+          )
+      #+end_src
+
+**** Fondling - Origami
+
+     #+begin_src emacs-lisp
+       (use-package origami
+         :ensure t
+         :defer t
+         :commands origami-mode
+         )
+     #+end_src
+
+**** Undo-tree
+
+     #+begin_src emacs-lisp
+       (use-package undo-tree
+         ;; Treat undo history as a tree
+         :ensure t
+         :defer t
+         :delight "Ut"
+         :bind (("C-z" . undo)
+                ("C-S-z" . undo-tree-redo))
+         :config
+         (progn
+           (global-undo-tree-mode)
+           (setq undo-tree-visualizer-timestamps t)
+           (setq undo-tree-visualizer-diff t))
+         )
+     #+end_src
+
+**** Git
+
+***** Magit
+
+      In Emacs standard (27,1) =C-x g= non e' agganciato a nessuna
+      funzionalita'
+
+      #+begin_src emacs-lisp
+        (use-package magit
+          :ensure t
+          :defer t
+          :after (ivy)
+          :bind ("C-x g" . 'magit-status)
+          )
+      #+end_src
+
+***** gitconfig-mode
+
+      #+begin_src emacs-lisp
+        (use-package gitconfig-mode
+          :ensure t
+          :defer 5
+          :mode ("/\\.gitconfig\\'"
+                 "/\\.git/config\\'"
+                 "/modules/.*/config\\'"
+                 "/git/config\\'"
+                 "/\\.gitmodules\\'"
+                 "/etc/gitconfig\\'")
+          )
+      #+end_src
+      
+***** gitignore-mode
+
+      #+begin_src emacs-lisp
+        (use-package gitignore-mode
+          :ensure t
+          :defer 5
+          :mode ("/\\.gitignore\\'"
+                 "/info/exclude\\'"
+                 "/git/ignore\\'")
+          )
+      #+end_src
+
+***** gitattribute-mode
+
+      #+begin_src emacs-lisp
+        (use-package gitattributes-mode
+          :ensure t
+          :defer 5
+          :mode ("/\\.gitattributes\\'"
+                 "/info/attributes\\'"
+                 "/git/attributes\\'")
+          )
+      #+end_src
+
+***** git-timemachine
+
+      #+begin_src emacs-lisp
+        (use-package git-timemachine
+          :ensure t
+          :defer t
+          :commands git-timemachine
+          )
+      #+end_src
+
+**** Treemacs
+
+     #+begin_src emacs-lisp
+       (use-package treemacs
+         :ensure t
+         :defer t
+         :commands treemacs
+         :init
+         (with-eval-after-load 'winum
+           (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+         :config
+         (progn
+           (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+                 treemacs-deferred-git-apply-delay      0.5
+                 treemacs-directory-name-transformer    #'identity
+                 treemacs-display-in-side-window        t
+                 treemacs-eldoc-display                 t
+                 treemacs-file-event-delay              5000
+                 treemacs-file-extension-regex          treemacs-last-period-regex-value
+                 treemacs-file-follow-delay             0.2
+                 treemacs-file-name-transformer         #'identity
+                 treemacs-follow-after-init             t
+                 treemacs-git-command-pipe              ""
+                 treemacs-goto-tag-strategy             'refetch-index
+                 treemacs-indentation                   2
+                 treemacs-indentation-string            " "
+                 treemacs-is-never-other-window         nil
+                 treemacs-max-git-entries               5000
+                 treemacs-missing-project-action        'ask
+                 treemacs-move-forward-on-expand        nil
+                 treemacs-no-png-images                 nil
+                 treemacs-no-delete-other-windows       t
+                 treemacs-project-follow-cleanup        nil
+                 treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+                 treemacs-position                      'left
+                 treemacs-recenter-distance             0.1
+                 treemacs-recenter-after-file-follow    nil
+                 treemacs-recenter-after-tag-follow     nil
+                 treemacs-recenter-after-project-jump   'always
+                 treemacs-recenter-after-project-expand 'on-distance
+                 treemacs-show-cursor                   nil
+                 treemacs-show-hidden-files             t
+                 treemacs-silent-filewatch              nil
+                 treemacs-silent-refresh                nil
+                 treemacs-sorting                       'alphabetic-asc
+                 treemacs-space-between-root-nodes      t
+                 treemacs-tag-follow-cleanup            t
+                 treemacs-tag-follow-delay              1.5
+                 treemacs-user-mode-line-format         nil
+                 treemacs-user-header-line-format       nil
+                 treemacs-width                         35
+                 treemacs-workspace-switch-cleanup      nil)
+
+           ;; The default width and height of the icons is 22 pixels. If you are
+           ;; using a Hi-DPI display, uncomment this to double the icon size.
+           ;;(treemacs-resize-icons 44)
+
+           (treemacs-follow-mode t)
+           (treemacs-filewatch-mode t)
+           (treemacs-fringe-indicator-mode t)
+           (pcase (cons (not (null (executable-find "git")))
+                        (not (null treemacs-python-executable)))
+             (`(t . t)
+              (treemacs-git-mode 'deferred))
+             (`(t . _)
+              (treemacs-git-mode 'simple))))
+         :bind
+         (:map global-map
+               ("M-0"       . treemacs-select-window)
+               ("C-x t 1"   . treemacs-delete-other-windows)
+               ("C-x t t"   . treemacs)
+               ("C-x t B"   . treemacs-bookmark)
+               ("C-x t C-t" . treemacs-find-file)
+               ("C-x t M-t" . treemacs-find-tag)))
+     #+end_src
+
+     #+begin_src emacs-lisp
+       (use-package treemacs-magit
+         :after (treemacs magit)
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+     #+begin_src emacs-lisp
+       (use-package treemacs-projectile
+         :after (treemacs projectile)
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+
+     #+begin_src emacs-lisp
+       (use-package treemacs-all-the-icons
+         :after (treemacs all-the-icons)
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+**** Internet
+
+***** Restclient
+
+      #+begin_src emacs-lisp
+        (use-package restclient
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package company-restclient
+          :ensure t
+          :after (company restclient)
+          :config
+          (add-to-list 'company-backends 'company-restclient)
+          )
+      #+end_src
+
+***** Elfeed
+      
+      #+begin_src emacs-lisp
+        (use-package elfeed
+          :ensure t
+          :defer t
+          ;; Imposto la directory del db di elfeed per stare dentro .emacs.d
+          :custom ((elfeed-db-directory "~/Dropbox/Sync/emacs/elfeed/db")
+                   (elfeed-enclosure-default-dir "~/Downloads/elfeed"))
+          :config
+          ;; (setq elfeed-feeds
+          ;;       '("http://status.register.it/history.rss"
+          ;;         "https://golem.linux.it/wp/feed/"
+          ;;         ("http://dilbert.com/feed" Divertimento Webcomic)
+          ;;         ("https://xkcd.com/rss.xml" Divertimento Webcomic)
+          ;;         ("http://www.soft-land.org/rss/softland/commenti.rss" Divertimento Soft-land)
+          ;;         ("http://www.soft-land.org/rss/softland/sdsm.rss" Divertimento Soft-land)
+          ;;         ("http://www.soft-land.org/rss/softland/ospiti.rss" Divertimento Soft-land)
+          ;;         ("https://bufalopedia.blogspot.com/feeds/posts/default" Antibufala Attivissimo)
+          ;;         ("http://feeds.feedburner.com/Disinformatico" Antibufala Attivissimo)
+          ;;         ("https://undicisettembre.blogspot.com/feeds/posts/default" Antibufala Attivissimo)
+          ;;         ("https://complottilunari.blogspot.com/feeds/posts/default" Antibufala Attivissimo)
+          ;;         ("http://www.valigiablu.it/feed/" Antibufala)
+          ;;         ("https://blog.mikrotik.com/rss/?cat=security" CyberSecurity MikroTi)
+          ;;         ("https://www.cert.garr.it/certrss" CyberSecurity CERT Cert-Italiani)
+          ;;         ("https://www.certnazionale.it/news/feed/" CiberSecurity CERT Cert-Italiani)
+          ;;         ("https://www.commissariatodips.it/feeds/rss.xml" CiberSecurity CERT Cert-Italiani)
+          ;;         ("https://www.cert-pa.it/feed/" CiberSecurity CERT Cert-Italiani)
+          ;;         ("https://www.us-cert.gov/ncas/all.xml" CiberSecurity CERT Cert-USA)
+          ;;         ("https://www.us-cert.gov/ncas/alerts.xml" CiberSecurity CERT Cert-USA)
+          ;;         ("https://www.us-cert.gov/ncas/bulletins.xml" CiberSecurity CERT Cert-USA)
+          ;;         ("https://www.us-cert.gov/ncas/tips.xml" CiberSecurity CERT Cert-USA)
+          ;;         ("https://www.us-cert.gov/ncas/current-activity.xml" CiberSecurity CERT Cert-USA)
+          ;;         ("https://www.microsoft.com/technet/security/bulletin/secrss.aspx" CiberSecurity CERT Cert-USA Cert-Microsoft)
+          ;;         ("https://www.microsoft.com/technet/security/bulletin/RssFeed.aspx?snscomprehensive" CiberSecurity CERT Cert-USA Cert-Microsoft)
+          ;;         ("https://blogs.technet.microsoft.com/msrc/feed/" CiberSecurity CERT Cert-USA Cert-Microsoft)
+          ;;         ("https://www.kaspersky.com/blog/feed/" CiberSecurity Kaspersky)
+          ;;         ("https://securelist.com/feed/" CiberSecurity Kaspersky)
+          ;;         ("https://threatpost.com/feed/" CiberSecurity Kaspersky)
+          ;;         ("http://securityinfo.it/feed/?cat=251"  CiberSecurity SecurityInfo)
+          ;;         ("https://protesilaos.com/news.xml" Emacs)
+          ;;         ("https://protesilaos.com/codelog.xml" Emacs)
+          ;;         ("http://www.virtuouscode.com/feed/" Emacs)
+          ;;         ("http://www.virtuouscode.com/comments/feed/" Emacs)
+          ;;         ("http://ergoemacs.org/emacs/blog.xml" Emacs)
+          ;;         ("http://xahlee.info/comp/blog.xml" Emacs)
+          ;;         ("http://xahlee.info/js/blog.xml" Emacs)
+          ;;         ("http://xahlee.info/math/blog.xml" Emacs)
+          ;;         ("https://alexschroeder.ch/wiki/feed/full/" Emacs)
+          ;;         ("http://emacshorrors.com/feed.atom" Emacs)
+          ;;         ("http://emacsredux.com/atom.xml" Emacs)
+          ;;         ("https://emacspeak.blogspot.com/feeds/posts/default" Emacs)
+          ;;         ("https://endlessparentheses.com/atom.xml" Emacs)
+          ;;         ("http://www.howardism.org/index.xml" Emacs)
+          ;;         ("http://irreal.org/blog/?feed=rss2" Emacs)
+          ;;         ("https://www.masteringemacs.org/feed" Emacs)
+          ;;         ("http://mbork.pl?action=rss" Emacs)
+          ;;         ("http://emacsblog.org/feed/" Emacs)
+          ;;         ("http://nullprogram.com/feed/" Emacs)
+          ;;         ("https://oremacs.com/atom.xml" Emacs)
+          ;;         ("http://planet.emacsen.org/atom.xml" Emacs)
+          ;;         ("https://planet.emacslife.com/atom.xml" Emacs)
+          ;;         ("http://pragmaticemacs.com/feed/" Emacs)
+          ;;         ("https://emacs.stackexchange.com/feeds" Emacs)
+          ;;         ("http://sachachua.com/blog/feed/" Emacs)
+          ;;         ("https://babbagefiles.xyz/index.xml" Emacs)
+          ;;         ("https://babbagefiles.blogspot.com/feeds/posts/default" Emacs)
+          ;;         ("http://whattheemacsd.com/atom.xml" Emacs)
+          ;;         ("https://www.wisdomandwonder.com/feed" Emacs)
+          ;;         ("https://cestlaz.github.io/rss.xml" Emacs)
+          ;;         ("https://bzg.fr/index.xml" Emacs)
+          ;;         ("http://kitchinresearchgroup.disqus.com/latest.rss" Emacs)
+          ;;         ("https://noonker.github.io/index.xml" Emacs)
+          ;;         ("https://codingquark.com/feed.xml" Emacs)
+          ;;         ("http://xenodium.com/rss.xml" Emacs)
+          ;;         ("https://karthinks.com/blog/index.xml" Emacs)
+          ;;         ("http://joshrollinswrites.com/index.xml" Emacs)
+          ;;         ("https://punchagan.muse-amuse.in/feed.xml" Emacs)
+          ;;         ("https://willschenk.com/feed.xml" Emacs)
+          ;;         ("https://emacs.cafe/feed.xml" Emacs)
+          ;;         ("https://groups.google.com/forum/feed/git-for-windows/msgs/rss.xml?num=50" Git)
+          ;;         ("https://groups.google.com/forum/feed/git-users/msgs/rss.xml?num=50" Git)
+          ;;         ("https://groups.google.com/forum/feed/git-packagers/topics/rss.xml?num=50" Git)
+          ;;         ("https://groups.google.com/group/idempiere/feed/rss_v2_0_msgs.xml" iDempiere)
+          ;;         ("https://groups.google.com/group/adempiere-colombia/feed/rss_v2_0_msgs.xml" iDempiere)
+          ;;         ("https://groups.google.com/group/idempiere-dev/feed/rss_v2_0_msgs.xml" iDempiere)
+          ;;         ("https://groups.google.com/group/idempiere-es/feed/rss_v2_0_msgs.xml" iDempiere)
+          ;;         ("https://groups.google.com/group/idempiere-italia/feed/rss_v2_0_msgs.xml" iDempiere)
+          ;;         ("https://www.liberliber.it/online/feed/" Ebooks Letteratura)
+          ;;         ("https://www.paginatre.it/online/feed/" Ebooks Letteratura)
+          ;;         ("http://it.feedbooks.com/books/recent.atom?lang=it" Ebooks Letteratura)
+          ;;         ("http://pennablu.it/feed/" Ebooks Letteratura)
+          ;;         ("https://www.reddit.com/r/bashonubuntuonwindows/.rss" Microsoft WSL)
+          ;;         ("https://blogs.msdn.microsoft.com/wsl/feed/" Microsoft WSL)
+          ;;         ("https://blogs.technet.microsoft.com/enterprisemobility/author/BradAnderson/feed/rss/" Microsoft)
+          ;;         ("https://blogs.msdn.microsoft.com/bharry/feed" Microsoft)
+          ;;         ("https://blogs.msdn.microsoft.com/powershell/feed/" Microsoft)
+          ;;         ("https://weblogs.asp.net/scottgu/rss?containerid=13" Microsoft)
+          ;;         ("https://blogs.msdn.microsoft.com/stevengu/feed/" Microsoft)
+          ;;         ("https://code.visualstudio.com/feed.xml" Microsoft)
+          ;;         ("http://blogs.msdn.microsoft.com/commandline/feed/" Microsoft)
+          ;;         "https://www.paulekman.com/feed/"
+          ;;         "https://github.blog/feed/"
+          ;;         "https://blog.bitbucket.org/feed/"
+          ;;         "https://www.blog.google/rss/"
+          ;;         "https://calebmadrigal.com/atom.xml"
+          ;;         )
+          ;;       )
+          (elfeed-org)
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package elfeed-goodies
+          :ensure t
+          :defer t
+          :config
+          (elfeed-goodies/setup)
+          )
+      #+end_src
+  
+      #+begin_src emacs-lisp
+        (use-package elfeed-org
+          :ensure t
+          :defer t
+          ;; :after (elfeed org)
+          :config
+          (elfeed-org)
+          (setq rmh-elfeed-org-files (list "~/Dropbox/Sync/emacs/elfeed/feeds.org"))
+          )
+      #+end_src
+    
+      #+begin_src emacs-lisp
+        (use-package elfeed-protocol
+          :ensure t
+          :defer t
+          )
+      #+end_src
+ 
+***** Pretty symbols
+
+     Mostra come simboli alcune parole chiave. Ad esempio quando trova
+     =lambda= ne mostra il simbolo grafico. Naturalmente solo quando
+     siamo in ambiente GUI.
+
+     Lo installo ma non lo attivo di default perche' ha un impatto grafico
+     accattivante ma a cui non e' immediato abituarsi e potrebbe portare
+     a condizioni di confusione nella scrittura/lettura del codice.
+     
+     #+begin_src emacs-lisp
+     (use-package pretty-mode
+       :if (window-system)
+       :ensure t
+       :config
+       ;; (global-pretty-mode t)
+       )
+     #+end_src
+
+***** CSV mode
+
+      #+begin_src emacs-lisp
+        (use-package csv-mode
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+**** PDF-Tools
+
+     #+begin_src emacs-lisp
+       ;;--------------------------------------------------------
+       (use-package pdf-tools
+         :ensure t
+         :defer t
+         :after (pdf-annot)
+         :magic ("%PDF" . pdf-view-mode)
+         :bind (("h"   . 'pdf-annot-add-highlight-markup-annotation)
+                ("t"   . 'pdf-annot-add-text-annotation)
+                ("D"   . 'pdf-annot-delete)
+                ("C-s" . 'isearch-forward)
+                ("m"   . 'mrb/mailfile)
+                ("<return>"   . 'pdf-annot-edit-contents-commit)
+                ("<S-return>" .  'newline)
+                ;; ("\\" . hydra-pdftools/body)
+                ;; ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
+                ;; ("g"  . pdf-view-first-page)
+                ;; ("G"  . pdf-view-last-page)
+                ;; ("l"  . image-forward-hscroll)
+                ;; ("h"  . image-backward-hscroll)
+                ;; ("j"  . pdf-view-next-page)
+                ;; ("k"  . pdf-view-previous-page)
+                ;; ("e"  . pdf-view-goto-page)
+                ;; ("u"  . pdf-view-revert-buffer)
+                ;; ("al" . pdf-annot-list-annotations)
+                ;; ("ad" . pdf-annot-delete)
+                ;; ("aa" . pdf-annot-attachment-dired)
+                ;; ("am" . pdf-annot-add-markup-annotation)
+                ;; ("at" . pdf-annot-add-text-annotation)
+                ;; ("y"  . pdf-view-kill-ring-save)
+                ;; ("i"  . pdf-misc-display-metadata)
+                ;; ("s"  . pdf-occur)
+                ;; ("b"  . pdf-view-set-slice-from-bounding-box)
+                ;; ("r"  . pdf-view-reset-slice)
+                :map pdf-view-mode-map
+                :map pdf-annot-edit-contents-minor-mode-map
+                )
+         :config
+         ;; Some settings from http://pragmaticemacs.com/emacs/even-more-pdf-tools-tweaks/
+         ;; (fullframe pdf-view-mode quit-window)
+         (setq-default pdf-view-display-size 'fit-page) ;scale to fit page by default
+         ;; (gsetq-default pdf-view-display-size 'fit-width)
+         (setq pdf-annot-activate-created-annotations t ; automatically annotate highlights
+               pdf-view-resize-factor 1.1		  ; more fine-grained zooming
+               ;;pdf-misc-print-program "/usr/bin/lpr"
+               pdf-view-midnight-colors '("#DCDCCC" . "#383838")) ; Not sure what this is
+         ;; (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0))) ; turn off cua so copy works
+         ;; (pdf-tools-install :no-query))						  ; no-query auto builds epfinfo when needed
+         (pdf-tools-install)
+         ;; (eval-after-load 'org '(require 'org-pdfview)
+         )
+
+       ;; ;;--------------------------------------------------------
+       ;; (use-package pdf-tools
+       ;;   :magic ("%PDF" . pdf-view-mode)
+       ;;   :config
+       ;;   (dolist
+       ;;       (pkg
+       ;;        '(pdf-annot pdf-cache pdf-dev pdf-history pdf-info pdf-isearch
+       ;;                    pdf-links pdf-misc pdf-occur pdf-outline pdf-sync
+       ;;                    pdf-util pdf-view pdf-virtual))
+       ;;     (require pkg))
+       ;;   (pdf-tools-install))
+     #+end_src
+
+**** EMMS (The Emacs Multimedia System)
+
+     #+begin_src emacs-lisp
+       (use-package emms
+         :ensure t
+         :defer t
+         :config
+         (require 'emms-setup)
+         (require 'emms-player-mplayer)
+         (emms-all)
+         (setq emms-player-list '(emms-player-mpg321
+                                  emms-player-ogg123
+                                  emms-player-mplayer))
+         (defun emms-player-mplayer-volume(amount)
+           (process-send-string
+            emms-player-simple-process-name
+            (format "volume %d\n" amount)))
+         (setq emms-volume-change-function 'emms-player-mplayer-volume)
+         (setq emms-source-file-default-directory "~/music/")
+         (emms-add-directory-tree emms-source-file-default-directory)
+         (emms-add-directory-tree "C:\Temp\_cancellami\_cancellami")
+       )
+     #+end_src
+
+**** Docker
+
+     #+begin_src emacs-lisp
+       (use-package docker
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+     #+begin_src emacs-lisp
+       (use-package dockerfile-mode
+         :ensure t
+         :defer t
+         :mode ("/\\Dockerfile\\'")
+         )
+     #+end_src
+
+     #+begin_src emacs-lisp
+       (use-package docker-compose-mode
+         :ensure t
+         :defer t
+         )
+     #+end_src
+
+**** Programmazione
+
+***** Regular Expressions: pcre2el
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+
+      #+begin_src emacs-lisp
+        (use-package pcre2el
+          :ensure t
+          :delight
+          :commands (rxt-mode rxt-global-mode)
+          :config
+          (pcre-mode)
+          )
+      #+end_src
+
+***** Aggressive-indent
+
+      #+begin_src emacs-lisp
+        (use-package aggressive-indent
+          :ensure t
+          :defer t
+          :diminish
+          :hook (emacs-lisp-mode . aggressive-indent-mode)
+          )
+      #+end_src
+
+***** Highlight-indent-guides
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivre
+      il minor-mode.
+      
+      #+begin_src emacs-lisp
+        (use-package highlight-indent-guides
+          :ensure t
+          :defer t
+          :delight
+          :hook (prog-mode-hook . highlight-indent-guides-mode)
+          :custom 
+          ((highlight-indent-guides-method 'character)
+           (highlight-indent-guides-responsive 'stack))
+          :config
+          (unless (window-system)
+            (set-face-background 'highlight-indent-guides-odd-face       "darkgray")
+            (set-face-background 'highlight-indent-guides-even-face      "dimgray")
+            (set-face-foreground 'highlight-indent-guides-character-face "dimgray"))
+          )
+      #+end_src
+
+***** Flycheck
+      
+      #+begin_src emacs-lisp
+        (use-package flycheck
+          :ensure t
+          ;;:init (global-flycheck-mode)
+          :defer t
+          :hook (prog-mode-hook . flycheck-mode)
+          )
+      #+end_src
+
+      E' possibile avere informazioni da FlyCheck sia in un "pos-tip" che in
+      un "popup-tip".
+      La differenza e' tecnica mentre dal punto di vista visuale non e' cosi'
+      evidente.  Sembra che il pos-tip possa avere problemi in modalita' TTY.
+      Vediamo, per ora uso pos-tip
+      
+
+      #+begin_src emacs-lisp
+        (use-package flycheck-pos-tip
+          :ensure t
+          ;;:defines flycheck-pos-tip-timeout
+          :hook (flycheck-mode . flycheck-pos-tip-mode)
+          :config (setq flycheck-pos-tip-timeout 30)
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package flycheck-popup-tip
+          :disabled
+          :ensure t
+          :defer t
+          ;;:defines flycheck-pos-tip-timeout
+          :hook (flycheck-mode . flycheck-popup-tip-mode)
+          ;; :config (setq flycheck-pos-tip-timeout 30)
+          )
+      #+end_src
+
+***** Smartparens
+
+
+      Elimino il lighter dalla modeline: serve soltanto per attivare/disattivare
+      il minor-mode.
+
+      #+begin_src emacs-lisp
+        (use-package smartparens
+          :ensure t
+          :defer t
+          :delight
+          :hook (prog-mode-hook . smartparens-mode)
+          :config
+          (require 'smartparens-config)
+          ;; (smartparens-global-mode)
+          )
+      #+end_src
+
+***** Rainbow-delimiters
+
+      #+begin_src emacs-lisp
+        (use-package rainbow-delimiters
+          :ensure t
+          :defer t
+          :hook (prog-mode-hook . rainbow-delimiters-mode)
+          )
+      #+end_src
+ 
+***** Snippets
+
+****** Yasnippet
+
+       #+begin_src emacs-lisp
+         (use-package yasnippet
+           :ensure t
+           :defer t
+           :hook (after-init-hook . yas-global-mode)
+           ;; :init (yas-global-mode 1)
+           )
+       #+end_src
+
+****** Yasnippet-snippets
+
+       #+begin_src emacs-lisp
+         (use-package yasnippet-snippets
+           :ensure t
+           :defer t
+           :after yasnippet
+           )
+       #+end_src
+
+***** Projectile
+
+      #+begin_src emacs-lisp
+        (use-package projectile
+          :ensure t
+          :defer 5
+          :config
+          (setq projectile-completion-system 'ivy)
+          ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+          (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+          (projectile-mode 1)
+          )
+      #+end_src
+
+****** Ibuffer-projectile
+
+       #+begin_src emacs-lisp
+         (use-package ibuffer-projectile
+           :ensure t
+           :defer t
+           :after (projectile)
+           )
+       #+end_src
+
+****** Counsel-projectile
+
+       Occorre accertarsi che venga caricato sia dopo =counsel=
+       che dopo =projectile=
+
+       #+begin_src emacs-lisp
+         (use-package counsel-projectile
+           :ensure t
+           :defer t
+           :after (counsel projectile)
+           :hook (projectile-mode . counsel-projectile-mode)
+           )
+       #+end_src
+
+****** Treemacs-projectile
+
+       Occorre accertarsi che venga caricato sia dopo =treemacs=
+       che dopo =projectile=
+
+       #+begin_src emacs-lisp
+         (use-package treemacs-projectile
+           :ensure t
+           :defer t
+           :after treemacs projectile
+           :hook (treemacs-mode . treemacs-project-mode)
+           )
+       #+end_src
+
+***** Powershell
+
+      #+begin_src emacs-lisp
+        (use-package powershell
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+***** C#
+
+       #+begin_src emacs-lisp
+        (use-package csharp-mode
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+***** Markdown
+
+      #+begin_src emacs-lisp
+        (use-package markdown-mode
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+***** SQL
+
+      #+begin_src emacs-lisp
+        (use-package sql-indent
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+***** LaTex (Auctex)
+
+      #+begin_src emacs-lisp
+        (use-package auctex
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package company-auctex
+          :ensure t
+          :after (company auctex)
+          :config
+          (company-auctex-init)
+          )
+      #+end_src
+
+***** Go lang
+
+      #+begin_src emacs-lisp
+        (use-package go-mode
+          :ensure t
+          :defer t
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package go-errcheck
+          :ensure t
+          :defer t
+          :after go-mode
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package company-go
+          :ensure t
+          :after (company go-mode)
+          )
+      #+end_src
+
+***** LSP (Language Server Protocol) - temporaneamente disaiblitato -
+
+      Vedi la documentazione sul sito del produttore.
+      [[https://emacs-lsp.github.io/lsp-mode/]]
+
+      Per adesso disabilito tutti i moduli, voglio provare
+      eglot che pare piu' semplice, oltre ad essere inserito
+      in gnu-elpa.
+
+      #+begin_src emacs-lisp
+        (use-package lsp-mode
+          :disabled
+          :ensure t
+          :after (yasnippet)
+          ;; Ricordarsi di leggere la documentazione
+          ;; sul sito del produttore.
+          :custom (lsp-keymap-prefix "C-c l")
+          :hook (;; Avvio normale (XXX-mode . lsp)
+                 ;; Avvio differito (XXX-mode   . lsp-deferred)
+                 (c++-mode-hook        . lsp-deferred)
+                 (c-mode-hook          . lsp-deferred)
+                 (csharp-mode-hook     . lsp-deferred)
+                 (css-mode-hook        . lsp-deferred)
+                 (dart-mode-hook       . lsp-deferred)
+                 (go-mode-hook         . lsp-deferred)
+                 (groovy-mode-hook     . lsp-deferred)
+                 (haxe-mode-hook       . lsp-deferred)
+                 (html-mode-hook       . lsp-deferred)
+                 (java-mode-hook       . lsp-deferred)
+                 (js-mode-hook         . lsp-deferred)
+                 (json-mode-hook       . lsp-deferred)
+                 (kotlin-mode-hook     . lsp-deferred)
+                 (latex-mode-hook      . lsp-deferred)
+                 (less-css-mode-hook   . lsp-deferred)
+                 (nxml-mode-hook       . lsp-deferred)
+                 (powershell-mode-hook . lsp-deferred)
+                 (python-mode-hook     . lsp-deferred)
+                 (rust-mode-hook       . lsp-deferred)
+                 (scss-mode-hook       . lsp-deferred)
+                 (sh-mode-hook         . lsp-deferred)
+                 ;; (sql-mode-hook        . lsp-deferred)
+                 (typescript-mode-hook . lsp-deferred)
+                 (xml-mode-hook        . lsp-deferred)
+                 (yaml-mode-hook       . lsp-deferred)
+                 (clojure-mode-hook    . lsp-deferred)
+
+                 (lsp-mode-hook        . lsp-enable-which-key-integration)
+                 )
+          ;; :commands (lsp lsp-deferred lsp-doctor)
+          :commands (lsp)
+          :config
+          ;; (setq lsp-completion-enable-additional-text-edit nil)
+          ;; Come riportato qui: https://emacs-lsp.github.io/lsp-mode/page/performance/
+          (setq lsp-completion-provider :capf)
+          ;; (setq lsp-log-io t
+          ;;       lsp-server-trace "verbose")
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package company-lsp
+          :disabled
+          :ensure t
+          :disabled
+          :after (lsp-mode company)
+          :config
+          (setq company-lsp-enable-snippet t)
+          (push 'company-lsp company-backends)
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package lsp-ui
+          :disabled
+          :ensure t
+          ;; :defer t
+          :after (lsp-mode markdown-mode)
+          :commands lsp-ui-mode
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package lsp-ivy
+          :disabled
+          :ensure t
+          ;; :defer t
+          :after (lsp-mode ivy)
+          :commands lsp-ivy-workspace-symbol
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package dap-mode
+          :disabled
+          :ensure t
+          :defer t
+          :after (lsp-mode lsp-treemacs)
+          )
+        ;; (use-package dap-csharp
+        ;;   :ensure t
+        ;;   :defer t
+        ;;   )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package lsp-treemacs
+          :disabled
+          :ensure t
+          :after (lsp-mode treemacs)
+          :commands (lsp-treemacs-errors-list)
+          :custom 
+          (lsp-treemacs-sync-mode 1)
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package lsp-origami
+          :disabled
+          :ensure t
+          :defer t
+          :after (lsp-mode origami)
+          :hook (lsp-after-open-hook . lsp-origami-try-enable)
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        ;; (use-package lsp-mssql
+        ;;   :ensure t
+        ;;   :defer t
+        ;;   :after (lsp-mode lsp-treemacs)
+        ;;   :hook (sql-mode-hook . lsp)
+        ;;   )
+      #+end_src
+
+      - lsp-java
+      - lsp-latex
+      - lsp-mssql
+      - lsp-origami
+      - lsp-python-ms ??
+
+***** EGlot (lsp)
+
+      Uso EGlot come interfaccia verso i vari lsp server.
+      Lo provo in alternativa a lsp-mode perche' le recensioni
+      lo danno come piu' semplice da configurare ed utilizzare
+      anche se, sulla carta, con meno funzionalita'.
+
+      #+begin_src emacs-lisp
+        (use-package eglot
+          :ensure t
+          :defer t
+          ;; :custom
+          ;; (eglot-autoreconnect nil)
+          ;; (eglot-autoshutdown t)
+          ;;:hook ((c++-mode-hook        . eglot-ensure)
+          ;;       (c-mode-hook          . eglot-ensure)
+          ;;       (csharp-mode-hook     . eglot-ensure)
+          ;;       (css-mode-hook        . eglot-ensure)
+          ;;       (dart-mode-hook       . eglot-ensure)
+          ;;       (go-mode-hook         . eglot-ensure)
+          ;;       (groovy-mode-hook     . eglot-ensure)
+          ;;       (haxe-mode-hook       . eglot-ensure)
+          ;;       (html-mode-hook       . eglot-ensure)
+          ;;       (java-mode-hook       . eglot-ensure)
+          ;;       (js-mode-hook         . eglot-ensure)
+          ;;       (json-mode-hook       . eglot-ensure)
+          ;;       (kotlin-mode-hook     . eglot-ensure)
+          ;;       (latex-mode-hook      . eglot-ensure)
+          ;;       (less-css-mode-hook   . eglot-ensure)
+          ;;       (nxml-mode-hook       . eglot-ensure)
+          ;;       (powershell-mode-hook . eglot-ensure)
+          ;;       (python-mode-hook     . eglot-ensure)
+          ;;       (rust-mode-hook       . eglot-ensure)
+          ;;       (scss-mode-hook       . eglot-ensure)
+          ;;       (sh-mode-hook         . eglot-ensure)
+          ;;       (sql-mode-hook        . eglot-ensure)
+          ;;       (typescript-mode-hook . eglot-ensure)
+          ;;       (xml-mode-hook        . eglot-ensure)
+          ;;       (yaml-mode-hook       . eglot-ensure)
+          ;;       (clojure-mode-hook    . eglot-ensure))
+          )
+      #+end_src
+
+*** Piede del file di inizializzazione
+    
+    Qui vanno le impostazioni delle variabili locali del file.
+
+    Da notare che l'impostazione del major mode *NON* deve avvenire qui
+    nella sezione "local variables", ma nella prima linea con la classica
+    notazione =-*- mode: lisp; -*-=, altrimenti si genera un errore nel tangling.
+    
+    #+begin_src emacs-lisp
+      ;; ===========================================================================
+      ;; Local Variables:
+      ;; coding: utf-8-unix
+      ;; indent-tabs-mode: nil
+      ;; tab-width: 4
+      ;; End:
+      ;; ===========================================================================
+
+      ;;; gb-init ends here
+    #+end_src
+
+** Variabili locali di file                                        :noexport:
+
+   Qui si e' utilizzato l'attributo =:noexport= perche' l'intenzione e' stata
+   quella di raggruppare le variaibli locali di questo file in un header
+   specifico; ma mentre le variabili locali sono "commenti" (iniziano per =#= e
+   non vengono quindi esportate, l'header non lo e' e senza questo attributo
+   verrebbe esportato.
+
+   # ===========================================================================
+   # Local variables:
+   # coding: utf-8-unix
+   # mode: org
+   # indent-tabs-mode: nil
+   # tab-width: 4
+   # end:
+   # ===========================================================================
