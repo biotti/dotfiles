@@ -11,9 +11,13 @@ url/cookies
 .recentf
 .smex-items
 amx-items
+gb-init.el
 forge-database.sqlite
 ido.last
+package-quickstart.el
 projectile-bookmarks.eld
 projectile.cache
+projects
 recentf
 smex-items
+tramp
