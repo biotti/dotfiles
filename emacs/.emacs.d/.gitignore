@@ -1,1 +1,17 @@
 # -*- mode: gitignore; -*-
+.recentf
+.smex-items
+amx-items
+forge-database.sqlite
+ido.last
+projectile-bookmarks.eld
+projectile.cache
+recentf
+smex-items
+auto-save-list/
+elpa/
+eshell/
+games/
+server/
+transient/history.el
+url/cookies

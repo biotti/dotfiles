@@ -66,22 +66,6 @@ Session.vim
 # ------------------------------------------------------------------------
 # Project gitignore settings
 # ------------------------------------------------------------------------
-emacs/.emacs.d/.recentf
-emacs/.emacs.d/.smex-items
-emacs/.emacs.d/amx-items
-emacs/.emacs.d/forge-database.sqlite
-emacs/.emacs.d/ido.last
-emacs/.emacs.d/projectile-bookmarks.eld
-emacs/.emacs.d/projectile.cache
-emacs/.emacs.d/recentf
-emacs/.emacs.d/smex-items
-emacs/.emacs.d/auto-save-list/
-emacs/.emacs.d/elpa/
-emacs/.emacs.d/eshell/
-emacs/.emacs.d/games/
-emacs/.emacs.d/server/
-emacs/.emacs.d/transient/history.el
-emacs/.emacs.d/url/cookies
 # Devo usare /...../* (notare l'asterisco terminale) altrimenti non posso 
 # scludere dal .gitignore le sottodirectory
  vim/.vim/bundle/*
