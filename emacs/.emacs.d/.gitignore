@@ -1,4 +1,13 @@
 # -*- mode: gitignore; -*-
+#
+auto-save-list/
+elpa/
+eshell/
+games/
+server/
+transient/history.el
+url/cookies
+#
 .recentf
 .smex-items
 amx-items
@@ -8,10 +17,3 @@ projectile-bookmarks.eld
 projectile.cache
 recentf
 smex-items
-auto-save-list/
-elpa/
-eshell/
-games/
-server/
-transient/history.el
-url/cookies
