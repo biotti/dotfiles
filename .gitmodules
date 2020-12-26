@@ -1,9 +1,3 @@
 [submodule "vim/.vim/bundle/neobundle.vim"]
 	path = vim/.vim/bundle/neobundle.vim
 	url = https://github.com/Shougo/neobundle.vim
-[submodule "emacs/.emacs.d/reveal.js"]
-	path = emacs/.emacs.d/reveal.js
-	url = https://github.com/hakimel/reveal.js.git
-[submodule "emacs/.emacs.d/vendor/dpchiesa-elisp"]
-	path = emacs/.emacs.d/vendor/dpchiesa-elisp
-	url = https://github.com/DinoChiesa/dpchiesa-elisp.git
