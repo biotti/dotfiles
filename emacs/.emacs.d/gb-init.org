@@ -2602,6 +2602,18 @@
          )
      #+end_src
 
+**** Simple httpd
+
+      #+begin_src emacs-lisp
+        (use-package simple-httpd
+          :ensure t
+          :defer t
+          :config
+          (setq httpd-port 7070)
+          (setq httpd-host (system-name))
+          )
+      #+end_src
+
 **** Programmazione
 
 ***** Regular Expressions: pcre2el
