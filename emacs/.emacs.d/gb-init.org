@@ -1988,12 +1988,12 @@
          :ensure t
          :defer t
          :delight
-         ;; :hook (after-init-hook . beacon-mode)
+         :hook (after-init-hook . beacon-mode)
          :custom
          (beacon-blink-when-focused t)
          (beacon-size 64)
          :config
-         (beacon mode 1)
+         (beacon-mode 1)
          )
      #+end_src
 
