@@ -2614,6 +2614,16 @@
           )
       #+end_src
 
+**** Impatient mode
+
+      #+begin_src emacs-lisp
+        (use-package impatient-mode
+          :ensure t
+          :defer t
+          :commands impatient-mode
+          )
+      #+end_src
+
 **** Programmazione
 
 ***** Regular Expressions: pcre2el
