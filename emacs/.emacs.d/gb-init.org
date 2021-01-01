@@ -2668,7 +2668,6 @@
       La differenza e' tecnica mentre dal punto di vista visuale non e' cosi'
       evidente.  Sembra che il pos-tip possa avere problemi in modalita' TTY.
       Vediamo, per ora uso pos-tip
-      
 
       #+begin_src emacs-lisp
         (use-package flycheck-pos-tip
@@ -2868,6 +2867,47 @@
         (use-package company-go
           :ensure t
           :after (company go-mode)
+          )
+      #+end_src
+
+***** Rust
+
+      #+begin_src emacs-lisp
+                ;; (use-package rustic
+                ;;   :ensure t
+                ;;   :defer t
+                ;;   :config
+                ;;   (setq rustic-lsp-client 'eglot)
+                ;;   ;; (setq rustic-lsp-server 'rust-analyzer)
+                ;;   (setq rustic-lsp-server 'rls)
+                ;;   )
+                (use-package rust-mode
+                  :ensure t
+                  :defer t
+                  :hook ((rust-mode . company-mode)
+                         ;;(flycheck-mode . flycheck-rust-setup)
+                         (rust-mode . flycheck-rust-setup)
+                         )
+                  :config
+                  (setq rust-format-on-save t)
+                  )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package cargo
+          :ensure t
+          :defer t
+          :hook ((rust-mode-hook . cargo-minor-mode)
+                 (toml-mode-hook . cargo-minor-mode)
+                 )
+          )
+      #+end_src
+
+      #+begin_src emacs-lisp
+        (use-package flycheck-rust
+          :ensure t
+          :defer t
+          :after (flycheck)
           )
       #+end_src
 
