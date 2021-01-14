@@ -159,7 +159,12 @@
   )
 
 ;; Carico org
-(use-package org)
+(use-package org
+  ;; Accertarsi di caricare quello presente nel repository GNU
+  ;; e non quello "builtin": quello in GNU e' sempre aggiornato.
+  :pin gnu
+  :ensure org
+  )
 
 ;; Qui avviene la magia.
 ;; Carico la configurazione dal file "org"
@@ -203,7 +208,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(projectile eglot company-go go-errcheck go-mode company-auctex auctex sql-indent markdown-mode csharp-mode powershell counsel-projectile ibuffer-projectile yasnippet-snippets yasnippet rainbow-delimiters smartparens flycheck-pos-tip flycheck highlight-indent-guides aggressive-indent pcre2el emms pdf-tools csv-mode pretty-mode elfeed-protocol elfeed-org elfeed-goodies elfeed company-restclient restclient treemacs-all-the-icons treemacs-projectile treemacs-magit treemacs git-timemachine gitattributes-mode gitignore-mode gitconfig-mode magit undo-tree origami company-quickhelp company ace-window avy symon beacon htmlize org-edna org-bullets amx ivy-hydra all-the-icons-ivy-rich ivy-rich counsel swiper ivy hydra which-key dashboard minions doom-modeline base16-theme seti-theme moe-theme solarized-theme color-theme-sanityinc-tomorrow dracula-theme atom-one-dark-theme zerodark-theme modus-vivendi-theme modus-operandi-theme gruvbox-theme monokai-theme zenburn-theme material-theme spacemacs-theme doom-themes all-the-icons-ibuffer all-the-icons-dired all-the-icons async use-package diminish delight)))
+   '(org projectile eglot company-go go-errcheck go-mode company-auctex auctex sql-indent markdown-mode csharp-mode powershell counsel-projectile ibuffer-projectile yasnippet-snippets yasnippet rainbow-delimiters smartparens flycheck-pos-tip flycheck highlight-indent-guides aggressive-indent pcre2el emms pdf-tools csv-mode pretty-mode elfeed-protocol elfeed-org elfeed-goodies elfeed company-restclient restclient treemacs-all-the-icons treemacs-projectile treemacs-magit treemacs git-timemachine gitattributes-mode gitignore-mode gitconfig-mode magit undo-tree origami company-quickhelp company ace-window avy symon beacon htmlize org-edna org-bullets amx ivy-hydra all-the-icons-ivy-rich ivy-rich counsel swiper ivy hydra which-key dashboard minions doom-modeline base16-theme seti-theme moe-theme solarized-theme color-theme-sanityinc-tomorrow dracula-theme atom-one-dark-theme zerodark-theme modus-vivendi-theme modus-operandi-theme gruvbox-theme monokai-theme zenburn-theme material-theme spacemacs-theme doom-themes all-the-icons-ibuffer all-the-icons-dired all-the-icons async use-package diminish delight)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
